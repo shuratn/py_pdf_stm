@@ -1,13 +1,18 @@
-import json
+import os
+import sys
 from pathlib import Path
 from typing import Dict, List, Set
 
 import PyPDF3
+from tqdm import tqdm
+import requests
 from PyPDF3.pdf import PageObject
 
+datasheet_ulr = 'https://www.st.com/resource/en/datasheet/{}re.pdf'
 
-def join(list):
-    return ' '.join(list)
+
+def join(to_join):
+    return ' '.join(to_join)
 
 
 class DataSheetNode:
@@ -87,7 +92,7 @@ class DataSheetNode:
         else:
             return prev_node
 
-    def flatout(self, prev_node: 'DataSheetNode' = None)->List['DataSheetNode']:
+    def flatout(self, prev_node: 'DataSheetNode' = None) -> List['DataSheetNode']:
         """Flats whole node tree to 1D array.
 
             Args:
@@ -104,7 +109,7 @@ class DataSheetNode:
                 out.extend(child.flatout(child))
         return out
 
-    def to_set(self)->Set[str]:
+    def to_set(self) -> Set[str]:
         """Returns set with all node names in current node tree.
 
             Returns:
@@ -142,9 +147,22 @@ class DataSheetNode:
 
 class DataSheet:
 
-    def __init__(self, path: str):
-        self.name = Path(path).name
-        self.pdf_file = PyPDF3.PdfFileReader(path)
+    def __init__(self, name: str):
+        self.name = name
+        path = Path('./stm32')/name/"{}_ds.pdf".format(name)
+        if path.exists():
+            self.pdf_file = PyPDF3.PdfFileReader(str(path))
+        else:
+            print('Unknown yet controller, trying to download datasheet')
+            r = requests.get(datasheet_ulr.format(name), stream=True)
+            os.makedirs(path.parent,exist_ok=True)
+            with open(path, 'wb') as f:
+                total_length = int(r.headers.get('content-length'))
+                for chunk in tqdm(r.iter_content(chunk_size=1024), total=int(total_length / 1024) + 1,unit='Kbit'):
+                    if chunk:
+                        f.write(chunk)
+                        f.flush()
+            self.pdf_file = PyPDF3.PdfFileReader(str(path))
         self.text = {}  # type: Dict[int,str]
         self.raw_outline = []
         self.tables, self.figures = {}, {}
@@ -162,7 +180,7 @@ class DataSheet:
             self.text[page_id] = page.extractText().replace('\n®\n', '®').replace('\n® \n', '®')
 
     def flatten_outline(self, line=None):
-        if line == None:
+        if line is None:
             line = self.pdf_file.getOutlines()
         for i in line:
             if isinstance(i, list):
@@ -202,9 +220,9 @@ class DataSheet:
                 pass
 
     def get_difference(self, other: 'DataSheet'):
-        print('Comparing {} and {}'.format(self.name,other.name))
+        print('Comparing {} and {}'.format(self.name, other.name))
         flat1 = self.table_of_content.to_set()
-        flat2 =self.table_of_content.to_set()
+        flat2 = self.table_of_content.to_set()
         diff1 = flat1.difference(flat2)
         diff2 = flat2.difference(flat1)
         diff_test = flat1.symmetric_difference(flat2)
@@ -215,9 +233,13 @@ class DataSheet:
             print(diff2)
             print(diff_test)
 
+
 if __name__ == '__main__':
-    a = DataSheet(r'stm32/stm32L431/stm32L431_ds.pdf')
-    b = DataSheet(r'stm32/stm32L476/stm32L476_rm.pdf')
+    if len(sys.argv) < 3:
+        print('Usage: {} DATASHEET.pdj DATASHEET2.pdf'.format(os.path.basename(sys.argv[0])))
+        exit(0)
+    a = DataSheet(sys.argv[1])
+    b = DataSheet(sys.argv[2])
     # a.table_of_content.print_tree()
     # b.table_of_content.print_tree()
     # a.table_of_content.print_tree()
