@@ -197,7 +197,7 @@ class DataSheet:
                 name = entry['/Title']
                 if 'Table' in name:
                     table_id = int(name.split('.')[0].split(' ')[-1])
-                    self.tables[table_id] = entry
+                    self.tables[table_id] = {'name':name,'data':entry}
                 elif 'Figure' in name:
                     figure_id = int(name.split('.')[0].split(' ')[-1])
                     self.figures[figure_id] = entry
