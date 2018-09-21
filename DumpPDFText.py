@@ -11,8 +11,8 @@ from PyPDF3.pdf import PageObject
 datasheet_ulr = 'https://www.st.com/resource/en/datasheet/{}re.pdf'
 
 
-def join(to_join):
-    return ' '.join(to_join)
+def join(to_join,separator=' '):
+    return separator.join(map(str,to_join))
 
 
 class DataSheetNode:
@@ -32,7 +32,7 @@ class DataSheetNode:
         self.parent = None  # type: DataSheetNode
 
     def __repr__(self):
-        return '<DataSheetNode "{}" path:{}>'.format(self.name, self.path)
+        return '<DataSheetNode {}-"{}">'.format(join(self.path,'.'),self.name)
 
     def get_node_by_path(self, path, prev_node: 'DataSheetNode' = None) -> 'DataSheetNode':
         """Finds node by it's TOC path.
@@ -155,14 +155,17 @@ class DataSheet:
         else:
             print('Unknown yet controller, trying to download datasheet')
             r = requests.get(datasheet_ulr.format(name), stream=True)
-            os.makedirs(path.parent,exist_ok=True)
-            with open(path, 'wb') as f:
-                total_length = int(r.headers.get('content-length'))
-                for chunk in tqdm(r.iter_content(chunk_size=1024), total=int(total_length / 1024) + 1,unit='Kbit'):
-                    if chunk:
-                        f.write(chunk)
-                        f.flush()
-            self.pdf_file = PyPDF3.PdfFileReader(str(path))
+            if r.status_code == 200:
+                os.makedirs(path.parent,exist_ok=True)
+                with open(path, 'wb') as f:
+                    total_length = int(r.headers.get('content-length'))
+                    for chunk in tqdm(r.iter_content(chunk_size=1024), total=int(total_length / 1024) + 1,unit='Kbit'):
+                        if chunk:
+                            f.write(chunk)
+                            f.flush()
+                self.pdf_file = PyPDF3.PdfFileReader(str(path))
+            else:
+                raise Exception('Invalid controller name')
         self.text = {}  # type: Dict[int,str]
         self.raw_outline = []
         self.tables, self.figures = {}, {}
@@ -240,10 +243,10 @@ if __name__ == '__main__':
         exit(0)
     a = DataSheet(sys.argv[1])
     b = DataSheet(sys.argv[2])
-    # a.table_of_content.print_tree()
     # b.table_of_content.print_tree()
     # a.table_of_content.print_tree()
     a.get_difference(b)
+    a.table_of_content.print_tree()
     # print(a.table_of_content.to_set())
     # print('Total letter count:', sum([len(page) for page in a.text.values()]))
     # with open('test.json', 'w') as fp:
