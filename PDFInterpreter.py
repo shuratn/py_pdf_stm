@@ -102,9 +102,11 @@ class PDFInterpreter:
         self.font_size = 1
         self.char_spacing = 1
         self.word_spacing = 1
-        self.cursor = (0, self.page_size[1] // 2)
+        # self.cursor = (0, self.page_size[1] // 2)
+        self.cursor = (1024,0)
         self.scale_x, self.scale_y = 1, 1
         self.offset_x, self.offset_y = 0, 0
+        self.printed = False
 
     def prepare(self):
         self.image = Image.new('L', self.page_size, (255,))
@@ -120,12 +122,15 @@ class PDFInterpreter:
         x, y = self.cursor
         return x + self.offset_x, y + self.offset_y
 
+    def apply_transforms(self,x,y):
+        return x+self.offset_x,y+self.offset_y
+
     def render(self):
         if not self.prepared:
             raise Warning('Interpreter isn\'t prepared')
         # self.canvas.line(((100, 5), (150, 1024)), width=15)
         commands = []
-        for line in self.node.get_table_data().split('\n'):  # type:str
+        for line in self.node.get_data().split('\n'):  # type:str
             if '\(' in line:  # temp fix for escaped parentheses
                 line = line.replace('\(', ' ')
             if '\)' in line:
@@ -136,27 +141,32 @@ class PDFInterpreter:
             command = COMMAND.parseString(line)  # parse line to command
             commands.append(command)
         for n, command in enumerate(commands):
-            print(command)
+            # print(command)
             opcode = command[-1]  # Command opcode
             args = command[:-1]  # command args
+            if opcode == 'BT':
+                print('New text block')
+                self.cursor = (1024,0)
+            if opcode == 'ET':
+                print('End text block')
             if opcode == 're':  # RENDER BOX
-                x, y, w, h = command[:4]
+                x, y, w, h = args
                 # fill = 128 if commands[n+1][0]=='f' else None
                 fill = None
                 x1, y1 = 0, 0
                 # x1, y1 = self.get_transformed_cursor
                 x += x1
                 y += y1
-                self.canvas.rectangle((x, y - h, w, -h), fill)
-                print('Drawing box at', x, y - h, w, -h)
+                print('Drawing box at X:{} Y:{} W:{} H:{}'.format(x, y , w, h))
+                self.canvas.rectangle((x, y , w, h), fill)
             if opcode == 'TD':  # MOVE CURSOR
-                print(command)
+                # print(command)
                 x, y = args
                 y1, x1 = self.cursor
+                self.canvas.line((x1,y1,x,y))
                 x, y = x + x1, y + y1
+                print('Moving cursor to', self.cursor)
                 self.cursor = (x, y)
-                self.canvas.point(self.cursor)
-                print('Cursor now at', self.cursor)
 
             if opcode == 'Tm':  # STORE MATRIX
                 scale_x, shear_x, shear_y, scale_y, offset_x, offset_y = args
@@ -164,27 +174,30 @@ class PDFInterpreter:
                 self.scale_y = scale_y
                 self.offset_x = offset_x
                 self.offset_y = offset_y
-                print('TM', args)
+                # print('TM', args)
+                print('Cursor now at', self.get_transformed_cursor)
 
             if opcode == 'TJ':  # RENDER TEXT
-                print(command)
+                # print(command)
+                if self.printed:
+                    pass
+                    # continue
                 for text_arg in args:
-                    x, y = self.get_transformed_cursor
+                    x, y = self.cursor
+                    x += text_arg[1]
+                    # y += text_arg[1] # depends on render mode
 
-                    if type(text_arg) == tuple:
-                        x -= text_arg[1]
-                        # y -= text_arg[1] # depends on render mode
+                    text = text_arg[0]
+                    text = text.encode("utf-8").decode('latin-1', 'ignore') # removing unprintable chars
+                    xt, _ = self.font.getsize(text)
 
-                        text = text_arg[0]
-                    else:
-                        raise Exception(str(text_arg))
-                    text = text.encode("utf-8").decode('latin-1', 'ignore')
                     print('Printing "{}" at'.format(text), x, y)
                     self.font.size = self.scale_x
-                    self.canvas.text((x, y), text, font=self.font)
+                    self.canvas.text(self.apply_transforms(x, y), text, font=self.font)
+                    self.cursor = (x,y)
                     # self.save()
-                    a = 5
                     # print(text_arg)
+                    self.printed = True
 
     def save(self, path=None):
         if not self.prepared:
@@ -199,8 +212,9 @@ class PDFInterpreter:
 
 if __name__ == '__main__':
     pdf = DataSheet('stm32L431')
-    print(pdf.table_root.childs[3])
-    a = PDFInterpreter(pdf.table_root.childs[3])
+    print(pdf.table_root.childs[0])
+    a = PDFInterpreter(pdf.table_root.childs[0])
+    # print(a.node.get_data())
     a.prepare()
     a.render()
     a.save()

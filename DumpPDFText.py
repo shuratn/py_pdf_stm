@@ -182,7 +182,7 @@ class DataSheetTableNode(DataSheetNode):
     def get_table_name(self):
         return self.table['/Title']
 
-    def get_table_data(self):
+    def get_data(self):
         return self.table.page.getObject()['/Contents'].getData().decode('cp1251')
 
     @property
