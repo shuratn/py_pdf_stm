@@ -1,7 +1,7 @@
 from functools import partial
 
 from DumpPDFText import *
-from PIL import Image, ImageDraw,ImageFont
+from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 import pyparsing
 from pyparsing import *
@@ -116,8 +116,9 @@ class PDFInterpreter:
 
     @property
     def get_transformed_cursor(self):
-        x,y = self.cursor
-        return x+self.offset_x,y+self.offset_y
+        """Returns cursor with offset applied"""
+        x, y = self.cursor
+        return x + self.offset_x, y + self.offset_y
 
     def render(self):
         if not self.prepared:
@@ -125,29 +126,30 @@ class PDFInterpreter:
         # self.canvas.line(((100, 5), (150, 1024)), width=15)
         commands = []
         for line in self.node.get_table_data().split('\n'):  # type:str
-            if '\(' in line:
+            if '\(' in line:  # temp fix for escaped parentheses
                 line = line.replace('\(', ' ')
             if '\)' in line:
                 line = line.replace('\)', ' ')
-            if line.startswith('/') or not line:
+            if line.startswith('/') or not line:  # ignoring keywords
                 continue
             # print(line)
-            command = COMMAND.parseString(line)
+            command = COMMAND.parseString(line)  # parse line to command
             commands.append(command)
         for n, command in enumerate(commands):
             print(command)
-            opcode = command[-1]
-            args = command[:-1]
-            if opcode == 're':
+            opcode = command[-1]  # Command opcode
+            args = command[:-1]  # command args
+            if opcode == 're':  # RENDER BOX
                 x, y, w, h = command[:4]
                 # fill = 128 if commands[n+1][0]=='f' else None
                 fill = None
-                x1,y1 = self.get_transformed_cursor
-                x = x1+x
-                y = y1+y
-                self.canvas.rectangle((x, y-h, w, h), fill)
-                print('Drawing box at',x+x1,y+y1,w,h)
-            if opcode == 'TD':
+                x1, y1 = 0, 0
+                # x1, y1 = self.get_transformed_cursor
+                x += x1
+                y += y1
+                self.canvas.rectangle((x, y - h, w, -h), fill)
+                print('Drawing box at', x, y - h, w, -h)
+            if opcode == 'TD':  # MOVE CURSOR
                 print(command)
                 x, y = args
                 y1, x1 = self.cursor
@@ -156,7 +158,7 @@ class PDFInterpreter:
                 self.canvas.point(self.cursor)
                 print('Cursor now at', self.cursor)
 
-            if opcode == 'Tm':
+            if opcode == 'Tm':  # STORE MATRIX
                 scale_x, shear_x, shear_y, scale_y, offset_x, offset_y = args
                 self.scale_x = scale_x
                 self.scale_y = scale_y
@@ -164,21 +166,23 @@ class PDFInterpreter:
                 self.offset_y = offset_y
                 print('TM', args)
 
-            if opcode == 'TJ':
+            if opcode == 'TJ':  # RENDER TEXT
                 print(command)
                 for text_arg in args:
-                    y, x = self.get_transformed_cursor
+                    x, y = self.get_transformed_cursor
+
                     if type(text_arg) == tuple:
                         x -= text_arg[1]
+                        # y -= text_arg[1] # depends on render mode
 
                         text = text_arg[0]
                     else:
                         raise Exception(str(text_arg))
-                    text = text.encode("utf-8").decode('latin-1','ignore')
+                    text = text.encode("utf-8").decode('latin-1', 'ignore')
                     print('Printing "{}" at'.format(text), x, y)
                     self.font.size = self.scale_x
-                    self.canvas.text((x, y), text,font = self.font)
-                    self.save()
+                    self.canvas.text((x, y), text, font=self.font)
+                    # self.save()
                     a = 5
                     # print(text_arg)
 
