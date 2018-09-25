@@ -148,7 +148,7 @@ class Line:
     def as_tuple(self):
         return ((self.x, self.y), (self.cx, self.cy))
 
-    def intersect(self, other: 'Line',print_fulness=False) -> bool:
+    def intersect(self, other: 'Line', print_fulness=False) -> bool:
         """ this returns the intersection of Line(pt1,pt2) and Line(ptA,ptB)
               returns a tuple: (xi, yi, valid, r, s), where
               (xi, yi) is the intersection
@@ -160,7 +160,18 @@ class Line:
         pt2 = self.cx, self.cy
         ptA = other.x, other.y
         ptB = other.cx, other.cy
-
+        if self.vertical:
+            if self.y > self.cy:
+                if self.y >= other.y >= self.cy:
+                    pass
+                else:
+                    return False
+        else:
+            if other.y > other.cy:
+                if other.y >= self.y >= other.cy:
+                    pass
+                else:
+                    return False
         DET_TOLERANCE = 0.0001
         # the first line is pt1 + r*(pt2-pt1)
         # in component form:
@@ -207,11 +218,13 @@ class Line:
         if print_fulness:
             print('self segment', r)
             print('other segment', s)
+        if r > 1 or s > 1:
+            return False
         if r > -0.1 and s > -0.1:
             return True
         return False
 
-    def intersection(self, other: 'Line') -> (int, int):
+    def intersection(self, other: 'Line', print_fulness=False) -> (int, int):
         """ this returns the intersection of Line(pt1,pt2) and Line(ptA,ptB)
                       returns a tuple: (xi, yi, valid, r, s), where
                       (xi, yi) is the intersection
@@ -269,6 +282,9 @@ class Line:
         # return the average of the two descriptions
         xi = (x1 + r * dx1 + x + s * dx) / 2.0
         yi = (y1 + r * dy1 + y + s * dy) / 2.0
+        if print_fulness:
+            print('self segment', r)
+            print('other segment', s)
         return round(xi), round(yi)
 
     def __contains__(self, other: 'Line'):
@@ -281,7 +297,7 @@ class Line:
         print('Testing intersection of:')
         print('\t', self)
         print('\t', other)
-        result = self.intersection(other)
+        result = self.intersection(other, True)
         print("\t Intersection result =", Point(result))
         print()
 
