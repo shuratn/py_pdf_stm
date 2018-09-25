@@ -111,19 +111,86 @@ class Line:
     def __init__(self, xy1, xy2):
         x, y = xy1
         cx, cy = xy2
+
         self.x = math.ceil(x)
         self.y = math.ceil(y)
         self.cx = math.ceil(cx)
         self.cy = math.ceil(cy)
+        self.vertical = self.x == self.cx
 
-    def draw(self, canvas: ImageDraw.ImageDraw):
-        canvas.line(self.as_tuple, fill='blue')
+    def draw(self, canvas: ImageDraw.ImageDraw,color='blue'):
+        x,y = self.x - 5, self.y - 5
+        cx,cy = self.cx + 5, self.cy + 5
+
+        canvas.line(((x,y),(cx,cy)), color)
 
     @property
     def as_tuple(self):
         return ((self.x, self.y), (self.cx, self.cy))
 
     def intersect(self, other: 'Line'):
+        """ this returns the intersection of Line(pt1,pt2) and Line(ptA,ptB)
+              returns a tuple: (xi, yi, valid, r, s), where
+              (xi, yi) is the intersection
+              r is the scalar multiple such that (xi,yi) = pt1 + r*(pt2-pt1)
+              s is the scalar multiple such that (xi,yi) = pt1 + s*(ptB-ptA)
+                  valid == 0 if there are 0 or inf. intersections (invalid)
+                  valid == 1 if it has a unique intersection ON the segment    """
+        pt1 = self.x-5, self.y-5
+        pt2 = self.cx+5, self.cy+5
+        ptA = other.x-5, other.y-5
+        ptB = other.cx+5, other.cy+5
+
+        DET_TOLERANCE = 1
+        # the first line is pt1 + r*(pt2-pt1)
+        # in component form:
+        x1, y1 = pt1
+        x2, y2 = pt2
+        dx1 = x2 - x1
+        dy1 = y2 - y1
+        # the second line is ptA + s*(ptB-ptA)
+        x, y = ptA
+        xB, yB = ptB
+        dx = xB - x
+        dy = yB - y
+        # we need to find the (typically unique) values of r and s
+        # that will satisfy
+        #
+        # (x1, y1) + r(dx1, dy1) = (x, y) + s(dx, dy)
+        #
+        # which is the same as
+        #
+        #    [ dx1  -dx ][ r ] = [ x-x1 ]
+        #    [ dy1  -dy ][ s ] = [ y-y1 ]
+        #
+        # whose solution is
+        #
+        #    [ r ] = _1_  [  -dy   dx ] [ x-x1 ]
+        #    [ s ] = DET  [ -dy1  dx1 ] [ y-y1 ]
+        #
+        # where DET = (-dx1 * dy + dy1 * dx)
+        #
+        # if DET is too small, they're parallel
+        #
+        DET = (-dx1 * dy + dy1 * dx)
+
+        if math.fabs(DET) < DET_TOLERANCE: return False
+        # now, the determinant should be OK
+        DETinv = 1.0 / DET
+        # find the scalar amount along the "self" segment
+        r = DETinv * (-dy * (x - x1) + dx * (y - y1))
+        # find the scalar amount along the input line
+        s = DETinv * (-dy1 * (x - x1) + dx1 * (y - y1))
+        # return the average of the two descriptions
+        xi = (x1 + r * dx1 + x + s * dx) / 2.0
+        yi = (y1 + r * dy1 + y + s * dy) / 2.0
+        print('self segment', r)
+        print('other segment', s)
+        if r > 0 and s > 0:
+            return True
+        return False
+
+    def intersection(self, other: 'Line'):
         line1 = self.as_tuple
         line2 = other.as_tuple
         x_diff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
@@ -142,14 +209,34 @@ class Line:
         return x, y
 
     def __contains__(self, other: 'Line'):
-        if any(self.intersect(other)):
-            return True
-        return False
+        return self.intersect(other)
+
+    def testIntersection(self, other: 'Line'):
+        """ prints out a test for checking by hand... """
+        result = self.intersect(other)
+        print("    Intersection result =", result)
+        print()
+
 
 class Point:
-    def __init__(self,xy):
-        self.x,self.y = xy
+    r = 4
+    hr = r / 2
 
+    def __init__(self, xy):
+        self.x, self.y = xy
+
+    @property
+    def as_tuple(self):
+        return (self.x, self.y)
+
+    def draw(self, canvas: ImageDraw.ImageDraw, color='red'):
+        canvas.ellipse((self.x - self.hr, self.y - self.hr, self.x + self.hr, self.y + self.hr), fill=color)
+
+    def points_to_right(self, other_points: List['Point']):
+        sorted_other_points = sorted(other_points, key=lambda other: other.y)
+        filtered_other_points = filter(lambda other: other != self and other.y == self.y and self.x < other.x,
+                                       sorted_other_points)
+        return filtered_other_points
 
 
 class PDFInterpreter:
@@ -198,7 +285,7 @@ class PDFInterpreter:
         self.figure_offset_x, self.figure_offset_y = 0, 0
 
         self.lines = []  # type: List[Line]
-        self.points = []
+        self.points = []  # type: List[Point]
         self.useful_content = [(6, 76), (6 + 556, 76 + + 657)]
 
     def prepare(self):
@@ -211,17 +298,42 @@ class PDFInterpreter:
             self.fonts[str(name)] = font_info['/FontName'].split("+")[-1].split(",")[0].split("-")[0]
 
     def rebuild_table(self):
-        r = 2
-        hr = r * 2
         for line1 in self.lines:
             for line2 in self.lines:
                 if line1 == line2:
                     continue
+                line1.draw(self.canvas, color='cyan')
+                line2.draw(self.canvas, color='cyan')
+                self.save()
                 if line1 in line2:
-                    x, y = line1.intersect(line2)
                     line1.draw(self.canvas)
                     line2.draw(self.canvas)
-                    self.canvas.ellipse((x - hr, y - hr, x + hr, y + hr), fill='red')
+                    line1.testIntersection(line2)
+                    x, y = line1.intersection(line2)
+                    point = Point((x, y))
+                    self.points.append(point)
+                    point.draw(self.canvas)
+                else:
+                    pass
+
+                pass
+                self.save()
+                self.canvas.rectangle(((0,0),tuple(self.page_size)),fill='white')
+
+        #             # point.draw(self.canvas)
+
+        # for p1 in self.points:
+        #     ps = p1.points_to_right(self.points)
+        #
+        #     if ps:
+        #         p1.draw(self.canvas)
+        #         [p.draw(self.canvas, 'green') for p in ps]
+        #         return
+        # for p2 in self.points:
+        #     for p3 in self.points:
+        #         for p4 in self.points:
+        #             if p1 == p2 or p1 == p3 or p1 == p4 or p2 == p3 or p2 == p4 or p3 == p4:
+        #                 continue
 
     def flip_y(self, y):
         if self.flip_page:
