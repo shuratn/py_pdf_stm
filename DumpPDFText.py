@@ -308,7 +308,7 @@ if __name__ == '__main__':
     # a.table_of_content.print_tree()
     # a.get_difference(b)
     a.table_of_content.print_tree()
-    print(a.table_of_content.get_node_by_type(DataSheetTableNode))
+    # print(a.table_of_content.get_node_by_type(DataSheetTableNode))
     # print(a.table_of_content.to_set())
     # print('Total letter count:', sum([len(page) for page in a.text.values()]))
     # with open('test.json', 'w') as fp:

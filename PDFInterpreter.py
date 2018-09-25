@@ -1,11 +1,10 @@
 import math
 from functools import partial
 
-from DumpPDFText import *
 from PIL import Image, ImageDraw, ImageFont
-from pathlib import Path
-import io
 from pyparsing import *
+
+from DumpPDFText import *
 
 DEBUG = False
 
@@ -37,14 +36,14 @@ def parse_number(string):
 def parse_text_args(text):
     if len(text) == 2:
         return text[1], text[0]
-    return (text[0], 0.0)
+    return text[0], 0.0
 
 
 def parse_command(text):
     opcode = text[-1]
     args = text[:-1]
     # print(opcode,args)
-    return (opcode, args)
+    return opcode, args
 
 
 OPCODE = Word(alphas + '*')
@@ -112,23 +111,44 @@ class Line:
         x, y = xy1
         cx, cy = xy2
 
-        self.x = math.ceil(x)
-        self.y = math.ceil(y)
-        self.cx = math.ceil(cx)
-        self.cy = math.ceil(cy)
-        self.vertical = self.x == self.cx
+        x = math.ceil(x)
+        y = math.ceil(y)
+        cx = math.ceil(cx)
+        cy = math.ceil(cy)
+        self.p1 = Point((x, y))
+        self.p2 = Point((cx, cy))
+        self.vertical = x == cx
 
-    def draw(self, canvas: ImageDraw.ImageDraw,color='blue'):
-        x,y = self.x - 5, self.y - 5
-        cx,cy = self.cx + 5, self.cy + 5
+    @property
+    def x(self):
+        return self.p1.x
 
-        canvas.line(((x,y),(cx,cy)), color)
+    @property
+    def y(self):
+        return self.p1.y
+
+    @property
+    def cx(self):
+        return self.p2.x
+
+    @property
+    def cy(self):
+        return self.p2.y
+
+    def __str__(self):
+        return 'Line<p1:{} p2:{} {}>'.format(self.p1, self.p2, 'vertical' if self.vertical else 'horizontal')
+
+    def draw(self, canvas: ImageDraw.ImageDraw, color='blue'):
+        x, y = self.x, self.y
+        cx, cy = self.cx, self.cy
+
+        canvas.line(((x, y), (cx, cy)), color)
 
     @property
     def as_tuple(self):
         return ((self.x, self.y), (self.cx, self.cy))
 
-    def intersect(self, other: 'Line'):
+    def intersect(self, other: 'Line',print_fulness=False) -> bool:
         """ this returns the intersection of Line(pt1,pt2) and Line(ptA,ptB)
               returns a tuple: (xi, yi, valid, r, s), where
               (xi, yi) is the intersection
@@ -136,10 +156,73 @@ class Line:
               s is the scalar multiple such that (xi,yi) = pt1 + s*(ptB-ptA)
                   valid == 0 if there are 0 or inf. intersections (invalid)
                   valid == 1 if it has a unique intersection ON the segment    """
-        pt1 = self.x-5, self.y-5
-        pt2 = self.cx+5, self.cy+5
-        ptA = other.x-5, other.y-5
-        ptB = other.cx+5, other.cy+5
+        pt1 = self.x, self.y
+        pt2 = self.cx, self.cy
+        ptA = other.x, other.y
+        ptB = other.cx, other.cy
+
+        DET_TOLERANCE = 0.0001
+        # the first line is pt1 + r*(pt2-pt1)
+        # in component form:
+        x1, y1 = pt1
+        x2, y2 = pt2
+        dx1 = x2 - x1
+        dy1 = y2 - y1
+        # the second line is ptA + s*(ptB-ptA)
+        x, y = ptA
+        xB, yB = ptB
+        dx = xB - x
+        dy = yB - y
+        # we need to find the (typically unique) values of r and s
+        # that will satisfy
+        #
+        # (x1, y1) + r(dx1, dy1) = (x, y) + s(dx, dy)
+        #
+        # which is the same as
+        #
+        #    [ dx1  -dx ][ r ] = [ x-x1 ]
+        #    [ dy1  -dy ][ s ] = [ y-y1 ]
+        #
+        # whose solution is
+        #
+        #    [ r ] = _1_  [  -dy   dx ] [ x-x1 ]
+        #    [ s ] = DET  [ -dy1  dx1 ] [ y-y1 ]
+        #
+        # where DET = (-dx1 * dy + dy1 * dx)
+        #
+        # if DET is too small, they're parallel
+        #
+        DET = (-dx1 * dy + dy1 * dx)
+
+        if math.fabs(DET) < DET_TOLERANCE:
+            print('parallel')
+            return False
+        # now, the determinant should be OK
+        DETinv = 1.0 / DET
+        # find the scalar amount along the "self" segment
+        r = DETinv * (-dy * (x - x1) + dx * (y - y1))
+        # find the scalar amount along the input line
+        s = DETinv * (-dy1 * (x - x1) + dx1 * (y - y1))
+        # return the average of the two descriptions
+        if print_fulness:
+            print('self segment', r)
+            print('other segment', s)
+        if r > -0.1 and s > -0.1:
+            return True
+        return False
+
+    def intersection(self, other: 'Line') -> (int, int):
+        """ this returns the intersection of Line(pt1,pt2) and Line(ptA,ptB)
+                      returns a tuple: (xi, yi, valid, r, s), where
+                      (xi, yi) is the intersection
+                      r is the scalar multiple such that (xi,yi) = pt1 + r*(pt2-pt1)
+                      s is the scalar multiple such that (xi,yi) = pt1 + s*(ptB-ptA)
+                          valid == 0 if there are 0 or inf. intersections (invalid)
+                          valid == 1 if it has a unique intersection ON the segment    """
+        pt1 = self.x, self.y
+        pt2 = self.cx, self.cy
+        ptA = other.x, other.y
+        ptB = other.cx, other.cy
 
         DET_TOLERANCE = 1
         # the first line is pt1 + r*(pt2-pt1)
@@ -174,7 +257,9 @@ class Line:
         #
         DET = (-dx1 * dy + dy1 * dx)
 
-        if math.fabs(DET) < DET_TOLERANCE: return False
+        if math.fabs(DET) < DET_TOLERANCE:
+            print('parallel')
+            return None, None
         # now, the determinant should be OK
         DETinv = 1.0 / DET
         # find the scalar amount along the "self" segment
@@ -184,37 +269,20 @@ class Line:
         # return the average of the two descriptions
         xi = (x1 + r * dx1 + x + s * dx) / 2.0
         yi = (y1 + r * dy1 + y + s * dy) / 2.0
-        print('self segment', r)
-        print('other segment', s)
-        if r > 0 and s > 0:
-            return True
-        return False
-
-    def intersection(self, other: 'Line'):
-        line1 = self.as_tuple
-        line2 = other.as_tuple
-        x_diff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
-        y_diff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])  # Typo was here
-
-        def det(a, b):
-            return a[0] * b[1] - a[1] * b[0]
-
-        div = det(x_diff, y_diff)
-        if div == 0:
-            return None, None
-
-        d = (det(*line1), det(*line2))
-        x = det(d, x_diff) / div
-        y = det(d, y_diff) / div
-        return x, y
+        return round(xi), round(yi)
 
     def __contains__(self, other: 'Line'):
+        if self.vertical == other.vertical:
+            return False
         return self.intersect(other)
 
-    def testIntersection(self, other: 'Line'):
+    def test_intersection(self, other: 'Line'):
         """ prints out a test for checking by hand... """
-        result = self.intersect(other)
-        print("    Intersection result =", result)
+        print('Testing intersection of:')
+        print('\t', self)
+        print('\t', other)
+        result = self.intersection(other)
+        print("\t Intersection result =", Point(result))
         print()
 
 
@@ -224,6 +292,11 @@ class Point:
 
     def __init__(self, xy):
         self.x, self.y = xy
+        self.x = math.ceil(self.x)
+        self.y = math.ceil(self.y)
+
+    def __str__(self):
+        return "Point<X:{} Y:{}>".format(self.x, self.y)
 
     @property
     def as_tuple(self):
@@ -302,23 +375,32 @@ class PDFInterpreter:
             for line2 in self.lines:
                 if line1 == line2:
                     continue
-                line1.draw(self.canvas, color='cyan')
-                line2.draw(self.canvas, color='cyan')
-                self.save()
+
+                # self.save()
+
                 if line1 in line2:
+                    line1.test_intersection(line2)
+                    p = Point(line1.intersection(line2))
+                    p.draw(self.canvas)
+                    # print(line1, line2)
                     line1.draw(self.canvas)
                     line2.draw(self.canvas)
-                    line1.testIntersection(line2)
-                    x, y = line1.intersection(line2)
-                    point = Point((x, y))
-                    self.points.append(point)
-                    point.draw(self.canvas)
                 else:
                     pass
+                    # line1.draw(self.canvas, color='cyan')
+                    # line2.draw(self.canvas, color='cyan')
+                #     line1.testIntersection(line2)
+                #     x, y = line1.intersection(line2)
+                #     point = Point((x, y))
+                #     print(point)
+                #     self.points.append(point)
+                #     point.draw(self.canvas)
+                # else:
+                #     pass
 
                 pass
-                self.save()
-                self.canvas.rectangle(((0,0),tuple(self.page_size)),fill='white')
+                # self.save()
+                # self.canvas.rectangle(((0,0),tuple(self.page_size)),fill='white')
 
         #             # point.draw(self.canvas)
 
@@ -611,7 +693,6 @@ class PDFInterpreter:
             #     new_line = self.new_line
             #     if self.flip_page:
             #         self.move_cursor_text(0, -new_line / 1.3)
-            #     # text = text.encode("utf-8").decode('latin-1', 'ignore')  # removing unprintable chars
             #     xt, yt = self.font.getsize(text)  # text dimensions
             #     print('Printing "{}" at'.format(text), self.text_cursor)
             #     self.canvas.text(self.text_cursor, text, font=self.font)
