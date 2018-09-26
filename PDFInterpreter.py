@@ -553,7 +553,7 @@ class Cell:
         self.text = ''
 
     def __repr__(self):
-        return 'Cell <{} {}> '.format(self.p1, self.p3)
+        return 'Cell <"{}"> '.format(self.text)
 
     @property
     def as_tuple(self):
@@ -675,7 +675,10 @@ class Table:
         #     for cell in self.table:
         #         if cell.point_inside_polygon(s_cell.center):
         #             pass
-
+    def print_table(self):
+        for y, row in self.table_skeleton.items():
+            # for x, cell in enumerate(row):
+                print(list(self.global_map[y].values()))
 
 class PDFInterpreter:
     ts = [t / 100.0 for t in range(20)]
@@ -1230,3 +1233,4 @@ if __name__ == '__main__':
     pdf_interpreter.rebuild_table()
     pdf_interpreter.table.build_table()
     pdf_interpreter.save()
+    pdf_interpreter.table.print_table()
