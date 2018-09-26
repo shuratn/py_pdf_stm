@@ -359,7 +359,7 @@ class Line:
             return True
         return False
 
-    def connected(self,other:'Line'):
+    def connected(self, other: 'Line'):
         return other.p1 in self or other.p2 in self
 
     def parallel(self, other: 'Line'):
@@ -376,12 +376,12 @@ class Line:
 
 
 class Cell:
-    """P1------P2
+    """P1-------P2
         |       |
         |       |
         |       |
         |       |
-        X-------P3
+       P4-------P3
     """
 
     def __init__(self, p1, p2, p3, p4):
@@ -492,16 +492,9 @@ class PDFInterpreter:
                     # line2.draw(self.canvas)
                     if p1 not in self.points:
                         self.points.append(p1)
-        #
-        #     ps = p1.points_to_right(self.points)
-        #
-        #     if ps:
-        #         p1.draw(self.canvas)
-        #         [p.draw(self.canvas, 'green') for p in ps]
-        #         return
         sorted_x_points = sorted(self.points, key=lambda other: other.x)
         sorted_y_points = sorted(self.points, key=lambda other: other.y)
-        for p1 in sorted_x_points:
+        for p1 in sorted_y_points:
             for p2 in p1.points_to_right(self.points):
                 ps1 = p1.points_below(sorted_x_points)
                 ps2 = p2.points_below(sorted_x_points)
@@ -516,7 +509,6 @@ class PDFInterpreter:
                             if not valid:
                                 break
                             if p3 in self.points and p4 in self.points:
-
                                 color = random.choice(list(ImageColor.colormap.keys()))
                                 print('Painting cell with', color, 'colour')
                                 print(p1, p2)
@@ -851,12 +843,12 @@ if __name__ == '__main__':
     #     a.prepare()
     #     a.render()
     #     a.save()
-    a = PDFInterpreter(pdf=pdf.pdf_file, page=13)
+    pdf_interpreter = PDFInterpreter(pdf=pdf.pdf_file, page=13)
     # a = PDFInterpreter(pdf.table_root.childs[table])
-    a.flip_page = True
+    pdf_interpreter.flip_page = True
     # print(a.content)
-    a.prepare()
-    a.parse()
-    a.render()
-    a.rebuild_table()
-    a.save()
+    pdf_interpreter.prepare()
+    pdf_interpreter.parse()
+    pdf_interpreter.render()
+    pdf_interpreter.rebuild_table()
+    pdf_interpreter.save()
