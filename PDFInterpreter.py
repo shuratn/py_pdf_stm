@@ -550,7 +550,7 @@ class Cell:
         self.text = ''
 
     def __repr__(self):
-        return 'Cell <{} {}> '.format(self.p1,self.p3)
+        return 'Cell <{} {}> '.format(self.p1, self.p3)
 
     @property
     def as_tuple(self):
@@ -617,7 +617,10 @@ class Cell:
         return inside
 
     def draw(self, canvas: ImageDraw.ImageDraw, color='black'):
+
         canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline=color)
+        if self.text:
+            canvas.text((self.center.x, self.center.y - 5), self.text, fill='black')
 
 
 class Table:
@@ -637,22 +640,23 @@ class Table:
             if cell.center.y not in y_list:
                 y_list.append(cell.center.y)
         y_list.sort()
-        for n,y in enumerate(y_list):
-            row = filter(lambda c:c.center.y==y,self.skeleton)
-            row = list(sorted(row,key=lambda c:c.center.x))
+        for n, y in enumerate(y_list):
+            row = filter(lambda c: c.center.y == y, self.skeleton)
+            row = list(sorted(row, key=lambda c: c.center.x))
             cell_map[n] = row
         self.table_skeleton = cell_map
 
-
-
     def build_table(self):
         self.split_to_2d()
-        for y,row in self.table_skeleton.items():
+        for y, row in self.table_skeleton.items():
             self.global_map[y] = {}
-            for x,cell in enumerate(row):
+            for x, cell in enumerate(row):
                 for t_cell in self.table:
                     if t_cell.point_inside_polygon(cell.center):
+                        t_cell.text = "{} {}".format(y, x)
                         self.global_map[y][x] = t_cell
+        for cell in self.table:
+            cell.draw(self.canvas)
         pass
         # sorted_cells = sorted(self.skeleton, key=lambda c: c.center.y)
         # for s_cell in sorted_cells:
@@ -686,7 +690,7 @@ class PDFInterpreter:
             self.content = self.page['/Contents'].getData().decode('cp1251')
             self.name = 'page-{}'.format(page)
 
-        self.page_size = self.page['/CropBox'][2:]
+        self.page_size = tuple(self.page['/CropBox'][2:])
         self.image = None  # type: Image.Image
         self.canvas = None  # type: ImageDraw.ImageDraw
         self.commands = []
@@ -732,9 +736,9 @@ class PDFInterpreter:
             self.points.append(line.p2)
 
     def add_skeleton_points(self, line: Line):
-        if line.p1 not in self.points:
+        if line.p1 not in self.skeleton_points:
             self.skeleton_points.append(line.p1)
-        if line.p2 not in self.points:
+        if line.p2 not in self.skeleton_points:
             self.skeleton_points.append(line.p2)
 
     def clean_points(self):
@@ -757,7 +761,7 @@ class PDFInterpreter:
                     continue
                 if line1.infite_intersect(line2):
                     p1 = Point(line1.infite_intersect(line2))
-                    if p1 not in self.points:
+                    if p1 not in self.skeleton_points:
                         self.skeleton_points.append(p1)
 
                     for n, p in enumerate(self.skeleton_points):
@@ -780,17 +784,17 @@ class PDFInterpreter:
                     print(p1, p2)
                     print(p4, p3)
                     print('-' * 20)
-                    # if self.draw:
-                    #     self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill='gray')
-                    #     cell.draw(self.canvas)
-        # if self.draw:
-        #     for point in self.skeleton_points:
-        #         point.draw(self.canvas)
-
-        # for p in random.choices(self.skeleton,k=20):
-        #     color = random.choice(list(ImageColor.colormap.keys()))
-        #     p.draw(self.canvas,color)
-
+                    if self.draw:
+                        # self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill='gray')
+                        cell.draw(self.canvas)
+        if self.draw:
+            for point in self.skeleton_points:
+                point.draw(self.canvas)
+        name = self.name
+        self.name += '-skeleton'
+        self.save()
+        self.name = name
+        self.canvas.rectangle(((0, 0), self.page_size), 'white')
 
     def rebuild_table(self):
         for line1 in self.lines:
@@ -801,7 +805,7 @@ class PDFInterpreter:
                 self.add_points(line2)
                 if line1 in line2:
                     line1.test_intersection(line2)
-                    xy, r, s = line1.intersection(line2)
+                    xy, _, _ = line1.intersection(line2)
                     p1 = Point(xy)
                     if p1 == line1.p1:  # fixing alignment
                         p1.copy(line1.p1)
@@ -821,6 +825,7 @@ class PDFInterpreter:
                         if p == p1:
                             p1.copy(p)
                             self.points[n] = p1
+                    del n
                     p1 = list(filter(lambda p: p == p1, self.points))[0]
                     if line1.is_between(p1):
                         if not line1.on_corners(p1):
@@ -864,13 +869,18 @@ class PDFInterpreter:
                             color = random.choice(list(ImageColor.colormap.keys()))
                             # self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill=color)
                             cell.draw(self.canvas)
-                            cell.center.draw(self.canvas)
+                            # cell.center.draw(self.canvas)
         for p in self.points:
             p.draw(self.canvas)
         # for p in random.choices(self.cells,k=20):
         #     color = random.choice(list(ImageColor.colormap.keys()))
         #     p.draw(self.canvas,color)
-        self.table.build_table()
+        name = self.name
+        self.name += '-clean'
+        self.save()
+        self.name = name
+        self.canvas.rectangle(((0, 0), self.page_size), 'white')
+
     def flip_y(self, y):
         if self.flip_page:
             return self.ysize - y
@@ -1175,14 +1185,15 @@ if __name__ == '__main__':
     #     a.prepare()
     #     a.render()
     #     a.save()
-    pdf_interpreter = PDFInterpreter(pdf=pdf.pdf_file, page=46)
+    pdf_interpreter = PDFInterpreter(pdf=pdf.pdf_file, page=13)
     pdf_interpreter.draw = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
     pdf_interpreter.flip_page = True
-    # print(a.content)
+    # print(pdf_interpreter.content)
     pdf_interpreter.prepare()
     pdf_interpreter.parse()
     pdf_interpreter.render()
-    pdf_interpreter.build_skeleton()
     pdf_interpreter.rebuild_table()
+    pdf_interpreter.build_skeleton()
+    pdf_interpreter.table.build_table()
     pdf_interpreter.save()
