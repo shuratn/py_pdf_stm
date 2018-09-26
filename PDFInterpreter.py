@@ -1,8 +1,10 @@
+import copy
 import math
 import random
 from functools import partial
 from itertools import cycle, zip_longest
 from pprint import pprint
+from typing import Tuple
 
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 from pyparsing import *
@@ -541,6 +543,7 @@ class Cell:
         |       |
        P4-------P3
     """
+    font = ImageFont.truetype('arial', size=9)
 
     def __init__(self, p1, p2, p3, p4):
         self.p1: Point = p1
@@ -620,13 +623,16 @@ class Cell:
 
         canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline=color)
         if self.text:
-            canvas.text((self.center.x, self.center.y - 5), self.text, fill='black')
+            canvas.text((self.p1.x + 3, self.center.y - 5), self.text, fill='black', font=self.font)
 
 
 class Table:
+    font = ImageFont.truetype('arial', size=9)
 
-    def __init__(self, table: List[Cell], skeleton: List[Cell], canvas: ImageDraw.ImageDraw):
+    def __init__(self, table: List[Cell], skeleton: List[Cell], texts: List[Tuple[str, Point]],
+                 canvas: ImageDraw.ImageDraw):
         self.canvas = canvas
+        self.texts = texts
         self.skeleton = skeleton
         self.table = table
         self.table_skeleton = {}
@@ -653,11 +659,17 @@ class Table:
             for x, cell in enumerate(row):
                 for t_cell in self.table:
                     if t_cell.point_inside_polygon(cell.center):
-                        t_cell.text = "{} {}".format(y, x)
+                        # t_cell.text = "{} {}".format(y, x)
                         self.global_map[y][x] = t_cell
+
+        pass
+        for text, p1 in self.texts:
+            for cell in self.table:
+                if cell.point_inside_polygon(p1):
+                    cell.text += text
+
         for cell in self.table:
             cell.draw(self.canvas)
-        pass
         # sorted_cells = sorted(self.skeleton, key=lambda c: c.center.y)
         # for s_cell in sorted_cells:
         #     for cell in self.table:
@@ -715,7 +727,8 @@ class PDFInterpreter:
         self.skeleton_points = []  # type: List[Point]
         self.skeleton = []  # type: List[Cell]
         self.cells = []  # type: List[Cell]
-        self.table = Table(self.cells, self.skeleton, self.canvas)
+        self.texts = []  # type: List[(str,Point)]
+        self.table = Table(self.cells, self.skeleton, self.texts, self.canvas)
         self.draw = False
         self.useful_content = [(6, 76), (6 + 556, 76 + + 657)]
 
@@ -749,11 +762,12 @@ class PDFInterpreter:
                 self.points.remove(point)
 
     def build_skeleton(self):
+        lines = copy.deepcopy(self.lines)
         temp_point = Point(0, 0)
         temp_point.d = temp_point.u = temp_point.l = temp_point.r = True
-        for line1 in self.lines:
+        for line1 in lines:
             self.add_skeleton_points(line1)
-            for line2 in self.lines:
+            for line2 in lines:
                 if line1 == line2:
                     continue
                 self.add_skeleton_points(line2)
@@ -901,15 +915,15 @@ class PDFInterpreter:
     def draw_rect(self, x, y, w, h):
 
         if w > 1.0:
-            # self.canvas.line((x, y, x + w, y), fill='blue')
+            self.canvas.line((x, y, x + w, y), fill='black')
             print('LINE X', x, y)
             self.lines.append(Line(Point(x, y), Point(x + w, y)))
         elif h > 1.0:
-            # self.canvas.line((x, y, x, y - h), fill='red')
+            self.canvas.line((x, y, x, y - h), fill='black')
             print('LINE Y', x, y)
             self.lines.append(Line(Point(x, y), Point(x, y - h)))
         else:
-            # self.canvas.rectangle((x, y, x + w, y - h), fill='green')
+            self.canvas.rectangle((x, y, x + w, y - h), fill='black')
             # self.lines.append(Line((x, y), (x, y - h)))
             # self.lines.append(Line((x, y), (x + w, y)))
             print('RECT', x, y)
@@ -983,56 +997,57 @@ class PDFInterpreter:
             self.commands.extend(command)
 
     def render(self):
+        text_line = ''
         for n, command in enumerate(self.commands):
             if DEBUG:
                 print(command)
             opcode = command[0]  # Command opcode
             args = command[1]  # command args
 
-            # if opcode == 'c':
-            #     a1, a2, b1, b2, c1, c2 = args  # bezier points
-            #
-            #     a1, a2 = self.apply_transforms_figure(a1, a2)
-            #     b1, b2 = self.apply_transforms_figure(b1, b2)
-            #     oc1, oc2 = c1, c2
-            #     c1, c2 = self.apply_transforms_figure(c1, c2)
-            #     d1, d2 = self.get_transformed_figure_cursor
-            #     self.canvas.line(((d1, d2), (c1, c2)), fill=(0,), width=1)
-            #     self.figure_cursor = (oc1, oc2)
-            #     print('Drawing C bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
-            # if opcode == 'v':
-            #     a1, a2, c1, c2 = args  # bezier points
-            #
-            #     a1, a2 = self.apply_transforms_figure(a1, a2)
-            #     oc1, oc2 = c1, c2
-            #     c1, c2 = self.apply_transforms_figure(c1, c2)
-            #     d1, d2 = self.get_transformed_figure_cursor
-            #     self.canvas.line(((d1, d2), (c1, c2)), fill=(0,), width=1)
-            #     self.figure_cursor = (oc1, oc2)
-            #     print('Drawing V bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
-            # if opcode == 'y':
-            #     a1, a2, c1, c2 = args  # bezier points
-            #     oc1, oc2 = c1, c2
-            #     a1, a2 = self.apply_transforms_figure(a1, a2)
-            #     c1, c2 = self.apply_transforms_figure(c1, c2)
-            #     d1, d2 = self.get_transformed_figure_cursor
-            #     self.canvas.line(((d1, d2), (c1, c2)), fill=(0,), width=1)
-            #     self.figure_cursor = (oc1, oc2)
-            #     print('Drawing Y bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
-            # if opcode == 'l':
-            #     c1, c2 = args  # bezier points
-            #     oc1, oc2 = c1, c2
-            #     c1, c2 = self.apply_transforms_figure(c1, c2)
-            #     d1, d2 = self.get_transformed_figure_cursor
-            #     self.canvas.line(((d1, d2), (c1, c2)), fill=(0,), width=1)
-            #     self.figure_cursor = (oc1, oc2)
-            #     print('Drawing line           at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
-            #
-            # if opcode == 'f':
-            #     pass
-            #
-            # if opcode == 'csn':
-            #     self.color = tuple(args)
+            if opcode == 'c':
+                a1, a2, b1, b2, c1, c2 = args  # bezier points
+
+                a1, a2 = self.apply_transforms_figure(a1, a2)
+                b1, b2 = self.apply_transforms_figure(b1, b2)
+                oc1, oc2 = c1, c2
+                c1, c2 = self.apply_transforms_figure(c1, c2)
+                d1, d2 = self.get_transformed_figure_cursor
+                self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
+                self.figure_cursor = (oc1, oc2)
+                print('Drawing C bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+            if opcode == 'v':
+                a1, a2, c1, c2 = args  # bezier points
+
+                a1, a2 = self.apply_transforms_figure(a1, a2)
+                oc1, oc2 = c1, c2
+                c1, c2 = self.apply_transforms_figure(c1, c2)
+                d1, d2 = self.get_transformed_figure_cursor
+                self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
+                self.figure_cursor = (oc1, oc2)
+                print('Drawing V bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+            if opcode == 'y':
+                a1, a2, c1, c2 = args  # bezier points
+                oc1, oc2 = c1, c2
+                a1, a2 = self.apply_transforms_figure(a1, a2)
+                c1, c2 = self.apply_transforms_figure(c1, c2)
+                d1, d2 = self.get_transformed_figure_cursor
+                self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
+                self.figure_cursor = (oc1, oc2)
+                print('Drawing Y bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+            if opcode == 'l':
+                c1, c2 = args  # bezier points
+                oc1, oc2 = c1, c2
+                c1, c2 = self.apply_transforms_figure(c1, c2)
+                d1, d2 = self.get_transformed_figure_cursor
+                self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
+                self.figure_cursor = (oc1, oc2)
+                print('Drawing line           at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+
+            if opcode == 'f':
+                pass
+
+            if opcode == 'csn':
+                self.color = tuple(args)
 
             if opcode == 'cm':
                 scale_x, shear_x, shear_y, scale_y, offset_x, offset_y = args
@@ -1050,118 +1065,135 @@ class PDFInterpreter:
                 if self.useful_content[0][1] < self.flip_y(y) < self.useful_content[1][1]:
                     self.draw_rect(x, self.flip_y(y), w, h)
 
-            # if opcode == 'BT':
-            #     print('New text block')
-            #     self.text_cursor = (0, self.ysize)
-            #     self.color = (0, 0, 0)
-            #
-            # if opcode == 'ET':
-            #     print('End text block')
-            #     self.text_cursor = (0, self.ysize)
-            #
-            # if opcode == 'Tf':
-            #     font, font_size = args
-            #     font_size =int(font_size)
-            #     print('Loading font', font, font_size)
-            #     self.font_size = font_size
-            #     self.font_key = font
-            #
-            # if opcode == 'TD':  # MOVE CURSOR
-            #     x, y = args  # TD arguments
-            #     x *= self.text_scale_x
-            #     y *= self.text_scale_y
-            #
-            #     if self.flip_page:
-            #         self.text_leading = -y
-            #         self.move_cursor_text(x, -y)
-            #     else:
-            #         self.text_leading = y
-            #         self.move_cursor_text(x, y)
-            #     print('Moving cursor by X:{} Y:{}, new cursor'.format(x, y), self.text_cursor)
-            #     # self.text_cursor = (x, y)
-            # if opcode == 'Td':
-            #     x, y = args  # TD arguments
-            #     x *= self.text_scale_x
-            #     y *= self.text_scale_y
-            #     if self.flip_page:
-            #         self.move_cursor_text(x, -y)
-            #     else:
-            #         self.move_cursor_text(x, y)
-            #     # cx,cy = self.text_cursor
-            #     # self.text_cursor = (cx*x,cy*y)
-            #     print('Moving cursor by X:{} Y:{}, new cursor'.format(x, y), self.text_cursor)
-            #     # self.text_cursor = (x, y)
-            #
-            # if opcode == 'TL':
-            #     self.text_leading = args[0]
-            #     print('Setting text leading to', args[0])
-            #
-            # if opcode == 'Tc':
-            #     self.text_char_spacing = args[0]
-            #     print('Setting text char spacing to', args[0])
-            #
-            # if opcode == 'Tw':
-            #     self.text_word_spacing = args[0]
-            #     print('Setting text word spacing to', args[0])
-            #
-            # if opcode == 'Ts':
-            #     self.text_rise = args[0]
-            #     print('Setting text word rise to', args[0])
-            #
-            # if opcode == 'Tm':  # STORE MATRIX
-            #     scale_x, shear_x, shear_y, scale_y, offset_x, offset_y = args
-            #     self.text_scale_x = scale_x
-            #     self.text_scale_y = scale_y
-            #     self.text_offset_x = offset_x
-            #     self.text_offset_y = offset_y
-            #     self.text_cursor = (offset_x, self.flip_y(offset_y))
-            #     # print('TM', args)
-            #     print('Transformed TEXT cursor now at', self.text_cursor,self.text_scale_x)
-            #     # print('Transformed TEXT cursor now at', self.get_transformed_text_cursor)
-            #
-            # if opcode == 'TJ':  # RENDER TEXT
-            #     orig_cursor = self.text_cursor
-            #     new_line = self.new_line
-            #     if self.flip_page:
-            #         self.move_cursor_text(0, -new_line / 1.3)
-            #     for text_arg in args:
-            #         text = text_arg[0]
-            #         xt, yt = self.font.getsize(text)  # text dimensions
-            #
-            #         x1 = (-text_arg[1] / 1000) * self.text_scale_x
-            #
-            #         # x1+=self.word_spacing
-            #         self.move_cursor_text(x1)
-            #         print('Printing "{}" at'.format(text), self.text_cursor)
-            #         if self.text_word_spacing!=0.0:
-            #             for word in text.split(' '):
-            #                 if self.text_char_spacing!=0.0:
-            #                     for char in word:
-            #                         x2,y2 = self.font.getsize(char)
-            #                         self.canvas.text(self.text_cursor, char, font=self.font)
-            #                         self.move_cursor_text(x2+(self.text_char_spacing*self.text_scale_x))
-            #                 self.move_cursor_text(self.text_word_spacing * self.text_scale_x)
-            #         else:
-            #             self.canvas.text(self.text_cursor, text, font=self.font)
-            #             self.move_cursor_text(xt)
-            #     self.text_cursor = orig_cursor
-            #
-            # if opcode == 'T*':
-            #     # _, new_line = self.font.getsize('A')
-            #     if self.flip_page:
-            #         self.move_cursor_text(0, self.text_leading)
-            #     else:
-            #         self.move_cursor_text(0, self.text_leading)
-            # if opcode == 'Tj':
-            #     text = args[0]
-            #     new_line = self.new_line
-            #     if self.flip_page:
-            #         self.move_cursor_text(0, -new_line / 1.3)
-            #     xt, yt = self.font.getsize(text)  # text dimensions
-            #     print('Printing "{}" at'.format(text), self.text_cursor)
-            #     self.canvas.text(self.text_cursor, text, font=self.font)
-            #     if self.flip_page:
-            #         self.move_cursor_text(0, new_line / 1.3)
+            if opcode == 'BT':
+                print('New text block')
+                self.text_cursor = (0, self.ysize)
+                self.color = (0, 0, 0)
+
+            if opcode == 'ET':
+                print('End text block')
+                self.text_cursor = (0, self.ysize)
+
+            if opcode == 'Tf':
+                font, font_size = args
+                font_size = int(font_size)
+                print('Loading font', font, font_size)
+                self.font_size = font_size
+                self.font_key = font
+
+            if opcode == 'TD':  # MOVE CURSOR
+                x, y = args  # TD arguments
+                x *= self.text_scale_x
+                y *= self.text_scale_y
+
+                if self.flip_page:
+                    self.text_leading = -y
+                    self.move_cursor_text(x, -y)
+                else:
+                    self.text_leading = y
+                    self.move_cursor_text(x, y)
+                print('Moving cursor by X:{} Y:{}, new cursor'.format(x, y), self.text_cursor)
+                # self.text_cursor = (x, y)
+            if opcode == 'Td':
+                x, y = args  # TD arguments
+                x *= self.text_scale_x
+                y *= self.text_scale_y
+                if self.flip_page:
+                    self.move_cursor_text(x, -y)
+                else:
+                    self.move_cursor_text(x, y)
+                # cx,cy = self.text_cursor
+                # self.text_cursor = (cx*x,cy*y)
+                print('Moving cursor by X:{} Y:{}, new cursor'.format(x, y), self.text_cursor)
+                # self.text_cursor = (x, y)
+
+            if opcode == 'TL':
+                self.text_leading = args[0]
+                print('Setting text leading to', args[0])
+
+            if opcode == 'Tc':
+                self.text_char_spacing = args[0]
+                print('Setting text char spacing to', args[0])
+
+            if opcode == 'Tw':
+                self.text_word_spacing = args[0]
+                print('Setting text word spacing to', args[0])
+
+            if opcode == 'Ts':
+                self.text_rise = args[0]
+                print('Setting text word rise to', args[0])
+
+            if opcode == 'Tm':  # STORE MATRIX
+                scale_x, shear_x, shear_y, scale_y, offset_x, offset_y = args
+                self.text_scale_x = scale_x
+                self.text_scale_y = scale_y
+                self.text_offset_x = offset_x
+                self.text_offset_y = offset_y
+                self.text_cursor = (offset_x, self.flip_y(offset_y))
+                # print('TM', args)
+                print('Transformed TEXT cursor now at', self.text_cursor, self.text_scale_x)
+                # print('Transformed TEXT cursor now at', self.get_transformed_text_cursor)
+
+            if opcode == 'TJ':  # RENDER TEXT
+                orig_cursor = self.text_cursor
+                new_line = self.new_line
+                text_lines = []
+                if self.flip_page:
+                    self.move_cursor_text(0, -new_line / 1.3)
+
+                for text_arg in args:
+                    text = text_arg[0]
+
+                    x1 = (-text_arg[1] / 1000) * self.text_scale_x
+                    if x1>5:
+                        self.texts.append((text_line, Point(self.text_cursor)))
+                        text_line = ""
+                    self.move_cursor_text(x1)
+                    print('Printing "{}" at'.format(text), self.text_cursor)
+                    words = text.split(' ')
+                    for n, word in enumerate(words):
+                        space, _ = self.font.getsize(' ')
+                        for char in word:
+                            text_line+=char
+                            x2, y2 = self.font.getsize(char)
+                            self.canvas.text(self.text_cursor, char, font=self.font, fill='black')
+                            self.move_cursor_text(x2 + (self.text_char_spacing * self.text_scale_x))
+                            if self.text_char_spacing * self.text_scale_x>5:
+                                self.texts.append((text_line, Point(self.text_cursor)))
+                                text_line = ""
+                        self.move_cursor_text(self.text_word_spacing * self.text_scale_x)
+                        if self.text_word_spacing * self.text_scale_x>5:
+                            self.texts.append((text_line, Point(self.text_cursor)))
+                            text_line = ""
+                        if 1 < len(words) != n + 1:
+                            self.move_cursor_text(space)
+
+                if text_line:
+                    self.texts.append((text_line, Point(self.text_cursor)))
+                    text_line = ""
+                self.text_cursor = orig_cursor
+
+            if opcode == 'T*':
+                # _, new_line = self.font.getsize('A')
+                if self.flip_page:
+                    self.move_cursor_text(0, self.text_leading)
+                else:
+                    self.move_cursor_text(0, self.text_leading)
+                # self.texts.append(("\n",Point(self.text_cursor)))
+            if opcode == 'Tj':
+                text = args[0]
+                new_line = self.new_line
+                if self.flip_page:
+                    self.move_cursor_text(0, -new_line / 1.3)
+                print('Printing "{}" at'.format(text), self.text_cursor)
+                self.texts.append((text, Point(self.text_cursor)))
+                self.canvas.text(self.text_cursor, text, font=self.font, fill='black')
+                if self.flip_page:
+                    self.move_cursor_text(0, new_line / 1.3)
+        name = self.name
+        self.name += '-text'
+        self.save()
+        self.name = name
 
     def save(self, path=None):
         if not self.prepared:
@@ -1192,8 +1224,9 @@ if __name__ == '__main__':
     # print(pdf_interpreter.content)
     pdf_interpreter.prepare()
     pdf_interpreter.parse()
+    # pdf_interpreter.save()
     pdf_interpreter.render()
-    pdf_interpreter.rebuild_table()
     pdf_interpreter.build_skeleton()
+    pdf_interpreter.rebuild_table()
     pdf_interpreter.table.build_table()
     pdf_interpreter.save()
