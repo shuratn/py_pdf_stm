@@ -1,7 +1,10 @@
 import math
+import random
 from functools import partial
+from itertools import cycle, zip_longest
+from pprint import pprint
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageColor
 from pyparsing import *
 
 from DumpPDFText import *
@@ -105,19 +108,55 @@ if DEBUG:
 # # print(NUMBER.parseString(a))
 # print(OneOrMore(COMMAND).parseString(a))
 # exit(1)
+
+class Point:
+    r = 4
+    hr = r / 2
+
+    def __init__(self, *xy):
+        if len(xy) == 1:
+            xy = xy[0]
+        self.x, self.y = xy
+        self.x = math.ceil(self.x)
+        self.y = math.ceil(self.y)
+
+    def __repr__(self):
+        return "Point<X:{} Y:{}>".format(self.x, self.y)
+
+    @property
+    def as_tuple(self):
+        return (self.x, self.y)
+
+    def draw(self, canvas: ImageDraw.ImageDraw, color='red'):
+        canvas.ellipse((self.x - self.hr, self.y - self.hr, self.x + self.hr, self.y + self.hr), fill=color)
+
+    def points_to_right(self, other_points: List['Point']):
+        sorted_other_points = sorted(other_points, key=lambda other: other.x)
+        filtered_other_points = filter(lambda o: o.y == self.y and o != self and o.x > self.x, sorted_other_points)
+        return list(filtered_other_points)
+
+    def points_below(self, other_points: List['Point']):
+        sorted_other_points = sorted(other_points, key=lambda other: other.y)
+        filtered_other_points = filter(lambda o: o.x == self.x and o != self and o.y > self.y, sorted_other_points)
+        return list(filtered_other_points)
+
+    def on_same_line(self, other: 'Point'):
+        if self == other:
+            return False
+        if self.x == other.x or self.y == other.y:
+            return True
+        return False
+
+    def __eq__(self, other: 'Point'):
+        return self.x == other.x and self.y == other.y
+
+
 class Line:
 
-    def __init__(self, xy1, xy2):
-        x, y = xy1
-        cx, cy = xy2
-
-        x = math.ceil(x)
-        y = math.ceil(y)
-        cx = math.ceil(cx)
-        cy = math.ceil(cy)
-        self.p1 = Point((x, y))
-        self.p2 = Point((cx, cy))
-        self.vertical = x == cx
+    def __init__(self, p1: 'Point', p2: 'Point'):
+        self.p1 = p1
+        self.p2 = p2
+        self.vertical = self.x == self.cx
 
     @property
     def x(self):
@@ -135,7 +174,7 @@ class Line:
     def cy(self):
         return self.p2.y
 
-    def __str__(self):
+    def __repr__(self):
         return 'Line<p1:{} p2:{} {}>'.format(self.p1, self.p2, 'vertical' if self.vertical else 'horizontal')
 
     def draw(self, canvas: ImageDraw.ImageDraw, color='blue'):
@@ -146,7 +185,7 @@ class Line:
 
     @property
     def as_tuple(self):
-        return ((self.x, self.y), (self.cx, self.cy))
+        return (self.x, self.y), (self.cx, self.cy)
 
     def intersect(self, other: 'Line', print_fulness=False) -> bool:
         """ this returns the intersection of Line(pt1,pt2) and Line(ptA,ptB)
@@ -206,7 +245,7 @@ class Line:
         DET = (-dx1 * dy + dy1 * dx)
 
         if math.fabs(DET) < DET_TOLERANCE:
-            print('parallel')
+            print('Lines are parallel')
             return False
         # now, the determinant should be OK
         DETinv = 1.0 / DET
@@ -218,9 +257,9 @@ class Line:
         if print_fulness:
             print('self segment', r)
             print('other segment', s)
-        if r > 1 or s > 1:
+        if r > 1 or s > 1:  # can't be higher than 1, 1 means they are NOT intersecting
             return False
-        if r > -0.1 and s > -0.1:
+        if r > -0.1 and s > -0.1:  # This can happen on edges, so we allow small inaccuracy
             return True
         return False
 
@@ -287,10 +326,44 @@ class Line:
             print('other segment', s)
         return round(xi), round(yi)
 
-    def __contains__(self, other: 'Line'):
-        if self.vertical == other.vertical:
+    def is_between(self, c: 'Point'):
+        a = self.p1
+        b = self.p2
+        cross_product = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
+
+        # compare versus epsilon for floating point values, or != 0 if using integers
+        if abs(cross_product) > math.e:
             return False
-        return self.intersect(other)
+
+        dot_product = (c.x - a.x) * (b.x - a.x) + (c.y - a.y) * (b.y - a.y)
+        if dot_product < 0:
+            return False
+
+        squared_length_ba = (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y)
+        if dot_product > squared_length_ba:
+            return False
+
+        return True
+
+    def __contains__(self, other: {'Line', 'Point'}):
+        if type(other) == Line:
+            if self.vertical == other.vertical:
+                return False
+            return self.intersect(other)
+        if type(other) == Point:
+            return self.is_between(other)
+            pass
+
+    def corner(self, other: 'Line'):
+        if self.p1 == other.p1 or self.p2 == other.p2 or self.p1 == other.p2:
+            return True
+        return False
+
+    def connected(self,other:'Line'):
+        return other.p1 in self or other.p2 in self
+
+    def parallel(self, other: 'Line'):
+        return self.vertical == other.vertical
 
     def test_intersection(self, other: 'Line'):
         """ prints out a test for checking by hand... """
@@ -302,30 +375,33 @@ class Line:
         print()
 
 
-class Point:
-    r = 4
-    hr = r / 2
+class Cell:
+    """P1------P2
+        |       |
+        |       |
+        |       |
+        |       |
+        X-------P3
+    """
 
-    def __init__(self, xy):
-        self.x, self.y = xy
-        self.x = math.ceil(self.x)
-        self.y = math.ceil(self.y)
+    def __init__(self, p1, p2, p3, p4):
+        self.p1: Point = p1
+        self.p2: Point = p2
+        self.p3: Point = p3
+        self.p4: Point = p4
 
-    def __str__(self):
-        return "Point<X:{} Y:{}>".format(self.x, self.y)
+    def __eq__(self, other: 'Cell'):
+        if self.p1 == other.p1 and self.p2 == other.p2 and self.p3 == other.p3 and self.p4 == other.p4:
+            return True
+        if self.p1 == other.p2 and self.p2 == other.p3 and self.p3 == other.p4 and self.p4 == other.p1:
+            return True
+        if self.p1 == other.p3 and self.p2 == other.p4 and self.p3 == other.p1 and self.p4 == other.p2:
+            return True
+        if self.p1 == other.p4 and self.p2 == other.p1 and self.p3 == other.p2 and self.p4 == other.p3:
+            return True
 
-    @property
-    def as_tuple(self):
-        return (self.x, self.y)
-
-    def draw(self, canvas: ImageDraw.ImageDraw, color='red'):
-        canvas.ellipse((self.x - self.hr, self.y - self.hr, self.x + self.hr, self.y + self.hr), fill=color)
-
-    def points_to_right(self, other_points: List['Point']):
-        sorted_other_points = sorted(other_points, key=lambda other: other.y)
-        filtered_other_points = filter(lambda other: other != self and other.y == self.y and self.x < other.x,
-                                       sorted_other_points)
-        return filtered_other_points
+    def draw(self, canvas: ImageDraw.ImageDraw):
+        canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline='black')
 
 
 class PDFInterpreter:
@@ -375,6 +451,7 @@ class PDFInterpreter:
 
         self.lines = []  # type: List[Line]
         self.points = []  # type: List[Point]
+        self.cells = []  # type: List[Cell]
         self.useful_content = [(6, 76), (6 + 556, 76 + + 657)]
 
     def prepare(self):
@@ -386,52 +463,89 @@ class PDFInterpreter:
             # font_file = font_info['/FontFile2'].getObject().getData()
             self.fonts[str(name)] = font_info['/FontName'].split("+")[-1].split(",")[0].split("-")[0]
 
+    def calculate_4th_point(self, p1: Point, p2: Point, p3: Point, points: List[Point]):
+        """P1------P2
+            |       |
+            |       |
+            |       |
+            |       |
+            X-------P3
+        """
+        p4 = Point((p1.x, p3.y))
+
+        if p1.on_same_line(p4) and p3.on_same_line(p4) and p4 in points:
+            return p4
+        else:
+            return None
+
     def rebuild_table(self):
         for line1 in self.lines:
             for line2 in self.lines:
                 if line1 == line2:
                     continue
-
-                # self.save()
-
                 if line1 in line2:
                     line1.test_intersection(line2)
-                    p = Point(line1.intersection(line2))
-                    p.draw(self.canvas)
+                    p1 = Point(line1.intersection(line2))
+                    # p.draw(self.canvas)
                     # print(line1, line2)
-                    line1.draw(self.canvas)
-                    line2.draw(self.canvas)
-                else:
-                    pass
-                    # line1.draw(self.canvas, color='cyan')
-                    # line2.draw(self.canvas, color='cyan')
-                #     line1.testIntersection(line2)
-                #     x, y = line1.intersection(line2)
-                #     point = Point((x, y))
-                #     print(point)
-                #     self.points.append(point)
-                #     point.draw(self.canvas)
-                # else:
-                #     pass
-
-                pass
-                # self.save()
-                # self.canvas.rectangle(((0,0),tuple(self.page_size)),fill='white')
-
-        #             # point.draw(self.canvas)
-
-        # for p1 in self.points:
+                    # line1.draw(self.canvas)
+                    # line2.draw(self.canvas)
+                    if p1 not in self.points:
+                        self.points.append(p1)
+        #
         #     ps = p1.points_to_right(self.points)
         #
         #     if ps:
         #         p1.draw(self.canvas)
         #         [p.draw(self.canvas, 'green') for p in ps]
         #         return
-        # for p2 in self.points:
-        #     for p3 in self.points:
-        #         for p4 in self.points:
+        sorted_x_points = sorted(self.points, key=lambda other: other.x)
+        sorted_y_points = sorted(self.points, key=lambda other: other.y)
+        for p1 in sorted_x_points:
+            for p2 in p1.points_to_right(self.points):
+                ps1 = p1.points_below(sorted_x_points)
+                ps2 = p2.points_below(sorted_x_points)
+                for p3 in ps1:
+                    for p4 in ps2:
+                        if p3.on_same_line(p4):
+                            valid = True
+                            line1 = Line(p1, p3)
+                            for line2 in filter(lambda l: not l.vertical and not line1.parallel(l), self.lines):
+                                if line1 in line2 and not line1.connected(line2):
+                                    valid = False
+                            if not valid:
+                                break
+                            if p3 in self.points and p4 in self.points:
+
+                                color = random.choice(list(ImageColor.colormap.keys()))
+                                print('Painting cell with', color, 'colour')
+                                print(p1, p2)
+                                print(p3, p4)
+                                self.canvas.polygon((p1.as_tuple, p2.as_tuple, p4.as_tuple, p3.as_tuple), fill=color)
+                                p3.draw(self.canvas)
+                                p4.draw(self.canvas)
+                                self.save()
+                        else:
+                            continue
+            self.save()
+
+        # for p2 in sorted_x_points:
+        #     for p3 in sorted_y_points:
+        #         p4 = self.calculate_4th_point(p1,p2,p3,self.points)
+        #         if p4:p4
         #             if p1 == p2 or p1 == p3 or p1 == p4 or p2 == p3 or p2 == p4 or p3 == p4:
         #                 continue
+        #             if p1.on_same_line(p2) and p2.on_same_line(p3) and p3.on_same_line(p4) and p4.on_same_line(p1):
+        #                 cell = Cell(p1, p2, p3, p4)
+        #                 if cell not in self.cells:
+        #                     print('Found cell')
+        #                     print(p1, p2)
+        #                     print(p4, p3)
+        #                     # cell.draw(self.canvas)
+        #                     self.cells.append(cell)
+        # cells = random.choices(self.cells, k=10)
+        # for c in cells:
+        #     c.draw(self.canvas)
 
     def flip_y(self, y):
         if self.flip_page:
@@ -455,11 +569,11 @@ class PDFInterpreter:
         if w > 1.0:
             # self.canvas.line((x, y, x + w, y), fill='blue')
             print('LINE X', x, y)
-            self.lines.append(Line((x, y), (x + w, y)))
+            self.lines.append(Line(Point(x, y), Point(x + w, y)))
         elif h > 1.0:
             # self.canvas.line((x, y, x, y - h), fill='red')
             print('LINE Y', x, y)
-            self.lines.append(Line((x, y), (x, y - h)))
+            self.lines.append(Line(Point(x, y), Point(x, y - h)))
         else:
             # self.canvas.rectangle((x, y, x + w, y - h), fill='green')
             # self.lines.append(Line((x, y), (x, y - h)))
@@ -740,7 +854,7 @@ if __name__ == '__main__':
     a = PDFInterpreter(pdf=pdf.pdf_file, page=13)
     # a = PDFInterpreter(pdf.table_root.childs[table])
     a.flip_page = True
-    print(a.content)
+    # print(a.content)
     a.prepare()
     a.parse()
     a.render()
