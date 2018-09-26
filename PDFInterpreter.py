@@ -109,9 +109,14 @@ if DEBUG:
 # print(OneOrMore(COMMAND).parseString(a))
 # exit(1)
 
+def almost_equals(a, b, precision=3.0):
+    return abs(a - b) < precision
+
+
 class Point:
     r = 4
     hr = r / 2
+    tail = 5
 
     def __init__(self, *xy):
         if len(xy) == 1:
@@ -119,9 +124,43 @@ class Point:
         self.x, self.y = xy
         self.x = math.ceil(self.x)
         self.y = math.ceil(self.y)
+        self.d = False
+        self.u = False
+        self.l = False
+        self.r = False
+
+    @property
+    def symbol(self):
+        table = {
+            (False, False, False, False): '●',
+
+            (True, False, False, False): '↑',
+            (False, True, False, False): '↓',
+            (True, True, False, False): '↕',
+
+            (True, True, True, False): '⊢',
+            (True, True, False, True): '⊣',
+
+            (False, False, True, False): '→',
+            (False, False, False, True): '←',
+            (False, False, True, True): '↔',
+
+            (True, False, True, True): '⊥',
+            (False, True, True, True): '⊤',
+
+            (True, True, True, True): '╋',
+
+            (True, False, True, False): '┗',
+            (True, False, False, True): '┛',
+
+            (False, True, True, False): '┏',
+            (False, True, False, True): '┛',
+
+        }
+        return table[(self.u, self.d, self.r, self.l)]
 
     def __repr__(self):
-        return "Point<X:{} Y:{}>".format(self.x, self.y)
+        return "Point<X:{} Y:{} {} >".format(self.x, self.y, self.symbol)
 
     @property
     def as_tuple(self):
@@ -129,26 +168,69 @@ class Point:
 
     def draw(self, canvas: ImageDraw.ImageDraw, color='red'):
         canvas.ellipse((self.x - self.hr, self.y - self.hr, self.x + self.hr, self.y + self.hr), fill=color)
+        if self.d:
+            canvas.line(((self.x, self.y), (self.x, self.y + self.tail)), 'blue')
+        if self.u:
+            canvas.line(((self.x, self.y), (self.x, self.y - self.tail)), 'blue')
+        if self.l:
+            canvas.line(((self.x, self.y), (self.x - self.tail, self.y)), 'blue')
+        if self.r:
+            canvas.line(((self.x, self.y), (self.x + self.tail, self.y)), 'blue')
 
     def points_to_right(self, other_points: List['Point']):
         sorted_other_points = sorted(other_points, key=lambda other: other.x)
-        filtered_other_points = filter(lambda o: o.y == self.y and o != self and o.x > self.x, sorted_other_points)
+        filtered_other_points = filter(lambda o: almost_equals(o.y, self.y) and o != self and o.x > self.x,
+                                       sorted_other_points)
         return list(filtered_other_points)
 
     def points_below(self, other_points: List['Point']):
         sorted_other_points = sorted(other_points, key=lambda other: other.y)
-        filtered_other_points = filter(lambda o: o.x == self.x and o != self and o.y > self.y, sorted_other_points)
+        filtered_other_points = filter(lambda o: almost_equals(o.x, self.x) and o != self and o.y > self.y,
+                                       sorted_other_points)
         return list(filtered_other_points)
 
     def on_same_line(self, other: 'Point'):
         if self == other:
             return False
-        if self.x == other.x or self.y == other.y:
+        if almost_equals(self.x, other.x) or almost_equals(self.y, other.y):
             return True
         return False
 
+    def is_above(self, other: 'Point'):
+        return self.y < other.y
+
+    def is_to_right(self, other: 'Point'):
+        return self.x > other.x
+
+    def get_right(self, others: List['Point']):
+        others = self.points_to_right(others)
+        for point in others:
+            if point.d:
+                return point
+        return None
+
+    def get_bottom(self, others: List['Point'], left=False, right=False):
+        others = self.points_below(others)
+        for point in others:
+            if point.u:
+                if left:
+                    if not point.r:
+                        continue
+                if right:
+                    if not point.l:
+                        continue
+                return point
+        return None
+
+    def copy(self, other: 'Point'):
+        self.d = other.d
+        self.u = other.u
+        self.l = other.l
+        self.r = other.r
+
     def __eq__(self, other: 'Point'):
-        return self.x == other.x and self.y == other.y
+
+        return abs(self.x - other.x) < 4 and abs(self.y - other.y) < 4
 
 
 class Line:
@@ -156,7 +238,24 @@ class Line:
     def __init__(self, p1: 'Point', p2: 'Point'):
         self.p1 = p1
         self.p2 = p2
-        self.vertical = self.x == self.cx
+        self.vertical = almost_equals(self.x, self.cx)
+        if self.vertical:
+            if self.p1.is_above(self.p2):
+                pass
+            else:
+                self.p1, self.p2 = self.p2, self.p1
+        else:
+            if self.p2.is_to_right(self.p1):
+                pass
+            else:
+                self.p1, self.p2 = self.p2, self.p1
+
+        if self.vertical:
+            self.p1.d = True
+            self.p2.u = True
+        else:
+            self.p1.r = True
+            self.p2.l = True
 
     @property
     def x(self):
@@ -181,11 +280,58 @@ class Line:
         x, y = self.x, self.y
         cx, cy = self.cx, self.cy
 
-        canvas.line(((x, y), (cx, cy)), color)
+        canvas.line(((x, y), (cx, cy)), color, width=2)
 
     @property
     def as_tuple(self):
         return (self.x, self.y), (self.cx, self.cy)
+
+    @staticmethod
+    def _slope(P1, P2):
+        # dy/dx
+        # (y2 - y1) / (x2 - x1)
+        return (P2[1] - P1[1]) / (P2[0] - P1[0])
+
+    @staticmethod
+    def _y_intercept(P1, slope):
+        # y = mx + b
+        # b = y - mx
+        # b = P1[1] - slope * P1[0]
+        return P1[1] - slope * P1[0]
+
+    @staticmethod
+    def _line_intersect(m1, b1, m2, b2):
+        if m1 == m2:
+            print("These lines are parallel!!!")
+            return None
+        # y = mx + b
+        # Set both lines equal to find the intersection point in the x direction
+        # m1 * x + b1 = m2 * x + b2
+        # m1 * x - m2 * x = b2 - b1
+        # x * (m1 - m2) = b2 - b1
+        # x = (b2 - b1) / (m1 - m2)
+        x = (b2 - b1) / (m1 - m2)
+        # Now solve for y -- use either line, because they are equal here
+        # y = mx + b
+        y = m1 * x + b1
+        return x, y
+
+    def infite_intersect(self, other: 'Line'):
+        line1 = self.as_tuple
+        line2 = other.as_tuple
+        x_diff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
+        y_diff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])  # Typo was here
+
+        def det(a, b):
+            return a[0] * b[1] - a[1] * b[0]
+
+        div = det(x_diff, y_diff)
+        if div == 0:
+            return None, None
+        d = (det(*line1), det(*line2))
+        x = det(d, x_diff) / div
+        y = det(d, y_diff) / div
+        return x, y
 
     def intersect(self, other: 'Line', print_fulness=False) -> bool:
         """ this returns the intersection of Line(pt1,pt2) and Line(ptA,ptB)
@@ -324,7 +470,7 @@ class Line:
         if print_fulness:
             print('self segment', r)
             print('other segment', s)
-        return round(xi), round(yi)
+        return (round(xi), round(yi)), round(r, 4), round(s, 4)
 
     def is_between(self, c: 'Point'):
         a = self.p1
@@ -344,6 +490,15 @@ class Line:
             return False
 
         return True
+
+    def on_line(self, other: 'Point'):
+        if self.vertical:
+            if almost_equals(self.p1.x, other.x):
+                return True
+        else:
+            if almost_equals(self.p1.y, other.y):
+                return True
+        return False
 
     def __contains__(self, other: {'Line', 'Point'}):
         if type(other) == Line:
@@ -365,13 +520,16 @@ class Line:
     def parallel(self, other: 'Line'):
         return self.vertical == other.vertical
 
+    def on_corners(self, other: 'Point'):
+        return other == self.p1 or other == self.p2
+
     def test_intersection(self, other: 'Line'):
         """ prints out a test for checking by hand... """
         print('Testing intersection of:')
         print('\t', self)
         print('\t', other)
         result = self.intersection(other, True)
-        print("\t Intersection result =", Point(result))
+        print("\t Intersection result =", Point(result[0]))
         print()
 
 
@@ -389,6 +547,14 @@ class Cell:
         self.p2: Point = p2
         self.p3: Point = p3
         self.p4: Point = p4
+        self.text = ''
+
+    def __repr__(self):
+        return 'Cell <{} {}> '.format(self.p1,self.p3)
+
+    @property
+    def as_tuple(self):
+        return (self.p1.as_tuple, self.p2.as_tuple, self.p3.as_tuple, self.p4.as_tuple)
 
     def __eq__(self, other: 'Cell'):
         if self.p1 == other.p1 and self.p2 == other.p2 and self.p3 == other.p3 and self.p4 == other.p4:
@@ -400,8 +566,99 @@ class Cell:
         if self.p1 == other.p4 and self.p2 == other.p1 and self.p3 == other.p2 and self.p4 == other.p3:
             return True
 
-    def draw(self, canvas: ImageDraw.ImageDraw):
-        canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline='black')
+    @property
+    def center(self):
+        x = [p.x for p in [self.p1, self.p2, self.p3, self.p4]]
+        y = [p.y for p in [self.p1, self.p2, self.p3, self.p4]]
+        centroid = Point(sum(x) / 4, sum(y) / 4)
+        return centroid
+
+    def point_inside_polygon(self, point: 'Point', include_edges=True):
+        '''
+        Test if point (x,y) is inside polygon poly.
+
+        poly is N-vertices polygon defined as
+        [(x1,y1),...,(xN,yN)] or [(x1,y1),...,(xN,yN),(x1,y1)]
+        (function works fine in both cases)
+
+        Geometrical idea: point is inside polygon if horisontal beam
+        to the right from point crosses polygon even number of times.
+        Works fine for non-convex polygons.
+        '''
+        x, y = point.as_tuple
+        poly = self.as_tuple
+        n = len(poly)
+        inside = False
+
+        p1x, p1y = poly[0]
+        for i in range(1, n + 1):
+            p2x, p2y = poly[i % n]
+            if p1y == p2y:
+                if y == p1y:
+                    if min(p1x, p2x) <= x <= max(p1x, p2x):
+                        # point is on horisontal edge
+                        inside = include_edges
+                        break
+                    elif x < min(p1x, p2x):  # point is to the left from current edge
+                        inside = not inside
+            else:  # p1y!= p2y
+                if min(p1y, p2y) <= y <= max(p1y, p2y):
+                    xinters = (y - p1y) * (p2x - p1x) / float(p2y - p1y) + p1x
+
+                    if x == xinters:  # point is right on the edge
+                        inside = include_edges
+                        break
+
+                    if x < xinters:  # point is to the left from current edge
+                        inside = not inside
+
+            p1x, p1y = p2x, p2y
+
+        return inside
+
+    def draw(self, canvas: ImageDraw.ImageDraw, color='black'):
+        canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline=color)
+
+
+class Table:
+
+    def __init__(self, table: List[Cell], skeleton: List[Cell], canvas: ImageDraw.ImageDraw):
+        self.canvas = canvas
+        self.skeleton = skeleton
+        self.table = table
+        self.table_skeleton = {}
+        self.global_map = {}
+        self.map = {}
+
+    def split_to_2d(self):
+        y_list = []
+        cell_map = {}
+        for cell in self.skeleton:
+            if cell.center.y not in y_list:
+                y_list.append(cell.center.y)
+        y_list.sort()
+        for n,y in enumerate(y_list):
+            row = filter(lambda c:c.center.y==y,self.skeleton)
+            row = list(sorted(row,key=lambda c:c.center.x))
+            cell_map[n] = row
+        self.table_skeleton = cell_map
+
+
+
+    def build_table(self):
+        self.split_to_2d()
+        for y,row in self.table_skeleton.items():
+            self.global_map[y] = {}
+            for x,cell in enumerate(row):
+                for t_cell in self.table:
+                    if t_cell.point_inside_polygon(cell.center):
+                        self.global_map[y][x] = t_cell
+        pass
+        # sorted_cells = sorted(self.skeleton, key=lambda c: c.center.y)
+        # for s_cell in sorted_cells:
+        #     for cell in self.table:
+        #         if cell.point_inside_polygon(s_cell.center):
+        #             pass
 
 
 class PDFInterpreter:
@@ -429,7 +686,7 @@ class PDFInterpreter:
             self.content = self.page['/Contents'].getData().decode('cp1251')
             self.name = 'page-{}'.format(page)
 
-        self.page_size = self.page.getObject().cropBox[2:]
+        self.page_size = self.page['/CropBox'][2:]
         self.image = None  # type: Image.Image
         self.canvas = None  # type: ImageDraw.ImageDraw
         self.commands = []
@@ -451,94 +708,169 @@ class PDFInterpreter:
 
         self.lines = []  # type: List[Line]
         self.points = []  # type: List[Point]
+        self.skeleton_points = []  # type: List[Point]
+        self.skeleton = []  # type: List[Cell]
         self.cells = []  # type: List[Cell]
+        self.table = Table(self.cells, self.skeleton, self.canvas)
+        self.draw = False
         self.useful_content = [(6, 76), (6 + 556, 76 + + 657)]
 
     def prepare(self):
         self.image = Image.new('RGB', self.page_size, 'white')
         self.canvas = ImageDraw.ImageDraw(self.image)
+        self.table.canvas = self.canvas
         self.prepared = True
         for name, data in self.page['/Resources']['/Font'].items():
             font_info = data.getObject()['/FontDescriptor']
             # font_file = font_info['/FontFile2'].getObject().getData()
             self.fonts[str(name)] = font_info['/FontName'].split("+")[-1].split(",")[0].split("-")[0]
 
-    def calculate_4th_point(self, p1: Point, p2: Point, p3: Point, points: List[Point]):
-        """P1------P2
-            |       |
-            |       |
-            |       |
-            |       |
-            X-------P3
-        """
-        p4 = Point((p1.x, p3.y))
+    def add_points(self, line: Line):
+        if line.p1 not in self.points:
+            self.points.append(line.p1)
+        if line.p2 not in self.points:
+            self.points.append(line.p2)
 
-        if p1.on_same_line(p4) and p3.on_same_line(p4) and p4 in points:
-            return p4
-        else:
-            return None
+    def add_skeleton_points(self, line: Line):
+        if line.p1 not in self.points:
+            self.skeleton_points.append(line.p1)
+        if line.p2 not in self.points:
+            self.skeleton_points.append(line.p2)
 
-    def rebuild_table(self):
+    def clean_points(self):
+        for point in self.points:
+            if point.l and point.r and not (point.u or point.d):
+                self.points.remove(point)
+            if point.u and point.d and not (point.l or point.r):
+                self.points.remove(point)
+
+    def build_skeleton(self):
+        temp_point = Point(0, 0)
+        temp_point.d = temp_point.u = temp_point.l = temp_point.r = True
         for line1 in self.lines:
+            self.add_skeleton_points(line1)
             for line2 in self.lines:
                 if line1 == line2:
                     continue
+                self.add_skeleton_points(line2)
+                if line2.vertical == line1.vertical:
+                    continue
+                if line1.infite_intersect(line2):
+                    p1 = Point(line1.infite_intersect(line2))
+                    if p1 not in self.points:
+                        self.skeleton_points.append(p1)
+
+                    for n, p in enumerate(self.skeleton_points):
+                        self.skeleton_points[n].copy(temp_point)
+                        if p == p1:
+                            p1.copy(p)
+                            self.skeleton_points[n] = p1
+        sorted_y_points = sorted(self.skeleton_points, key=lambda other: other.y)
+        for p1 in sorted_y_points:
+            p2 = p1.get_right(self.skeleton_points)
+            if p2:
+                p3 = p2.get_bottom(self.skeleton_points, right=True)
+                p4 = p1.get_bottom(self.skeleton_points, left=True)
+                if p3 and p4:
+                    cell = Cell(p1, p2, p3, p4)
+                    if cell not in self.skeleton:
+                        self.skeleton.append(cell)
+                    else:
+                        continue
+                    print(p1, p2)
+                    print(p4, p3)
+                    print('-' * 20)
+                    # if self.draw:
+                    #     self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill='gray')
+                    #     cell.draw(self.canvas)
+        # if self.draw:
+        #     for point in self.skeleton_points:
+        #         point.draw(self.canvas)
+
+        # for p in random.choices(self.skeleton,k=20):
+        #     color = random.choice(list(ImageColor.colormap.keys()))
+        #     p.draw(self.canvas,color)
+
+
+    def rebuild_table(self):
+        for line1 in self.lines:
+            self.add_points(line1)
+            for line2 in self.lines:
+                if line1 == line2:
+                    continue
+                self.add_points(line2)
                 if line1 in line2:
                     line1.test_intersection(line2)
-                    p1 = Point(line1.intersection(line2))
-                    # p.draw(self.canvas)
-                    # print(line1, line2)
-                    # line1.draw(self.canvas)
-                    # line2.draw(self.canvas)
+                    xy, r, s = line1.intersection(line2)
+                    p1 = Point(xy)
+                    if p1 == line1.p1:  # fixing alignment
+                        p1.copy(line1.p1)
+                        line1.p1 = p1
+                    if p1 == line1.p2:
+                        p1.copy(line1.p2)
+                        line1.p2 = p1
+                    if p1 == line2.p1:
+                        p1.copy(line2.p1)
+                        line2.p1 = p1
+                    if p1 == line2.p2:
+                        p1.copy(line2.p2)
+                        line2.p2 = p1
                     if p1 not in self.points:
                         self.points.append(p1)
-        sorted_x_points = sorted(self.points, key=lambda other: other.x)
+                    for n, p in enumerate(self.points):
+                        if p == p1:
+                            p1.copy(p)
+                            self.points[n] = p1
+                    p1 = list(filter(lambda p: p == p1, self.points))[0]
+                    if line1.is_between(p1):
+                        if not line1.on_corners(p1):
+
+                            if line1.vertical:
+                                p1.d = True
+                                p1.u = True
+                            else:
+                                p1.r = True
+                                p1.l = True
+                        elif line1.on_corners(p1):
+                            if line1.vertical:
+                                if p1 == line1.p1:
+                                    p1.d = True
+                                else:
+                                    p1.u = True
+                            else:
+                                if p1 == line1.p1:
+                                    p1.r = True
+                                else:
+                                    p1.l = True
+        self.clean_points()
+
         sorted_y_points = sorted(self.points, key=lambda other: other.y)
         for p1 in sorted_y_points:
-            for p2 in p1.points_to_right(self.points):
-                ps1 = p1.points_below(sorted_x_points)
-                ps2 = p2.points_below(sorted_x_points)
-                for p3 in ps1:
-                    for p4 in ps2:
-                        if p3.on_same_line(p4):
-                            valid = True
-                            line1 = Line(p1, p3)
-                            for line2 in filter(lambda l: not l.vertical and not line1.parallel(l), self.lines):
-                                if line1 in line2 and not line1.connected(line2):
-                                    valid = False
-                            if not valid:
-                                break
-                            if p3 in self.points and p4 in self.points:
-                                color = random.choice(list(ImageColor.colormap.keys()))
-                                print('Painting cell with', color, 'colour')
-                                print(p1, p2)
-                                print(p3, p4)
-                                self.canvas.polygon((p1.as_tuple, p2.as_tuple, p4.as_tuple, p3.as_tuple), fill=color)
-                                p3.draw(self.canvas)
-                                p4.draw(self.canvas)
-                                self.save()
+            if p1.d:
+                p2 = p1.get_right(self.points)
+                if p2:
+                    p3 = p2.get_bottom(self.points, right=True)
+                    p4 = p1.get_bottom(self.points, left=True)
+                    if p3 and p4:
+                        cell = Cell(p1, p2, p3, p4)
+                        if cell not in self.cells:
+                            self.cells.append(cell)
                         else:
                             continue
-            self.save()
-
-        # for p2 in sorted_x_points:
-        #     for p3 in sorted_y_points:
-        #         p4 = self.calculate_4th_point(p1,p2,p3,self.points)
-        #         if p4:p4
-        #             if p1 == p2 or p1 == p3 or p1 == p4 or p2 == p3 or p2 == p4 or p3 == p4:
-        #                 continue
-        #             if p1.on_same_line(p2) and p2.on_same_line(p3) and p3.on_same_line(p4) and p4.on_same_line(p1):
-        #                 cell = Cell(p1, p2, p3, p4)
-        #                 if cell not in self.cells:
-        #                     print('Found cell')
-        #                     print(p1, p2)
-        #                     print(p4, p3)
-        #                     # cell.draw(self.canvas)
-        #                     self.cells.append(cell)
-        # cells = random.choices(self.cells, k=10)
-        # for c in cells:
-        #     c.draw(self.canvas)
-
+                        if self.draw:
+                            print(p1, p2)
+                            print(p4, p3)
+                            print('-' * 20)
+                            color = random.choice(list(ImageColor.colormap.keys()))
+                            # self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill=color)
+                            cell.draw(self.canvas)
+                            cell.center.draw(self.canvas)
+        for p in self.points:
+            p.draw(self.canvas)
+        # for p in random.choices(self.cells,k=20):
+        #     color = random.choice(list(ImageColor.colormap.keys()))
+        #     p.draw(self.canvas,color)
+        self.table.build_table()
     def flip_y(self, y):
         if self.flip_page:
             return self.ysize - y
@@ -843,12 +1175,14 @@ if __name__ == '__main__':
     #     a.prepare()
     #     a.render()
     #     a.save()
-    pdf_interpreter = PDFInterpreter(pdf=pdf.pdf_file, page=13)
-    # a = PDFInterpreter(pdf.table_root.childs[table])
+    pdf_interpreter = PDFInterpreter(pdf=pdf.pdf_file, page=46)
+    pdf_interpreter.draw = True
+    # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
     pdf_interpreter.flip_page = True
     # print(a.content)
     pdf_interpreter.prepare()
     pdf_interpreter.parse()
     pdf_interpreter.render()
+    pdf_interpreter.build_skeleton()
     pdf_interpreter.rebuild_table()
     pdf_interpreter.save()
