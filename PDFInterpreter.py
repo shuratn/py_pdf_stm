@@ -2,8 +2,6 @@ import copy
 import math
 import random
 from functools import partial
-from itertools import cycle, zip_longest
-from pprint import pprint
 from typing import Tuple
 
 from PIL import Image, ImageDraw, ImageFont, ImageColor
@@ -14,19 +12,19 @@ from DumpPDFText import *
 DEBUG = False
 
 
-def debug_print(*a, name="OPCODE"):
-    string = a[0]
-    offset = a[1] or 1
+def debug_print(*args, name="OPCODE"):
+    string = args[0]
+    offset = args[1] or 1
     from_ = 0
-    if type(a[2]) == int:
-        from_ = a[2]
-        a = a[3:]
+    if type(args[2]) == int:
+        from_ = args[2]
+        args = args[3:]
     print('Parsing', name, ':')
     # print('Searching for',a[0])
     print(from_, offset)
     print('"{}"'.format(string))
-    print(('-' * (offset)) + '^')
-    print(a[2:])
+    print(('-' * offset) + '^')
+    print(args[2:])
     print()
 
 
@@ -111,8 +109,8 @@ if DEBUG:
 # print(OneOrMore(COMMAND).parseString(a))
 # exit(1)
 
-def almost_equals(a, b, precision=3.0):
-    return abs(a - b) < precision
+def almost_equals(num1, num2, precision=3.0):
+    return abs(num1 - num2) < precision
 
 
 class Point:
@@ -126,15 +124,15 @@ class Point:
         self.x, self.y = xy
         self.x = math.ceil(self.x)
         self.y = math.ceil(self.y)
-        self.d = False
-        self.u = False
-        self.l = False
-        self.r = False
+        self.down = False
+        self.up = False
+        self.left = False
+        self.right = False
 
     @property
     def symbol(self):
-        table = {
-            (False, False, False, False): '●',
+        direction_table = {
+            (False, False, False, False): '◦',
 
             (True, False, False, False): '↑',
             (False, True, False, False): '↓',
@@ -159,24 +157,24 @@ class Point:
             (False, True, False, True): '┛',
 
         }
-        return table[(self.u, self.d, self.r, self.l)]
+        return direction_table[(self.up, self.down, self.right, self.left)]
 
     def __repr__(self):
         return "Point<X:{} Y:{} {} >".format(self.x, self.y, self.symbol)
 
     @property
     def as_tuple(self):
-        return (self.x, self.y)
+        return self.x, self.y
 
     def draw(self, canvas: ImageDraw.ImageDraw, color='red'):
         canvas.ellipse((self.x - self.hr, self.y - self.hr, self.x + self.hr, self.y + self.hr), fill=color)
-        if self.d:
+        if self.down:
             canvas.line(((self.x, self.y), (self.x, self.y + self.tail)), 'blue')
-        if self.u:
+        if self.up:
             canvas.line(((self.x, self.y), (self.x, self.y - self.tail)), 'blue')
-        if self.l:
+        if self.left:
             canvas.line(((self.x, self.y), (self.x - self.tail, self.y)), 'blue')
-        if self.r:
+        if self.right:
             canvas.line(((self.x, self.y), (self.x + self.tail, self.y)), 'blue')
 
     def points_to_right(self, other_points: List['Point']):
@@ -204,31 +202,37 @@ class Point:
     def is_to_right(self, other: 'Point'):
         return self.x > other.x
 
+    def is_below(self, other: 'Point'):
+        return self.y > other.y
+
+    def is_to_left(self, other: 'Point'):
+        return self.x < other.x
+
     def get_right(self, others: List['Point']):
         others = self.points_to_right(others)
         for point in others:
-            if point.d:
+            if point.down:
                 return point
         return None
 
     def get_bottom(self, others: List['Point'], left=False, right=False):
         others = self.points_below(others)
         for point in others:
-            if point.u:
+            if point.up:
                 if left:
-                    if not point.r:
+                    if not point.right:
                         continue
                 if right:
-                    if not point.l:
+                    if not point.left:
                         continue
                 return point
         return None
 
     def copy(self, other: 'Point'):
-        self.d = other.d
-        self.u = other.u
-        self.l = other.l
-        self.r = other.r
+        self.down = other.down
+        self.up = other.up
+        self.left = other.left
+        self.right = other.right
 
     def __eq__(self, other: 'Point'):
 
@@ -253,11 +257,11 @@ class Line:
                 self.p1, self.p2 = self.p2, self.p1
 
         if self.vertical:
-            self.p1.d = True
-            self.p2.u = True
+            self.p1.down = True
+            self.p2.up = True
         else:
-            self.p1.r = True
-            self.p2.l = True
+            self.p1.right = True
+            self.p2.left = True
 
     @property
     def x(self):
@@ -288,44 +292,14 @@ class Line:
     def as_tuple(self):
         return (self.x, self.y), (self.cx, self.cy)
 
-    @staticmethod
-    def _slope(P1, P2):
-        # dy/dx
-        # (y2 - y1) / (x2 - x1)
-        return (P2[1] - P1[1]) / (P2[0] - P1[0])
-
-    @staticmethod
-    def _y_intercept(P1, slope):
-        # y = mx + b
-        # b = y - mx
-        # b = P1[1] - slope * P1[0]
-        return P1[1] - slope * P1[0]
-
-    @staticmethod
-    def _line_intersect(m1, b1, m2, b2):
-        if m1 == m2:
-            print("These lines are parallel!!!")
-            return None
-        # y = mx + b
-        # Set both lines equal to find the intersection point in the x direction
-        # m1 * x + b1 = m2 * x + b2
-        # m1 * x - m2 * x = b2 - b1
-        # x * (m1 - m2) = b2 - b1
-        # x = (b2 - b1) / (m1 - m2)
-        x = (b2 - b1) / (m1 - m2)
-        # Now solve for y -- use either line, because they are equal here
-        # y = mx + b
-        y = m1 * x + b1
-        return x, y
-
     def infite_intersect(self, other: 'Line'):
         line1 = self.as_tuple
         line2 = other.as_tuple
         x_diff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
         y_diff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])  # Typo was here
 
-        def det(a, b):
-            return a[0] * b[1] - a[1] * b[0]
+        def det(point_a, point_b):
+            return point_a[0] * point_b[1] - point_a[1] * point_b[0]
 
         div = det(x_diff, y_diff)
         if div == 0:
@@ -343,10 +317,10 @@ class Line:
               s is the scalar multiple such that (xi,yi) = pt1 + s*(ptB-ptA)
                   valid == 0 if there are 0 or inf. intersections (invalid)
                   valid == 1 if it has a unique intersection ON the segment    """
-        pt1 = self.x, self.y
-        pt2 = self.cx, self.cy
-        ptA = other.x, other.y
-        ptB = other.cx, other.cy
+        point_1 = self.x, self.y
+        point_2 = self.cx, self.cy
+        point_a = other.x, other.y
+        point_b = other.cx, other.cy
         if self.vertical:
             if self.y > self.cy:
                 if self.y >= other.y >= self.cy:
@@ -359,18 +333,18 @@ class Line:
                     pass
                 else:
                     return False
-        DET_TOLERANCE = 0.0001
+        det_tolerance = 0.0001
         # the first line is pt1 + r*(pt2-pt1)
         # in component form:
-        x1, y1 = pt1
-        x2, y2 = pt2
+        x1, y1 = point_1
+        x2, y2 = point_2
         dx1 = x2 - x1
         dy1 = y2 - y1
         # the second line is ptA + s*(ptB-ptA)
-        x, y = ptA
-        xB, yB = ptB
-        dx = xB - x
-        dy = yB - y
+        x, y = point_a
+        xb, yb = point_b
+        dx = xb - x
+        dy = yb - y
         # we need to find the (typically unique) values of r and s
         # that will satisfy
         #
@@ -390,17 +364,17 @@ class Line:
         #
         # if DET is too small, they're parallel
         #
-        DET = (-dx1 * dy + dy1 * dx)
+        det = (-dx1 * dy + dy1 * dx)
 
-        if math.fabs(DET) < DET_TOLERANCE:
+        if math.fabs(det) < det_tolerance:
             print('Lines are parallel')
             return False
         # now, the determinant should be OK
-        DETinv = 1.0 / DET
+        det_inv = 1.0 / det
         # find the scalar amount along the "self" segment
-        r = DETinv * (-dy * (x - x1) + dx * (y - y1))
+        r = det_inv * (-dy * (x - x1) + dx * (y - y1))
         # find the scalar amount along the input line
-        s = DETinv * (-dy1 * (x - x1) + dx1 * (y - y1))
+        s = det_inv * (-dy1 * (x - x1) + dx1 * (y - y1))
         # return the average of the two descriptions
         if print_fulness:
             print('self segment', r)
@@ -419,23 +393,23 @@ class Line:
                       s is the scalar multiple such that (xi,yi) = pt1 + s*(ptB-ptA)
                           valid == 0 if there are 0 or inf. intersections (invalid)
                           valid == 1 if it has a unique intersection ON the segment    """
-        pt1 = self.x, self.y
-        pt2 = self.cx, self.cy
-        ptA = other.x, other.y
-        ptB = other.cx, other.cy
+        point_1 = self.x, self.y
+        point_2 = self.cx, self.cy
+        point_a = other.x, other.y
+        point_b = other.cx, other.cy
 
-        DET_TOLERANCE = 1
+        det_tolerance = 1
         # the first line is pt1 + r*(pt2-pt1)
         # in component form:
-        x1, y1 = pt1
-        x2, y2 = pt2
+        x1, y1 = point_1
+        x2, y2 = point_2
         dx1 = x2 - x1
         dy1 = y2 - y1
         # the second line is ptA + s*(ptB-ptA)
-        x, y = ptA
-        xB, yB = ptB
-        dx = xB - x
-        dy = yB - y
+        x, y = point_a
+        xb, yb = point_b
+        dx = xb - x
+        dy = yb - y
         # we need to find the (typically unique) values of r and s
         # that will satisfy
         #
@@ -455,17 +429,17 @@ class Line:
         #
         # if DET is too small, they're parallel
         #
-        DET = (-dx1 * dy + dy1 * dx)
+        det = (-dx1 * dy + dy1 * dx)
 
-        if math.fabs(DET) < DET_TOLERANCE:
+        if math.fabs(det) < det_tolerance:
             print('parallel')
             return None, None
         # now, the determinant should be OK
-        DETinv = 1.0 / DET
+        det_inv = 1.0 / det
         # find the scalar amount along the "self" segment
-        r = DETinv * (-dy * (x - x1) + dx * (y - y1))
+        r = det_inv * (-dy * (x - x1) + dx * (y - y1))
         # find the scalar amount along the input line
-        s = DETinv * (-dy1 * (x - x1) + dx1 * (y - y1))
+        s = det_inv * (-dy1 * (x - x1) + dx1 * (y - y1))
         # return the average of the two descriptions
         xi = (x1 + r * dx1 + x + s * dx) / 2.0
         yi = (y1 + r * dy1 + y + s * dy) / 2.0
@@ -474,31 +448,31 @@ class Line:
             print('other segment', s)
         return (round(xi), round(yi)), round(r, 4), round(s, 4)
 
-    def is_between(self, c: 'Point'):
-        a = self.p1
-        b = self.p2
-        cross_product = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
+    def is_between(self, point: 'Point'):
+        pt1 = self.p1
+        pt2 = self.p2
+        cross_product = (point.y - pt1.y) * (pt2.x - pt1.x) - (point.x - pt1.x) * (pt2.y - pt1.y)
 
         # compare versus epsilon for floating point values, or != 0 if using integers
         if abs(cross_product) > math.e:
             return False
 
-        dot_product = (c.x - a.x) * (b.x - a.x) + (c.y - a.y) * (b.y - a.y)
+        dot_product = (point.x - pt1.x) * (pt2.x - pt1.x) + (point.y - pt1.y) * (pt2.y - pt1.y)
         if dot_product < 0:
             return False
 
-        squared_length_ba = (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y)
+        squared_length_ba = (pt2.x - pt1.x) * (pt2.x - pt1.x) + (pt2.y - pt1.y) * (pt2.y - pt1.y)
         if dot_product > squared_length_ba:
             return False
 
         return True
 
-    def on_line(self, other: 'Point'):
+    def on_line(self, point: 'Point'):
         if self.vertical:
-            if almost_equals(self.p1.x, other.x):
+            if almost_equals(self.p1.x, point.x):
                 return True
         else:
-            if almost_equals(self.p1.y, other.y):
+            if almost_equals(self.p1.y, point.y):
                 return True
         return False
 
@@ -557,7 +531,7 @@ class Cell:
 
     @property
     def as_tuple(self):
-        return (self.p1.as_tuple, self.p2.as_tuple, self.p3.as_tuple, self.p4.as_tuple)
+        return self.p1.as_tuple, self.p2.as_tuple, self.p3.as_tuple, self.p4.as_tuple
 
     def __eq__(self, other: 'Cell'):
         if self.p1 == other.p1 and self.p2 == other.p2 and self.p3 == other.p3 and self.p4 == other.p4:
@@ -577,17 +551,17 @@ class Cell:
         return centroid
 
     def point_inside_polygon(self, point: 'Point', include_edges=True):
-        '''
+        """
         Test if point (x,y) is inside polygon poly.
 
         poly is N-vertices polygon defined as
         [(x1,y1),...,(xN,yN)] or [(x1,y1),...,(xN,yN),(x1,y1)]
         (function works fine in both cases)
 
-        Geometrical idea: point is inside polygon if horisontal beam
+        Geometrical idea: point is inside polygon if horizontal beam
         to the right from point crosses polygon even number of times.
         Works fine for non-convex polygons.
-        '''
+        """
         x, y = point.as_tuple
         poly = self.as_tuple
         n = len(poly)
@@ -599,20 +573,20 @@ class Cell:
             if p1y == p2y:
                 if y == p1y:
                     if min(p1x, p2x) <= x <= max(p1x, p2x):
-                        # point is on horisontal edge
+                        # point is on horizontal edge
                         inside = include_edges
                         break
                     elif x < min(p1x, p2x):  # point is to the left from current edge
                         inside = not inside
             else:  # p1y!= p2y
                 if min(p1y, p2y) <= y <= max(p1y, p2y):
-                    xinters = (y - p1y) * (p2x - p1x) / float(p2y - p1y) + p1x
+                    x_inters = (y - p1y) * (p2x - p1x) / float(p2y - p1y) + p1x
 
-                    if x == xinters:  # point is right on the edge
+                    if x == x_inters:  # point is right on the edge
                         inside = include_edges
                         break
 
-                    if x < xinters:  # point is to the left from current edge
+                    if x < x_inters:  # point is to the left from current edge
                         inside = not inside
 
             p1x, p1y = p2x, p2y
@@ -629,12 +603,12 @@ class Cell:
 class Table:
     font = ImageFont.truetype('arial', size=9)
 
-    def __init__(self, table: List[Cell], skeleton: List[Cell], texts: List[Tuple[str, Point]],
+    def __init__(self, cells: List[Cell], skeleton_cells: List[Cell], texts: List[Tuple[str, Point]],
                  canvas: ImageDraw.ImageDraw):
         self.canvas = canvas
         self.texts = texts
-        self.skeleton = skeleton
-        self.table = table
+        self.skeleton_cells = skeleton_cells
+        self.cells = cells
         self.table_skeleton = {}
         self.global_map = {}
         self.map = {}
@@ -642,12 +616,12 @@ class Table:
     def split_to_2d(self):
         y_list = []
         cell_map = {}
-        for cell in self.skeleton:
+        for cell in self.skeleton_cells:
             if cell.center.y not in y_list:
                 y_list.append(cell.center.y)
         y_list.sort()
         for n, y in enumerate(y_list):
-            row = filter(lambda c: c.center.y == y, self.skeleton)
+            row = filter(lambda c: c.center.y == y, self.skeleton_cells)
             row = list(sorted(row, key=lambda c: c.center.x))
             cell_map[n] = row
         self.table_skeleton = cell_map
@@ -657,28 +631,30 @@ class Table:
         for y, row in self.table_skeleton.items():
             self.global_map[y] = {}
             for x, cell in enumerate(row):
-                for t_cell in self.table:
+                for t_cell in self.cells:
                     if t_cell.point_inside_polygon(cell.center):
                         # t_cell.text = "{} {}".format(y, x)
                         self.global_map[y][x] = t_cell
 
         pass
         for text, p1 in self.texts:
-            for cell in self.table:
+            for cell in self.cells:
                 if cell.point_inside_polygon(p1):
                     cell.text += text
 
-        for cell in self.table:
+        for cell in self.cells:
             cell.draw(self.canvas)
         # sorted_cells = sorted(self.skeleton, key=lambda c: c.center.y)
         # for s_cell in sorted_cells:
         #     for cell in self.table:
         #         if cell.point_inside_polygon(s_cell.center):
         #             pass
+
     def print_table(self):
         for y, row in self.table_skeleton.items():
             # for x, cell in enumerate(row):
-                print(list(self.global_map[y].values()))
+            print(list(self.global_map[y].values()))
+
 
 class PDFInterpreter:
     ts = [t / 100.0 for t in range(20)]
@@ -686,22 +662,22 @@ class PDFInterpreter:
     flip_page = False
 
     @property
-    def xsize(self):
+    def x_size(self):
         return self.page_size[0]
 
     @property
-    def ysize(self):
+    def y_size(self):
         return self.page_size[1]
 
-    def __init__(self, table_node: DataSheetTableNode = None, pdf=None, page: int = None):
+    def __init__(self, table_node: DataSheetTableNode = None, pdf_file=None, page: int = None):
         if table_node:
             self.table = table_node
             self.page = self.table.page
             self.content = self.table.get_data()
             self.name = self.table.name.split('.')[0]
 
-        if page and pdf:
-            self.page = pdf.pages[page]
+        if page and pdf_file:
+            self.page = pdf_file.pages[page]
             self.content = self.page['/Contents'].getData().decode('cp1251')
             self.name = 'page-{}'.format(page)
 
@@ -713,7 +689,7 @@ class PDFInterpreter:
         self.font_key = ''
         self.prepared = False
         self.font_size = 1
-        self.text_cursor = (0, self.ysize)
+        self.text_cursor = (0, self.y_size)
         self.text_scale_x, self.text_scale_y = 1, 1
         self.text_offset_x, self.text_offset_y = 0, 0
         self.text_leading = 0
@@ -745,29 +721,29 @@ class PDFInterpreter:
             # font_file = font_info['/FontFile2'].getObject().getData()
             self.fonts[str(name)] = font_info['/FontName'].split("+")[-1].split(",")[0].split("-")[0]
 
-    def add_points(self, line: Line):
-        if line.p1 not in self.points:
-            self.points.append(line.p1)
-        if line.p2 not in self.points:
-            self.points.append(line.p2)
+    def add_points(self, line_to_add: Line):
+        if line_to_add.p1 not in self.points:
+            self.points.append(line_to_add.p1)
+        if line_to_add.p2 not in self.points:
+            self.points.append(line_to_add.p2)
 
-    def add_skeleton_points(self, line: Line):
-        if line.p1 not in self.skeleton_points:
-            self.skeleton_points.append(line.p1)
-        if line.p2 not in self.skeleton_points:
-            self.skeleton_points.append(line.p2)
+    def add_skeleton_points(self, line_to_add: Line):
+        if line_to_add.p1 not in self.skeleton_points:
+            self.skeleton_points.append(line_to_add.p1)
+        if line_to_add.p2 not in self.skeleton_points:
+            self.skeleton_points.append(line_to_add.p2)
 
     def clean_points(self):
         for point in self.points:
-            if point.l and point.r and not (point.u or point.d):
+            if point.left and point.right and not (point.up or point.down):
                 self.points.remove(point)
-            if point.u and point.d and not (point.l or point.r):
+            if point.up and point.down and not (point.left or point.right):
                 self.points.remove(point)
 
     def build_skeleton(self):
         lines = copy.deepcopy(self.lines)
         temp_point = Point(0, 0)
-        temp_point.d = temp_point.u = temp_point.l = temp_point.r = True
+        temp_point.down = temp_point.up = temp_point.left = temp_point.right = True
         for line1 in lines:
             self.add_skeleton_points(line1)
             for line2 in lines:
@@ -838,37 +814,38 @@ class PDFInterpreter:
                         line2.p2 = p1
                     if p1 not in self.points:
                         self.points.append(p1)
+                    n = 0
                     for n, p in enumerate(self.points):
                         if p == p1:
                             p1.copy(p)
                             self.points[n] = p1
                     del n
-                    p1 = list(filter(lambda p: p == p1, self.points))[0]
+                    p1 = list(filter(lambda point: point == p1, self.points))[0]
                     if line1.is_between(p1):
                         if not line1.on_corners(p1):
 
                             if line1.vertical:
-                                p1.d = True
-                                p1.u = True
+                                p1.down = True
+                                p1.up = True
                             else:
-                                p1.r = True
-                                p1.l = True
+                                p1.right = True
+                                p1.left = True
                         elif line1.on_corners(p1):
                             if line1.vertical:
                                 if p1 == line1.p1:
-                                    p1.d = True
+                                    p1.down = True
                                 else:
-                                    p1.u = True
+                                    p1.up = True
                             else:
                                 if p1 == line1.p1:
-                                    p1.r = True
+                                    p1.right = True
                                 else:
-                                    p1.l = True
+                                    p1.left = True
         self.clean_points()
 
         sorted_y_points = sorted(self.points, key=lambda other: other.y)
         for p1 in sorted_y_points:
-            if p1.d:
+            if p1.down:
                 p2 = p1.get_right(self.points)
                 if p2:
                     p3 = p2.get_bottom(self.points, right=True)
@@ -883,15 +860,13 @@ class PDFInterpreter:
                             print(p1, p2)
                             print(p4, p3)
                             print('-' * 20)
-                            color = random.choice(list(ImageColor.colormap.keys()))
+                            # color = random.choice(list(ImageColor.colormap.keys()))
                             # self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill=color)
                             cell.draw(self.canvas)
                             # cell.center.draw(self.canvas)
         for p in self.points:
             p.draw(self.canvas)
-        # for p in random.choices(self.cells,k=20):
-        #     color = random.choice(list(ImageColor.colormap.keys()))
-        #     p.draw(self.canvas,color)
+
         name = self.name
         self.name += '-clean'
         self.save()
@@ -900,7 +875,7 @@ class PDFInterpreter:
 
     def flip_y(self, y):
         if self.flip_page:
-            return self.ysize - y
+            return self.y_size - y
         else:
             return y
 
@@ -912,7 +887,7 @@ class PDFInterpreter:
     def font(self):
         try:
             return ImageFont.truetype(self.fonts[self.font_key].lower(), int(self.font_size * self.text_scale_x))
-        except:
+        except IOError:
             return ImageFont.truetype('arial', int(self.font_size * self.text_scale_x))
 
     def draw_rect(self, x, y, w, h):
@@ -948,60 +923,38 @@ class PDFInterpreter:
         xc, yc = self.figure_cursor
         self.figure_cursor = (xc + x, yc + y)
 
-    def plot_curve(self, px, py, steps=1000, color=(0)):
-        def B(coord, i, j, t):
-            if j == 0:
-                return coord[i]
-            return (B(coord, i, j - 1, t) * (1 - t) +
-                    B(coord, i + 1, j - 1, t) * t)
-
-        # img = self.image.load()
-        for k in range(steps):
-            t = float(k) / (steps - 1)
-            x = int(B(px, 0, self.n - 1, t))
-            y = int(B(py, 0, self.n - 1, t))
-            try:
-                self.canvas.point((x, y), fill=color)
-                # img[x, y] = color
-            except IndexError:
-                pass
-
-    def plot_control_points(self, coords, radi=1.2, color=(0)):
-        for x, y in coords:
-            self.canvas.ellipse((x - radi, y - radi, x + radi, y + radi), color)
-
     def parse(self):
         if not self.prepared:
             raise Warning('Interpreter isn\'t prepared')
-        for line in self.content.split('\n')[1:]:  # type:str
-            if '\(' in line:  # temp fix for escaped parentheses
-                line = line.replace('\(', ' ')
-            if '\)' in line:
-                line = line.replace('\)', ' ')
-            if '\>' in line:
-                line = line.replace('\>', ' ')
-            if '\<' in line:
-                line = line.replace('\<', ' ')
-            if '\[' in line:
-                line = line.replace('\[', ' ')
-            if '\]' in line:
-                line = line.replace('\]', ' ')
-            if not line:
+        for command_line in self.content.split('\n')[1:]:  # type:str
+            if '\(' in command_line:  # temp fix for escaped parentheses
+                command_line = command_line.replace('\(', ' ')
+            if '\)' in command_line:
+                command_line = command_line.replace('\)', ' ')
+            if '\>' in command_line:
+                command_line = command_line.replace('\>', ' ')
+            if '\<' in command_line:
+                command_line = command_line.replace('\<', ' ')
+            if '\[' in command_line:
+                command_line = command_line.replace('\[', ' ')
+            if '\]' in command_line:
+                command_line = command_line.replace('\]', ' ')
+            if not command_line:
                 continue
-            if line.startswith('/'):
-                args = line.split(' ')
+            if command_line.startswith('/'):
+                args = command_line.split(' ')
                 opcode = args[-1]
                 args = args[:-1]
                 self.commands.append((opcode, args))
                 continue
             if DEBUG:
-                print(line)
-            command = OneOrMore(COMMAND).parseString(line)  # parse line to command
+                print(command_line)
+            command = OneOrMore(COMMAND).parseString(command_line)  # parse line to command
             self.commands.extend(command)
 
     def render(self):
         text_line = ''
-        for n, command in enumerate(self.commands):
+        for command_num, command in enumerate(self.commands):
             if DEBUG:
                 print(command)
             opcode = command[0]  # Command opcode
@@ -1010,8 +963,8 @@ class PDFInterpreter:
             if opcode == 'c':
                 a1, a2, b1, b2, c1, c2 = args  # bezier points
 
-                a1, a2 = self.apply_transforms_figure(a1, a2)
-                b1, b2 = self.apply_transforms_figure(b1, b2)
+                # a1, a2 = self.apply_transforms_figure(a1, a2)
+                # b1, b2 = self.apply_transforms_figure(b1, b2)
                 oc1, oc2 = c1, c2
                 c1, c2 = self.apply_transforms_figure(c1, c2)
                 d1, d2 = self.get_transformed_figure_cursor
@@ -1021,7 +974,7 @@ class PDFInterpreter:
             if opcode == 'v':
                 a1, a2, c1, c2 = args  # bezier points
 
-                a1, a2 = self.apply_transforms_figure(a1, a2)
+                # a1, a2 = self.apply_transforms_figure(a1, a2)
                 oc1, oc2 = c1, c2
                 c1, c2 = self.apply_transforms_figure(c1, c2)
                 d1, d2 = self.get_transformed_figure_cursor
@@ -1031,7 +984,7 @@ class PDFInterpreter:
             if opcode == 'y':
                 a1, a2, c1, c2 = args  # bezier points
                 oc1, oc2 = c1, c2
-                a1, a2 = self.apply_transforms_figure(a1, a2)
+                # a1, a2 = self.apply_transforms_figure(a1, a2)
                 c1, c2 = self.apply_transforms_figure(c1, c2)
                 d1, d2 = self.get_transformed_figure_cursor
                 self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
@@ -1050,7 +1003,8 @@ class PDFInterpreter:
                 pass
 
             if opcode == 'csn':
-                self.color = tuple(args)
+                pass  # do nothing
+                # self.color = tuple(args)
 
             if opcode == 'cm':
                 scale_x, shear_x, shear_y, scale_y, offset_x, offset_y = args
@@ -1062,20 +1016,17 @@ class PDFInterpreter:
 
             if opcode == 're':  # RENDER BOX
                 x, y, w, h = args  # absolute coordinated, doesn't require any transformations
-                # fill = 0 if commands[n + 1][0] == 'f' else None
-                fill = None
                 print('Drawing box at X:{} Y:{} W:{} H:{}'.format(x, y, w, h))
                 if self.useful_content[0][1] < self.flip_y(y) < self.useful_content[1][1]:
                     self.draw_rect(x, self.flip_y(y), w, h)
 
             if opcode == 'BT':
                 print('New text block')
-                self.text_cursor = (0, self.ysize)
-                self.color = (0, 0, 0)
+                self.text_cursor = (0, self.y_size)
 
             if opcode == 'ET':
                 print('End text block')
-                self.text_cursor = (0, self.ysize)
+                self.text_cursor = (0, self.y_size)
 
             if opcode == 'Tf':
                 font, font_size = args
@@ -1133,42 +1084,38 @@ class PDFInterpreter:
                 self.text_offset_x = offset_x
                 self.text_offset_y = offset_y
                 self.text_cursor = (offset_x, self.flip_y(offset_y))
-                # print('TM', args)
                 print('Transformed TEXT cursor now at', self.text_cursor, self.text_scale_x)
-                # print('Transformed TEXT cursor now at', self.get_transformed_text_cursor)
 
             if opcode == 'TJ':  # RENDER TEXT
                 orig_cursor = self.text_cursor
-                new_line = self.new_line
-                text_lines = []
                 if self.flip_page:
-                    self.move_cursor_text(0, -new_line / 1.3)
+                    self.move_cursor_text(0, -self.new_line / 1.3)
 
                 for text_arg in args:
                     text = text_arg[0]
 
                     x1 = (-text_arg[1] / 1000) * self.text_scale_x
-                    if x1>5:
+                    if x1 > 5:
                         self.texts.append((text_line, Point(self.text_cursor)))
                         text_line = ""
                     self.move_cursor_text(x1)
-                    print('Printing "{}" at'.format(text), self.text_cursor)
                     words = text.split(' ')
-                    for n, word in enumerate(words):
+                    for word_num, word in enumerate(words):
                         space, _ = self.font.getsize(' ')
                         for char in word:
-                            text_line+=char
+                            text_line += char
                             x2, y2 = self.font.getsize(char)
+                            print('Printing "{}" at'.format(text), self.text_cursor)
                             self.canvas.text(self.text_cursor, char, font=self.font, fill='black')
                             self.move_cursor_text(x2 + (self.text_char_spacing * self.text_scale_x))
-                            if self.text_char_spacing * self.text_scale_x>5:
+                            if self.text_char_spacing * self.text_scale_x > 5:
                                 self.texts.append((text_line, Point(self.text_cursor)))
                                 text_line = ""
                         self.move_cursor_text(self.text_word_spacing * self.text_scale_x)
-                        if self.text_word_spacing * self.text_scale_x>5:
+                        if self.text_word_spacing * self.text_scale_x > 5:
                             self.texts.append((text_line, Point(self.text_cursor)))
                             text_line = ""
-                        if 1 < len(words) != n + 1:
+                        if 1 < len(words) != word_num + 1:
                             self.move_cursor_text(space)
 
                 if text_line:
@@ -1210,9 +1157,9 @@ class PDFInterpreter:
 
 
 if __name__ == '__main__':
-    pdf = DataSheet('stm32L431')
+    datasheet = DataSheet('stm32L431')
     table = 2
-    print(pdf.table_root.childs[table])
+    print(datasheet.table_root.childs[table])
     # for table in pdf.table_root.childs:
     #     a = PDFInterpreter(table)
     #     a = PDFInterpreter(pdf.table_root.childs[1])
@@ -1220,14 +1167,13 @@ if __name__ == '__main__':
     #     a.prepare()
     #     a.render()
     #     a.save()
-    pdf_interpreter = PDFInterpreter(pdf=pdf.pdf_file, page=13)
+    pdf_interpreter = PDFInterpreter(pdf_file=datasheet.pdf_file, page=13)
     pdf_interpreter.draw = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
     pdf_interpreter.flip_page = True
     # print(pdf_interpreter.content)
     pdf_interpreter.prepare()
     pdf_interpreter.parse()
-    # pdf_interpreter.save()
     pdf_interpreter.render()
     pdf_interpreter.build_skeleton()
     pdf_interpreter.rebuild_table()
