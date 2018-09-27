@@ -524,10 +524,35 @@ class Cell:
         self.p2: Point = p2
         self.p3: Point = p3
         self.p4: Point = p4
-        self.text = ''
+        self._text = None
+        self.texts = []  # type: List[Tuple[str, Point]]
 
     def __repr__(self):
-        return 'Cell <"{}"> '.format(self.text)
+        return 'Cell <"{}"> '.format(self.p1)
+
+    @property
+    def text(self):
+        if not self._text and self.texts:
+            self.process_text()
+            return self._text
+        if not self.texts:
+            return 'NO TEXT'
+        return self._text
+
+    def process_text(self):
+        self._text = ''
+        current_point = None
+        for text, point in self.texts:
+            if text == ' ':
+                continue
+            if not current_point:
+                current_point = point
+            if current_point.is_to_right(point) or point == current_point:
+                self._text += text
+            elif point.is_below(current_point):
+                self._text += '\n' +text
+            else:
+                self._text += text
 
     @property
     def as_tuple(self):
@@ -549,6 +574,22 @@ class Cell:
         y = [p.y for p in [self.p1, self.p2, self.p3, self.p4]]
         centroid = Point(sum(x) / 4, sum(y) / 4)
         return centroid
+
+    def draw(self, canvas: ImageDraw.ImageDraw, color='black'):
+
+        canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline=color)
+        if self.text:
+            canvas.text((self.p1.x + 3, self.p1.y + 3), self.text, fill='black', font=self.font)
+
+    def print_cell(self):
+        buffer = ''
+        longest = max([len(word) for word in self.text.split("\n")])
+        buffer += '┼' + "─" * longest + '┼\n'
+        for text_line in self.text.split('\n'):
+            buffer += "│" + text_line + ' ' * (longest - len(text_line))
+            buffer += "│\n"
+        buffer += '┼' + "─" * longest + '┼\n'
+        print(buffer)
 
     def point_inside_polygon(self, point: 'Point', include_edges=True):
         """
@@ -593,11 +634,12 @@ class Cell:
 
         return inside
 
-    def draw(self, canvas: ImageDraw.ImageDraw, color='black'):
 
-        canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline=color)
-        if self.text:
-            canvas.text((self.p1.x + 3, self.center.y - 5), self.text, fill='black', font=self.font)
+# if __name__ == '__main__':
+#     cell = Cell(Point(0, 0), Point(0, 0), Point(0, 0), Point(0, 0))
+#     cell.text = 'Testing purposes\nTest'
+#     cell.print_cell()
+#     exit(-8)
 
 
 class Table:
@@ -637,23 +679,21 @@ class Table:
                         self.global_map[y][x] = t_cell
 
         pass
-        for text, p1 in self.texts:
+        for text_point in self.texts:
             for cell in self.cells:
+                _, p1 = text_point
                 if cell.point_inside_polygon(p1):
-                    cell.text += text
+                    cell.texts.append(text_point)
 
         for cell in self.cells:
             cell.draw(self.canvas)
-        # sorted_cells = sorted(self.skeleton, key=lambda c: c.center.y)
-        # for s_cell in sorted_cells:
-        #     for cell in self.table:
-        #         if cell.point_inside_polygon(s_cell.center):
-        #             pass
 
     def print_table(self):
-        for y, row in self.table_skeleton.items():
-            # for x, cell in enumerate(row):
-            print(list(self.global_map[y].values()))
+        rows = len(self.table_skeleton)
+        cols = len(self.table_skeleton[0])
+        for col in range(cols):
+            for row in range(rows):
+                self.global_map[row][col].print_cell()
 
 
 class PDFInterpreter:
@@ -774,9 +814,9 @@ class PDFInterpreter:
                         self.skeleton.append(cell)
                     else:
                         continue
-                    print(p1, p2)
-                    print(p4, p3)
-                    print('-' * 20)
+                    # print(p1, p2)
+                    # print(p4, p3)
+                    # print('-' * 20)
                     if self.draw:
                         # self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill='gray')
                         cell.draw(self.canvas)
@@ -797,7 +837,7 @@ class PDFInterpreter:
                     continue
                 self.add_points(line2)
                 if line1 in line2:
-                    line1.test_intersection(line2)
+                    # line1.test_intersection(line2)
                     xy, _, _ = line1.intersection(line2)
                     p1 = Point(xy)
                     if p1 == line1.p1:  # fixing alignment
@@ -857,9 +897,9 @@ class PDFInterpreter:
                         else:
                             continue
                         if self.draw:
-                            print(p1, p2)
-                            print(p4, p3)
-                            print('-' * 20)
+                            # print(p1, p2)
+                            # print(p4, p3)
+                            # print('-' * 20)
                             # color = random.choice(list(ImageColor.colormap.keys()))
                             # self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill=color)
                             cell.draw(self.canvas)
@@ -894,17 +934,17 @@ class PDFInterpreter:
 
         if w > 1.0:
             self.canvas.line((x, y, x + w, y), fill='black')
-            print('LINE X', x, y)
+            # print('LINE X', x, y)
             self.lines.append(Line(Point(x, y), Point(x + w, y)))
         elif h > 1.0:
             self.canvas.line((x, y, x, y - h), fill='black')
-            print('LINE Y', x, y)
+            # print('LINE Y', x, y)
             self.lines.append(Line(Point(x, y), Point(x, y - h)))
         else:
             self.canvas.rectangle((x, y, x + w, y - h), fill='black')
             # self.lines.append(Line((x, y), (x, y - h)))
             # self.lines.append(Line((x, y), (x + w, y)))
-            print('RECT', x, y)
+            # print('RECT', x, y)
 
     def move_cursor_text(self, x=0, y=0):
         xc, yc = self.text_cursor
@@ -952,6 +992,10 @@ class PDFInterpreter:
             command = OneOrMore(COMMAND).parseString(command_line)  # parse line to command
             self.commands.extend(command)
 
+    def store_text(self, text: str, point: Point):
+        print('Storing "{}" at {}'.format(text, point))
+        self.texts.append((text, point))
+
     def render(self):
         text_line = ''
         for command_num, command in enumerate(self.commands):
@@ -970,7 +1014,7 @@ class PDFInterpreter:
                 d1, d2 = self.get_transformed_figure_cursor
                 self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
                 self.figure_cursor = (oc1, oc2)
-                print('Drawing C bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+                # print('Drawing C bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
             if opcode == 'v':
                 a1, a2, c1, c2 = args  # bezier points
 
@@ -980,7 +1024,7 @@ class PDFInterpreter:
                 d1, d2 = self.get_transformed_figure_cursor
                 self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
                 self.figure_cursor = (oc1, oc2)
-                print('Drawing V bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+                # print('Drawing V bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
             if opcode == 'y':
                 a1, a2, c1, c2 = args  # bezier points
                 oc1, oc2 = c1, c2
@@ -989,7 +1033,7 @@ class PDFInterpreter:
                 d1, d2 = self.get_transformed_figure_cursor
                 self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
                 self.figure_cursor = (oc1, oc2)
-                print('Drawing Y bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+                # print('Drawing Y bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
             if opcode == 'l':
                 c1, c2 = args  # bezier points
                 oc1, oc2 = c1, c2
@@ -997,10 +1041,10 @@ class PDFInterpreter:
                 d1, d2 = self.get_transformed_figure_cursor
                 self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
                 self.figure_cursor = (oc1, oc2)
-                print('Drawing line           at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+                # print('Drawing line           at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
 
             if opcode == 'f':
-                pass
+                pass  # do nothing
 
             if opcode == 'csn':
                 pass  # do nothing
@@ -1012,26 +1056,26 @@ class PDFInterpreter:
                 self.figure_scale_y = scale_y
                 self.figure_offset_x = offset_x
                 self.figure_offset_y = offset_y
-                print('Transformed FIGURE cursor now at', self.get_transformed_figure_cursor)
+                # print('Transformed FIGURE cursor now at', self.get_transformed_figure_cursor)
 
             if opcode == 're':  # RENDER BOX
                 x, y, w, h = args  # absolute coordinated, doesn't require any transformations
-                print('Drawing box at X:{} Y:{} W:{} H:{}'.format(x, y, w, h))
+                # print('Drawing box at X:{} Y:{} W:{} H:{}'.format(x, y, w, h))
                 if self.useful_content[0][1] < self.flip_y(y) < self.useful_content[1][1]:
                     self.draw_rect(x, self.flip_y(y), w, h)
 
             if opcode == 'BT':
-                print('New text block')
+                # print('New text block')
                 self.text_cursor = (0, self.y_size)
 
             if opcode == 'ET':
-                print('End text block')
+                # print('End text block')
                 self.text_cursor = (0, self.y_size)
 
             if opcode == 'Tf':
                 font, font_size = args
                 font_size = int(font_size)
-                print('Loading font', font, font_size)
+                # print('Loading font', font, font_size)
                 self.font_size = font_size
                 self.font_key = font
 
@@ -1046,7 +1090,7 @@ class PDFInterpreter:
                 else:
                     self.text_leading = y
                     self.move_cursor_text(x, y)
-                print('Moving cursor by X:{} Y:{}, new cursor'.format(x, y), self.text_cursor)
+                # print('Moving cursor by X:{} Y:{}, new cursor'.format(x, y), self.text_cursor)
                 # self.text_cursor = (x, y)
             if opcode == 'Td':
                 x, y = args  # TD arguments
@@ -1056,26 +1100,24 @@ class PDFInterpreter:
                     self.move_cursor_text(x, -y)
                 else:
                     self.move_cursor_text(x, y)
-                # cx,cy = self.text_cursor
-                # self.text_cursor = (cx*x,cy*y)
-                print('Moving cursor by X:{} Y:{}, new cursor'.format(x, y), self.text_cursor)
-                # self.text_cursor = (x, y)
+
+                # print('Moving cursor by X:{} Y:{}, new cursor'.format(x, y), self.text_cursor)
 
             if opcode == 'TL':
                 self.text_leading = args[0]
-                print('Setting text leading to', args[0])
+                # print('Setting text leading to', args[0])
 
             if opcode == 'Tc':
                 self.text_char_spacing = args[0]
-                print('Setting text char spacing to', args[0])
+                # print('Setting text char spacing to', args[0])
 
             if opcode == 'Tw':
                 self.text_word_spacing = args[0]
-                print('Setting text word spacing to', args[0])
+                # print('Setting text word spacing to', args[0])
 
             if opcode == 'Ts':
                 self.text_rise = args[0]
-                print('Setting text word rise to', args[0])
+                # print('Setting text word rise to', args[0])
 
             if opcode == 'Tm':  # STORE MATRIX
                 scale_x, shear_x, shear_y, scale_y, offset_x, offset_y = args
@@ -1084,59 +1126,69 @@ class PDFInterpreter:
                 self.text_offset_x = offset_x
                 self.text_offset_y = offset_y
                 self.text_cursor = (offset_x, self.flip_y(offset_y))
-                print('Transformed TEXT cursor now at', self.text_cursor, self.text_scale_x)
+                # print('Transformed TEXT cursor now at', self.text_cursor, self.text_scale_x)
 
             if opcode == 'TJ':  # RENDER TEXT
                 orig_cursor = self.text_cursor
                 if self.flip_page:
                     self.move_cursor_text(0, -self.new_line / 1.3)
-
+                text_origin = self.text_cursor
                 for text_arg in args:
+
                     text = text_arg[0]
 
                     x1 = (-text_arg[1] / 1000) * self.text_scale_x
-                    if x1 > 5:
-                        self.texts.append((text_line, Point(self.text_cursor)))
-                        text_line = ""
+
                     self.move_cursor_text(x1)
+
+                    if x1 > 5:
+                        self.store_text(text_line, Point(text_origin))
+                        text_origin = self.text_cursor
+                        text_line = ""
                     words = text.split(' ')
                     for word_num, word in enumerate(words):
                         space, _ = self.font.getsize(' ')
                         for char in word:
                             text_line += char
                             x2, y2 = self.font.getsize(char)
-                            print('Printing "{}" at'.format(text), self.text_cursor)
+                            # print('Printing "{}" at'.format(char), self.text_cursor)
+                            # text_origin = self.text_cursor
                             self.canvas.text(self.text_cursor, char, font=self.font, fill='black')
+
                             self.move_cursor_text(x2 + (self.text_char_spacing * self.text_scale_x))
+
                             if self.text_char_spacing * self.text_scale_x > 5:
-                                self.texts.append((text_line, Point(self.text_cursor)))
+                                self.store_text(text_line, Point(text_origin))
+                                text_origin = self.text_cursor
                                 text_line = ""
+
                         self.move_cursor_text(self.text_word_spacing * self.text_scale_x)
+
                         if self.text_word_spacing * self.text_scale_x > 5:
-                            self.texts.append((text_line, Point(self.text_cursor)))
+                            self.store_text(text_line, Point(text_origin))
+                            text_origin = self.text_cursor
                             text_line = ""
+
                         if 1 < len(words) != word_num + 1:
+                            text_line += ' '
                             self.move_cursor_text(space)
 
                 if text_line:
-                    self.texts.append((text_line, Point(self.text_cursor)))
+                    self.store_text(text_line, Point(text_origin))
                     text_line = ""
                 self.text_cursor = orig_cursor
 
             if opcode == 'T*':
-                # _, new_line = self.font.getsize('A')
-                if self.flip_page:
-                    self.move_cursor_text(0, self.text_leading)
-                else:
-                    self.move_cursor_text(0, self.text_leading)
-                # self.texts.append(("\n",Point(self.text_cursor)))
+                # self.texts.append(("\n", Point(self.text_cursor)))
+                self.move_cursor_text(0, self.text_leading)
+
             if opcode == 'Tj':
                 text = args[0]
                 new_line = self.new_line
                 if self.flip_page:
                     self.move_cursor_text(0, -new_line / 1.3)
-                print('Printing "{}" at'.format(text), self.text_cursor)
-                self.texts.append((text, Point(self.text_cursor)))
+                # print('Printing "{}" at'.format(text), self.text_cursor)
+                self.store_text(text, Point(self.text_cursor))
                 self.canvas.text(self.text_cursor, text, font=self.font, fill='black')
                 if self.flip_page:
                     self.move_cursor_text(0, new_line / 1.3)
@@ -1160,13 +1212,6 @@ if __name__ == '__main__':
     datasheet = DataSheet('stm32L431')
     table = 2
     print(datasheet.table_root.childs[table])
-    # for table in pdf.table_root.childs:
-    #     a = PDFInterpreter(table)
-    #     a = PDFInterpreter(pdf.table_root.childs[1])
-    #     # print(a.node.get_data())
-    #     a.prepare()
-    #     a.render()
-    #     a.save()
     pdf_interpreter = PDFInterpreter(pdf_file=datasheet.pdf_file, page=13)
     pdf_interpreter.draw = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
