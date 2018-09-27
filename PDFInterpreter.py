@@ -6,6 +6,7 @@ from typing import Tuple
 
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 from pyparsing import *
+from tqdm import tqdm
 
 from DumpPDFText import *
 
@@ -42,11 +43,35 @@ def parse_text_args(text):
     return text[0], 0.0
 
 
+def decode_escaped(text):
+    text = text.replace('%LB%', '(')  # temp fix for escaped parentheses
+    text = text.replace('%RB%', ')')
+    text = text.replace('%RTB%', '>')
+    text = text.replace('%LTB%', '<')
+    text = text.replace('%LSB%', '[')
+    text = text.replace('%RSB%', ']')
+    return text
+
+
 def parse_command(text):
     opcode = text[-1]
     args = text[:-1]
+    new_args = []
+    for arg in args:
+        if type(arg) == tuple:
+            text, num = arg
+            if type(text) == str:
+                text = decode_escaped(text)
+                new_args.append((text, num))
+            else:
+                new_args.append(arg)
+        elif type(arg) == str:
+            arg = decode_escaped(arg)
+            new_args.append(arg)
+        else:
+            new_args.append(arg)
     # print(opcode,args)
-    return opcode, args
+    return opcode, new_args
 
 
 OPCODE = Word(alphas + '*')
@@ -161,6 +186,9 @@ class Point:
 
     def __repr__(self):
         return "Point<X:{} Y:{} {} >".format(self.x, self.y, self.symbol)
+
+    def distance(self, other: 'Point'):
+        return math.sqrt(((self.x - other.x) ** 2) + ((self.y - other.y) ** 2))
 
     @property
     def as_tuple(self):
@@ -278,6 +306,10 @@ class Line:
     @property
     def cy(self):
         return self.p2.y
+
+    @property
+    def length(self):
+        return self.p1.distance(self.p2)
 
     def __repr__(self):
         return 'Line<p1:{} p2:{} {}>'.format(self.p1, self.p2, 'vertical' if self.vertical else 'horizontal')
@@ -528,7 +560,7 @@ class Cell:
         self.texts = []  # type: List[Tuple[str, Point]]
 
     def __repr__(self):
-        return 'Cell <"{}"> '.format(self.p1)
+        return 'Cell <"{}"> '.format(self.text)
 
     @property
     def text(self):
@@ -550,7 +582,7 @@ class Cell:
             if current_point.is_to_right(point) or point == current_point:
                 self._text += text
             elif point.is_below(current_point):
-                self._text += '\n' +text
+                self._text += '\n' + text
             else:
                 self._text += text
 
@@ -678,7 +710,6 @@ class Table:
                         # t_cell.text = "{} {}".format(y, x)
                         self.global_map[y][x] = t_cell
 
-        pass
         for text_point in self.texts:
             for cell in self.cells:
                 _, p1 = text_point
@@ -694,6 +725,16 @@ class Table:
         for col in range(cols):
             for row in range(rows):
                 self.global_map[row][col].print_cell()
+
+    # def join_splitted_table(self, other: 'Table', strip_header=True,ignore_header_error = False):
+    #     for row_id, row in other.global_map.items():
+    #         if strip_header and row_id == 0:
+    #             for cell1,cell2 in zip(self.global_map[0].values(),row.values()):
+    #                 if cell1.text != cell2.text and not ignore_header_error:
+    #                     raise Exception('''Tables header aren\'t identical\n'
+    #                                     if you want to ignore this error set ignore_header_error = True''')
+    #             continue
+    #         self.global_map[len(self.global_map)] = row
 
 
 class PDFInterpreter:
@@ -749,7 +790,16 @@ class PDFInterpreter:
         self.texts = []  # type: List[(str,Point)]
         self.table = Table(self.cells, self.skeleton, self.texts, self.canvas)
         self.draw = False
+        self.debug = False
         self.useful_content = [(6, 76), (6 + 556, 76 + + 657)]
+
+    def process(self):
+        self.prepare()
+        self.parse()
+        self.render()
+        self.build_skeleton()
+        self.rebuild_table()
+        self.table.build_table()
 
     def prepare(self):
         self.image = Image.new('RGB', self.page_size, 'white')
@@ -780,14 +830,24 @@ class PDFInterpreter:
             if point.up and point.down and not (point.left or point.right):
                 self.points.remove(point)
 
+    def clean_lines(self):
+        for line in self.lines:
+            if line.length < 5.0:
+                self.lines.remove(line)
+
     def build_skeleton(self):
+        self.clean_lines()
         lines = copy.deepcopy(self.lines)
         temp_point = Point(0, 0)
         temp_point.down = temp_point.up = temp_point.left = temp_point.right = True
-        for line1 in lines:
+
+        for line1 in tqdm(lines, desc='Building table skeleton', total=len(lines), unit='lines',file=sys.stdout):
+            sys.stdout.flush()
+            if line1.length < 5.0:
+                continue
             self.add_skeleton_points(line1)
             for line2 in lines:
-                if line1 == line2:
+                if line1 == line2 or line2.length < 5.0:
                     continue
                 self.add_skeleton_points(line2)
                 if line2.vertical == line1.vertical:
@@ -823,14 +883,16 @@ class PDFInterpreter:
         if self.draw:
             for point in self.skeleton_points:
                 point.draw(self.canvas)
-        name = self.name
-        self.name += '-skeleton'
-        self.save()
-        self.name = name
-        self.canvas.rectangle(((0, 0), self.page_size), 'white')
+            name = self.name
+            self.name += '-skeleton'
+            self.save()
+            self.name = name
+            self.canvas.rectangle(((0, 0), self.page_size), 'white')
 
     def rebuild_table(self):
-        for line1 in self.lines:
+        self.clean_lines()
+        for line1 in tqdm(self.lines, desc='Rebuilding skeleton', total=len(self.lines), unit='lines',file=sys.stdout):
+            sys.stdout.flush()
             self.add_points(line1)
             for line2 in self.lines:
                 if line1 == line2:
@@ -904,14 +966,15 @@ class PDFInterpreter:
                             # self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill=color)
                             cell.draw(self.canvas)
                             # cell.center.draw(self.canvas)
-        for p in self.points:
-            p.draw(self.canvas)
+        if self.draw:
+            for p in self.points:
+                p.draw(self.canvas)
 
-        name = self.name
-        self.name += '-clean'
-        self.save()
-        self.name = name
-        self.canvas.rectangle(((0, 0), self.page_size), 'white')
+            name = self.name
+            self.name += '-clean'
+            self.save()
+            self.name = name
+            self.canvas.rectangle(((0, 0), self.page_size), 'white')
 
     def flip_y(self, y):
         if self.flip_page:
@@ -967,18 +1030,12 @@ class PDFInterpreter:
         if not self.prepared:
             raise Warning('Interpreter isn\'t prepared')
         for command_line in self.content.split('\n')[1:]:  # type:str
-            if '\(' in command_line:  # temp fix for escaped parentheses
-                command_line = command_line.replace('\(', ' ')
-            if '\)' in command_line:
-                command_line = command_line.replace('\)', ' ')
-            if '\>' in command_line:
-                command_line = command_line.replace('\>', ' ')
-            if '\<' in command_line:
-                command_line = command_line.replace('\<', ' ')
-            if '\[' in command_line:
-                command_line = command_line.replace('\[', ' ')
-            if '\]' in command_line:
-                command_line = command_line.replace('\]', ' ')
+            command_line = command_line.replace('\(', '%LB%')  # temp fix for escaped parentheses
+            command_line = command_line.replace('\)', '%RB%')
+            command_line = command_line.replace('\>', '%RTB%')
+            command_line = command_line.replace('\<', '%LTB%')
+            command_line = command_line.replace('\[', '%LSB%')
+            command_line = command_line.replace('\]', '%RSB%')
             if not command_line:
                 continue
             if command_line.startswith('/'):
@@ -993,12 +1050,13 @@ class PDFInterpreter:
             self.commands.extend(command)
 
     def store_text(self, text: str, point: Point):
-        print('Storing "{}" at {}'.format(text, point))
+        if self.debug:
+            print('Storing "{}" at {}'.format(text, point))
         self.texts.append((text, point))
 
     def render(self):
         text_line = ''
-        for command_num, command in enumerate(self.commands):
+        for command_num, command in enumerate(tqdm(self.commands, desc='Rendering page', total=len(self.commands), unit='commands',file=sys.stdout)):
             if DEBUG:
                 print(command)
             opcode = command[0]  # Command opcode
@@ -1198,14 +1256,15 @@ class PDFInterpreter:
         self.name = name
 
     def save(self, path=None):
-        if not self.prepared:
-            raise Warning('Interpreter isn\'t prepared')
-        if path:
-            path = (Path(path) / self.name).with_suffix('.png')
-        else:
-            path = (Path.cwd() / self.name).with_suffix('.png')
-        with path.open('wb') as fp:
-            self.image.save(fp)
+        if self.draw:
+            if not self.prepared:
+                raise Warning('Interpreter isn\'t prepared')
+            if path:
+                path = (Path(path) / self.name).with_suffix('.png')
+            else:
+                path = (Path.cwd() / self.name).with_suffix('.png')
+            with path.open('wb') as fp:
+                self.image.save(fp)
 
 
 if __name__ == '__main__':
@@ -1217,11 +1276,6 @@ if __name__ == '__main__':
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
     pdf_interpreter.flip_page = True
     # print(pdf_interpreter.content)
-    pdf_interpreter.prepare()
-    pdf_interpreter.parse()
-    pdf_interpreter.render()
-    pdf_interpreter.build_skeleton()
-    pdf_interpreter.rebuild_table()
-    pdf_interpreter.table.build_table()
+    pdf_interpreter.process()
     pdf_interpreter.save()
-    pdf_interpreter.table.print_table()
+    # pdf_interpreter.table.print_table()
