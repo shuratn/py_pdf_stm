@@ -185,7 +185,7 @@ class Point:
         return direction_table[(self.up, self.down, self.right, self.left)]
 
     def __repr__(self):
-        return "Point<X:{} Y:{} {} >".format(self.x, self.y, self.symbol)
+        return "Point<X:{} Y:{}>".format(self.x, self.y)
 
     def distance(self, other: 'Point'):
         return math.sqrt(((self.x - other.x) ** 2) + ((self.y - other.y) ** 2))
@@ -560,16 +560,22 @@ class Cell:
         self.texts = []  # type: List[Tuple[str, Point]]
 
     def __repr__(self):
-        return 'Cell <"{}"> '.format(self.text)
+        return 'Cell <"{}"> '.format(self.text.replace('\n',' '))
+
+    @property
+    def clean_text(self):
+        return self.text.replace('\n',' ')
+
+    def __hash__(self):
+        return hash(self.text)+hash(self.as_tuple)
 
     @property
     def text(self):
-        if not self._text and self.texts:
+        if self.texts:
             self.process_text()
             return self._text
         if not self.texts:
-            return 'NO TEXT'
-        return self._text
+            return ''
 
     def process_text(self):
         self._text = ''
@@ -607,9 +613,13 @@ class Cell:
         centroid = Point(sum(x) / 4, sum(y) / 4)
         return centroid
 
-    def draw(self, canvas: ImageDraw.ImageDraw, color='black'):
+    def draw(self, canvas: ImageDraw.ImageDraw, color='black',width = 1):
 
-        canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline=color)
+        # canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline=color,)
+        canvas.line((self.p1.as_tuple,self.p2.as_tuple),color,width)
+        canvas.line((self.p2.as_tuple,self.p3.as_tuple),color,width)
+        canvas.line((self.p3.as_tuple,self.p4.as_tuple),color,width)
+        canvas.line((self.p4.as_tuple,self.p1.as_tuple),color,width)
         if self.text:
             canvas.text((self.p1.x + 3, self.p1.y + 3), self.text, fill='black', font=self.font)
 
@@ -636,35 +646,9 @@ class Cell:
         Works fine for non-convex polygons.
         """
         x, y = point.as_tuple
-        poly = self.as_tuple
-        n = len(poly)
-        inside = False
-
-        p1x, p1y = poly[0]
-        for i in range(1, n + 1):
-            p2x, p2y = poly[i % n]
-            if p1y == p2y:
-                if y == p1y:
-                    if min(p1x, p2x) <= x <= max(p1x, p2x):
-                        # point is on horizontal edge
-                        inside = include_edges
-                        break
-                    elif x < min(p1x, p2x):  # point is to the left from current edge
-                        inside = not inside
-            else:  # p1y!= p2y
-                if min(p1y, p2y) <= y <= max(p1y, p2y):
-                    x_inters = (y - p1y) * (p2x - p1x) / float(p2y - p1y) + p1x
-
-                    if x == x_inters:  # point is right on the edge
-                        inside = include_edges
-                        break
-
-                    if x < x_inters:  # point is to the left from current edge
-                        inside = not inside
-
-            p1x, p1y = p2x, p2y
-
-        return inside
+        x1,y1 = self.p1.as_tuple
+        x2,y2 = self.p3.as_tuple
+        return x1 < x < x2 and y1 < y < y2
 
 
 # if __name__ == '__main__':
@@ -685,7 +669,6 @@ class Table:
         self.cells = cells
         self.table_skeleton = {}
         self.global_map = {}
-        self.map = {}
 
     def split_to_2d(self):
         y_list = []
@@ -707,7 +690,6 @@ class Table:
             for x, cell in enumerate(row):
                 for t_cell in self.cells:
                     if t_cell.point_inside_polygon(cell.center):
-                        # t_cell.text = "{} {}".format(y, x)
                         self.global_map[y][x] = t_cell
 
         for text_point in self.texts:
@@ -718,6 +700,31 @@ class Table:
 
         for cell in self.cells:
             cell.draw(self.canvas)
+
+    def get_col(self, col_id) ->List[Cell]:
+        col = []
+        for row in self.global_map.values():
+            col.append(row[col_id])
+        return col
+
+    def get_row(self, row_id) ->List[Cell]:
+        return list(self.global_map[row_id].values())
+
+    def get_cell(self,x,y) ->Cell:
+        return self.global_map[y][x]
+
+    def get_cell_span(self, cell):
+        temp = {}
+        for row_id, row in self.global_map.items():
+
+            for col_id, t_cell in row.items():
+                if t_cell == cell:
+                    if not temp.get(row_id, False):
+                        temp[row_id] = {}
+                    temp[row_id][col_id] = True
+        row_span = len(temp)
+        col_span = len(list(temp.values())[0])
+        return row_span, col_span
 
     def print_table(self):
         rows = len(self.table_skeleton)
@@ -841,7 +848,7 @@ class PDFInterpreter:
         temp_point = Point(0, 0)
         temp_point.down = temp_point.up = temp_point.left = temp_point.right = True
 
-        for line1 in tqdm(lines, desc='Building table skeleton', total=len(lines), unit='lines',file=sys.stdout):
+        for line1 in tqdm(lines, desc='Building table skeleton', total=len(lines), unit='lines', file=sys.stdout,disable=self.debug):
             sys.stdout.flush()
             if line1.length < 5.0:
                 continue
@@ -879,10 +886,10 @@ class PDFInterpreter:
                     # print('-' * 20)
                     if self.draw:
                         # self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill='gray')
-                        cell.draw(self.canvas)
+                        cell.draw(self.canvas,'red',width = 2)
         if self.draw:
             for point in self.skeleton_points:
-                point.draw(self.canvas)
+                point.draw(self.canvas,color='green')
             name = self.name
             self.name += '-skeleton'
             self.save()
@@ -891,7 +898,7 @@ class PDFInterpreter:
 
     def rebuild_table(self):
         self.clean_lines()
-        for line1 in tqdm(self.lines, desc='Rebuilding skeleton', total=len(self.lines), unit='lines',file=sys.stdout):
+        for line1 in tqdm(self.lines, desc='Rebuilding skeleton', total=len(self.lines), unit='lines', file=sys.stdout,disable=self.debug):
             sys.stdout.flush()
             self.add_points(line1)
             for line2 in self.lines:
@@ -1056,7 +1063,8 @@ class PDFInterpreter:
 
     def render(self):
         text_line = ''
-        for command_num, command in enumerate(tqdm(self.commands, desc='Rendering page', total=len(self.commands), unit='commands',file=sys.stdout)):
+        for command_num, command in enumerate(
+                tqdm(self.commands, desc='Rendering page', total=len(self.commands), unit='commands', file=sys.stdout,disable=self.debug)):
             if DEBUG:
                 print(command)
             opcode = command[0]  # Command opcode
@@ -1268,11 +1276,10 @@ class PDFInterpreter:
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet('stm32L431')
-    table = 2
-    print(datasheet.table_root.childs[table])
+    datasheet = DataSheet('stm32L452')
     pdf_interpreter = PDFInterpreter(pdf_file=datasheet.pdf_file, page=13)
     pdf_interpreter.draw = True
+    pdf_interpreter.debug = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
     pdf_interpreter.flip_page = True
     # print(pdf_interpreter.content)
