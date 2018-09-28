@@ -8,7 +8,7 @@ from tqdm import tqdm
 import requests
 from PyPDF3.pdf import PageObject
 
-datasheet_ulr = 'https://www.st.com/resource/en/datasheet/{}re.pdf'
+
 
 
 def join(to_join, separator=' '):
@@ -196,26 +196,9 @@ class DataSheetTableNode(DataSheetNode):
 
 class DataSheet:
 
-    def __init__(self, name: str):
-        self.name = name
-        path = Path('./stm32') / name / "{}_ds.pdf".format(name)
-        if path.exists():
-            self.pdf_file = PyPDF3.PdfFileReader(path.open('rb'))
-        else:
-            print('Unknown yet controller, trying to download datasheet')
-            r = requests.get(datasheet_ulr.format(name), stream=True)
-            if r.status_code == 200:
-                os.makedirs(path.parent, exist_ok=True)
-                with path.open('wb') as f:
-                    total_length = int(r.headers.get('content-length'))
-                    for chunk in tqdm(r.iter_content(chunk_size=1024), total=int(total_length / 1024) + 1, unit='Kbit'):
-                        if chunk:
-                            f.write(chunk)
-                            f.flush()
-                    f.close()
-                self.pdf_file = PyPDF3.PdfFileReader(path.open('rb'))
-            else:
-                raise Exception('Invalid controller name')
+    def __init__(self, datasheet_path):
+        self.path = Path(datasheet_path)
+        self.pdf_file =  PyPDF3.PdfFileReader(self.path.open('rb'))
         self.raw_outline = []
         self.tables, self.figures = {}, {}
         self.table_of_content = DataSheetNode('ROOT', [0])

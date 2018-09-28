@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageColor
 from pyparsing import *
 from tqdm import tqdm
 
-from DumpPDFText import *
+from DataSheet import *
 
 DEBUG = False
 
@@ -585,7 +585,7 @@ class Cell:
                 continue
             if not current_point:
                 current_point = point
-            if current_point.is_to_right(point) or point == current_point:
+            if current_point.is_to_right(point) and not point.is_below(current_point) or point == current_point:
                 self._text += text
             elif point.is_below(current_point):
                 self._text += '\n' + text
@@ -804,6 +804,9 @@ class PDFInterpreter:
         self.prepare()
         self.parse()
         self.render()
+        if len(self.lines)>200:
+            print('Not a table')
+            return
         self.build_skeleton()
         self.rebuild_table()
         self.table.build_table()
@@ -1293,8 +1296,8 @@ class PDFInterpreter:
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet('STM32L452')
-    pdf_interpreter = PDFInterpreter(pdf_file=datasheet.pdf_file, page=15)
+    datasheet = DataSheet('STM32L431')
+    pdf_interpreter = PDFInterpreter(pdf_file=datasheet.pdf_file, page=13)
     pdf_interpreter.draw = True
     pdf_interpreter.debug = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
