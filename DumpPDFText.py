@@ -200,41 +200,32 @@ class DataSheet:
         self.name = name
         path = Path('./stm32') / name / "{}_ds.pdf".format(name)
         if path.exists():
-            self.pdf_file = PyPDF3.PdfFileReader(str(path))
+            self.pdf_file = PyPDF3.PdfFileReader(path.open('rb'))
         else:
             print('Unknown yet controller, trying to download datasheet')
             r = requests.get(datasheet_ulr.format(name), stream=True)
             if r.status_code == 200:
                 os.makedirs(path.parent, exist_ok=True)
-                with open(path, 'wb') as f:
+                with path.open('wb') as f:
                     total_length = int(r.headers.get('content-length'))
                     for chunk in tqdm(r.iter_content(chunk_size=1024), total=int(total_length / 1024) + 1, unit='Kbit'):
                         if chunk:
                             f.write(chunk)
                             f.flush()
-                self.pdf_file = PyPDF3.PdfFileReader(str(path))
+                    f.close()
+                self.pdf_file = PyPDF3.PdfFileReader(path.open('rb'))
             else:
                 raise Exception('Invalid controller name')
-        self.text = {}  # type: Dict[int,str]
         self.raw_outline = []
         self.tables, self.figures = {}, {}
         self.table_of_content = DataSheetNode('ROOT', [0])
-        self.table_root = DataSheetNode('TABLES',[-1])
+        self.table_root = DataSheetNode('TABLES', [-1])
         self.table_of_content.append(self.table_root)
         self.flatten_outline()
         self.sort_raw_outline()
 
     def get_tables(self):
         pass
-
-    def gather_pages(self):
-        """
-        Gathers all text from pages.
-        """
-        for page_id in range(self.pdf_file.getNumPages()):
-            page = self.pdf_file.getPage(page_id)  # type: PageObject
-            # print([page.extractText()])
-            self.text[page_id] = page.extractText().replace('\n®\n', '®').replace('\n® \n', '®')
 
     def flatten_outline(self, line=None):
         if line is None:
@@ -252,10 +243,10 @@ class DataSheet:
                 name = entry['/Title']
                 if 'Table' in name:
                     table_id = int(name.split('.')[0].split(' ')[-1])
-                    table = DataSheetTableNode(name, [0,table_id], table_id, entry)
+                    table = DataSheetTableNode(name, [0, table_id], table_id, entry)
                     self.table_root.append(table)
                     if top_level_node:
-                        table.path = top_level_node.path+[table_id]
+                        table.path = top_level_node.path + [table_id]
                         top_level_node.append(table)
                     self.tables[table_id] = {'name': name, 'data': entry}
                 elif 'Figure' in name:
@@ -264,7 +255,6 @@ class DataSheet:
                 else:
                     tmp = name.split(' ')
 
-                    # print(entry)
                     if '.' in tmp[0]:
                         order = list(map(int, tmp[0].split('.')))
 
@@ -282,6 +272,13 @@ class DataSheet:
             else:
                 # TODO
                 pass
+
+    def get_page_num(self, page):
+        # return self.pdf_file.getPageNumber(page)
+        for n, pdf_page in enumerate(self.pdf_file.pages):
+            if pdf_page.raw_get('/Contents') == page.raw_get('/Contents'):
+                        return n
+        return -1
 
     def get_difference(self, other: 'DataSheet'):
         print('Comparing {} and {}'.format(self.name, other.name))
@@ -306,8 +303,11 @@ if __name__ == '__main__':
     b = DataSheet(sys.argv[2])
     # b.table_of_content.print_tree()
     # a.table_of_content.print_tree()
+    table = a.table_root.childs[1]
+    print(table)
+    print(a.get_page_num(table.page))
     # a.get_difference(b)
-    a.table_of_content.print_tree()
+    # a.table_of_content.print_tree()
     # print(a.table_of_content.get_node_by_type(DataSheetTableNode))
     # print(a.table_of_content.to_set())
     # print('Total letter count:', sum([len(page) for page in a.text.values()]))

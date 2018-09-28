@@ -1,3 +1,4 @@
+pdfminer.six
 pyparsing
 Pillow
 certifi==2018.8.13

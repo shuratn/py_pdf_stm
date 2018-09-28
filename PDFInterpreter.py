@@ -399,7 +399,7 @@ class Line:
         det = (-dx1 * dy + dy1 * dx)
 
         if math.fabs(det) < det_tolerance:
-            print('Lines are parallel')
+            # print('Lines are parallel')
             return False
         # now, the determinant should be OK
         det_inv = 1.0 / det
@@ -814,9 +814,12 @@ class PDFInterpreter:
         self.table.canvas = self.canvas
         self.prepared = True
         for name, data in self.page['/Resources']['/Font'].items():
-            font_info = data.getObject()['/FontDescriptor']
-            # font_file = font_info['/FontFile2'].getObject().getData()
-            self.fonts[str(name)] = font_info['/FontName'].split("+")[-1].split(",")[0].split("-")[0]
+            try:
+                font_info = data.getObject()['/FontDescriptor']
+                # font_file = font_info['/FontFile2'].getObject().getData()
+                self.fonts[str(name)] = font_info['/FontName'].split("+")[-1].split(",")[0].split("-")[0]
+            except:
+                continue
 
     def add_points(self, line_to_add: Line):
         if line_to_add.p1 not in self.points:
@@ -847,8 +850,9 @@ class PDFInterpreter:
         lines = copy.deepcopy(self.lines)
         temp_point = Point(0, 0)
         temp_point.down = temp_point.up = temp_point.left = temp_point.right = True
-
-        for line1 in tqdm(lines, desc='Building table skeleton', total=len(lines), unit='lines', file=sys.stdout,disable=self.debug):
+        print('Building skeleton')
+        print('Analizing {} lines'.format(len(self.lines)))
+        for line1 in tqdm(lines, desc='Building table skeleton', total=len(lines), unit='lines', file=sys.stdout):
             sys.stdout.flush()
             if line1.length < 5.0:
                 continue
@@ -898,7 +902,9 @@ class PDFInterpreter:
 
     def rebuild_table(self):
         self.clean_lines()
-        for line1 in tqdm(self.lines, desc='Rebuilding skeleton', total=len(self.lines), unit='lines', file=sys.stdout,disable=self.debug):
+        print('Rebuilding table')
+        print('Analizing {} lines'.format(len(self.lines)))
+        for line1 in tqdm(self.lines, desc='Rebuilding table', total=len(self.lines), unit='lines', file=sys.stdout):
             sys.stdout.flush()
             self.add_points(line1)
             for line2 in self.lines:
@@ -1053,7 +1059,18 @@ class PDFInterpreter:
                 continue
             if DEBUG:
                 print(command_line)
-            command = OneOrMore(COMMAND).parseString(command_line)  # parse line to command
+            # if '<' in command_line or '>' in command_line:
+            #     continue
+            if self.debug:
+                print('Parsing ', command_line)
+            try:
+
+                command = OneOrMore(COMMAND).parseString(command_line)  # parse line to command
+            except Exception:
+                print('Failed parsing "{}"'.format(command_line))
+                if self.debug:
+                    continue
+                # raise # FUCK IT, WE ARE NOT GOING FOR THAT
             self.commands.extend(command)
 
     def store_text(self, text: str, point: Point):
@@ -1276,8 +1293,8 @@ class PDFInterpreter:
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet('stm32L452')
-    pdf_interpreter = PDFInterpreter(pdf_file=datasheet.pdf_file, page=13)
+    datasheet = DataSheet('STM32L452')
+    pdf_interpreter = PDFInterpreter(pdf_file=datasheet.pdf_file, page=15)
     pdf_interpreter.draw = True
     pdf_interpreter.debug = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
