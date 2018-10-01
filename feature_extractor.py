@@ -38,20 +38,12 @@ class FeatureListExtractor:  # This class is adapted to STM
     @staticmethod
     def extract_table(datasheet, page):
         print('Extracting table from {} page'.format(page + 1))
-        pdf_int = PDFInterpreter(pdf_file=datasheet.pdf_file, page=page)
-        pdf_int.flip_page = True
-        pdf_int.process()
-        return pdf_int.table
+        pdf_int = PDFInterpreter(str(datasheet.path))
+        table = pdf_int.parse_page(page)
+        return table
 
     def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
-        print('Extracting tables for', self.controller)
-        datasheet = self.datasheet
-        table_page = datasheet.table_root.childs[1].page
-        page_num = datasheet.get_page_num(table_page)
-        table_pt1 = self.extract_table(datasheet, page_num)
-        table_pt2 = self.extract_table(datasheet, page_num + 1)
-        table_pt3 = self.extract_table(datasheet, page_num + 2)
-        self.features_tables = [table_pt1, table_pt2, table_pt3]
+        return
 
     def handle_feature(self, name, value):
         return [(name, value)]  # Can be list of values and names
@@ -59,10 +51,9 @@ class FeatureListExtractor:  # This class is adapted to STM
     def extract_features(self):
         controller_features_names = []
         controller_features = {}
-        t1, t2, t3 = self.features_tables  # type: Table,Table,Table
         feature_offset = 0
-        for table in [t1, t2, t3]:
-            # try:
+        for table in self.features_tables:
+            try:
                 if not table.global_map:
                     continue
                 _, features_cell_span = table.get_cell_span(table.get_col(0)[0])
@@ -95,8 +86,8 @@ class FeatureListExtractor:  # This class is adapted to STM
                         for n,v in self.handle_feature(feature_name,feature_value):
                             controller_features[current_stm_name][n] = v
                 feature_offset = len(controller_features_names)
-                # except:
-                #     continue
+            except:
+                continue
 
         # FILL MISSING FIELDS
         for stm_name in controller_features.keys():
