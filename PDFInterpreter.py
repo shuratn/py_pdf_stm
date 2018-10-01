@@ -10,7 +10,8 @@ from tqdm import tqdm
 
 from DataSheet import *
 
-DEBUG = False
+DEBUG = True
+PRINT_PARSING = False
 
 
 def debug_print(*args, name="OPCODE"):
@@ -53,7 +54,8 @@ def decode_escaped(text):
     return text
 
 
-def parse_command(text):
+def parse_command(loc, text):
+    # print(loc,text)
     opcode = text[-1]
     args = text[:-1]
     new_args = []
@@ -71,7 +73,7 @@ def parse_command(text):
         else:
             new_args.append(arg)
     # print(opcode,args)
-    return opcode, new_args
+    return loc, opcode, new_args
 
 
 OPCODE = Word(alphas + '*')
@@ -85,13 +87,14 @@ RTBR = Literal(">").suppress()
 PLUSORMINUS = Literal('+') | Literal('-')
 OPLUSORMINUS = Optional(PLUSORMINUS)
 
-NUMBERS = Word(nums)
-NUMBER = Combine(OPLUSORMINUS + NUMBERS + DOT + NUMBERS) | Combine(OPLUSORMINUS + DOT + NUMBERS) | Combine(
-    OPLUSORMINUS + NUMBERS)
+DIGITS = Word(nums)
+NUMBER = Combine(OPLUSORMINUS + DIGITS + DOT + DIGITS) | Combine(OPLUSORMINUS + DOT + DIGITS) | Combine(
+    OPLUSORMINUS + DIGITS)
 NUMBER.setParseAction(parse_number)
 ONLY_TEXT = Word(alphanums + ' .\\/&!@#$%^-–=+*µ_,?;:®Ђ™°’±~<>|"\'').leaveWhitespace()
+SPECIAL_TEXT = Word(alphanums + ' .\\/&!@#$%^-–=+*µ_,?;:®Ђ™°’±~|"\'').leaveWhitespace()
 TEXT = (LBR + ONLY_TEXT + RBR) | (LTBR + ONLY_TEXT + RTBR)
-
+SPECIAL = Combine(Literal('/') + Word(alphas) + Optional(DIGITS))
 TEXT_ARGS = Optional(NUMBER) + TEXT
 TEXT_ARGS.setParseAction(parse_text_args)
 
@@ -99,11 +102,16 @@ TEXT_ARGS.setParseAction(parse_text_args)
 SPACE = Literal(' ').suppress()
 COMMAND = ((LSBR + OneOrMore(TEXT_ARGS) + RSBR) + OPCODE) | \
           (OneOrMore(NUMBER) + OPCODE) | \
+          SPECIAL + Literal("<<") + SPECIAL_TEXT + Literal(">>") | \
+          SPECIAL + ZeroOrMore(NUMBER) + OPCODE | \
+          SPECIAL + ZeroOrMore(ONLY_TEXT) + OPCODE | \
+          SPECIAL + OPCODE | \
+          SPECIAL + SPECIAL | \
           TEXT + OPCODE | \
           ONLY_TEXT + ZeroOrMore(NUMBER) + OPCODE | \
           OPCODE
 COMMAND.setParseAction(parse_command)
-if DEBUG:
+if DEBUG and PRINT_PARSING:
     OPCODE.debug = DEBUG
     OPCODE.debugActions = (debug_print, debug_print, debug_print)
 
@@ -127,12 +135,16 @@ if DEBUG:
     dd = partial(debug_print, name='COMMAND')
     COMMAND.debugActions = (dd, dd, None)
 
-
 # # a = '-29964.8'
-# a = '/GS1 gs'
-# # print(NUMBER.parseString(a))
-# print(OneOrMore(COMMAND).parseString(a))
+a = ' /TT4 1 Tf'
+# print(NUMBER.parseString(a))
+# test = SPECIAL+ZeroOrMore(NUMBER|ONLY_TEXT)+OPCODE
+# test.debug = DEBUG
+# dd = partial(debug_print, name='TEST')
+# test.debugActions = (dd, dd, dd)
+# print(test.parseString(a))
 # exit(1)
+
 
 def almost_equals(num1, num2, precision=3.0):
     return abs(num1 - num2) < precision
@@ -560,14 +572,14 @@ class Cell:
         self.texts = []  # type: List[Tuple[str, Point]]
 
     def __repr__(self):
-        return 'Cell <"{}"> '.format(self.text.replace('\n',' '))
+        return 'Cell <"{}"> '.format(self.text.replace('\n', ' '))
 
     @property
     def clean_text(self):
-        return self.text.replace('\n',' ')
+        return self.text.replace('\n', ' ')
 
     def __hash__(self):
-        return hash(self.text)+hash(self.as_tuple)
+        return hash(self.text) + hash(self.as_tuple)
 
     @property
     def text(self):
@@ -613,13 +625,13 @@ class Cell:
         centroid = Point(sum(x) / 4, sum(y) / 4)
         return centroid
 
-    def draw(self, canvas: ImageDraw.ImageDraw, color='black',width = 1):
+    def draw(self, canvas: ImageDraw.ImageDraw, color='black', width=1):
 
         # canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline=color,)
-        canvas.line((self.p1.as_tuple,self.p2.as_tuple),color,width)
-        canvas.line((self.p2.as_tuple,self.p3.as_tuple),color,width)
-        canvas.line((self.p3.as_tuple,self.p4.as_tuple),color,width)
-        canvas.line((self.p4.as_tuple,self.p1.as_tuple),color,width)
+        canvas.line((self.p1.as_tuple, self.p2.as_tuple), color, width)
+        canvas.line((self.p2.as_tuple, self.p3.as_tuple), color, width)
+        canvas.line((self.p3.as_tuple, self.p4.as_tuple), color, width)
+        canvas.line((self.p4.as_tuple, self.p1.as_tuple), color, width)
         if self.text:
             canvas.text((self.p1.x + 3, self.p1.y + 3), self.text, fill='black', font=self.font)
 
@@ -646,8 +658,8 @@ class Cell:
         Works fine for non-convex polygons.
         """
         x, y = point.as_tuple
-        x1,y1 = self.p1.as_tuple
-        x2,y2 = self.p3.as_tuple
+        x1, y1 = self.p1.as_tuple
+        x2, y2 = self.p3.as_tuple
         return x1 < x < x2 and y1 < y < y2
 
 
@@ -701,16 +713,16 @@ class Table:
         for cell in self.cells:
             cell.draw(self.canvas)
 
-    def get_col(self, col_id) ->List[Cell]:
+    def get_col(self, col_id) -> List[Cell]:
         col = []
         for row in self.global_map.values():
             col.append(row[col_id])
         return col
 
-    def get_row(self, row_id) ->List[Cell]:
+    def get_row(self, row_id) -> List[Cell]:
         return list(self.global_map[row_id].values())
 
-    def get_cell(self,x,y) ->Cell:
+    def get_cell(self, x, y) -> Cell:
         return self.global_map[y][x]
 
     def get_cell_span(self, cell):
@@ -804,12 +816,12 @@ class PDFInterpreter:
         self.prepare()
         self.parse()
         self.render()
-        if len(self.lines)>200:
+        if len(self.lines) > 200:
             print('Not a table')
             return
-        self.build_skeleton()
-        self.rebuild_table()
-        self.table.build_table()
+        # self.build_skeleton()
+        # self.rebuild_table()
+        # self.table.build_table()
 
     def prepare(self):
         self.image = Image.new('RGB', self.page_size, 'white')
@@ -893,10 +905,10 @@ class PDFInterpreter:
                     # print('-' * 20)
                     if self.draw:
                         # self.canvas.polygon((p1.as_tuple, p2.as_tuple, p3.as_tuple, p4.as_tuple), fill='gray')
-                        cell.draw(self.canvas,'red',width = 2)
+                        cell.draw(self.canvas, 'red', width=2)
         if self.draw:
             for point in self.skeleton_points:
-                point.draw(self.canvas,color='green')
+                point.draw(self.canvas, color='green')
             name = self.name
             self.name += '-skeleton'
             self.save()
@@ -1020,7 +1032,8 @@ class PDFInterpreter:
             # print('LINE Y', x, y)
             self.lines.append(Line(Point(x, y), Point(x, y - h)))
         else:
-            self.canvas.rectangle((x, y, x + w, y - h), fill='black')
+            pass
+            # self.canvas.rectangle((x, y, x + w, y - h), fill='black')
             # self.lines.append(Line((x, y), (x, y - h)))
             # self.lines.append(Line((x, y), (x + w, y)))
             # print('RECT', x, y)
@@ -1033,7 +1046,10 @@ class PDFInterpreter:
     def get_transformed_figure_cursor(self):
         """Returns cursor with offset applied"""
         x, y = self.figure_cursor
-        return x + self.figure_offset_x, self.flip_y(y + self.figure_offset_y)
+        if self.figure_scale_y>0:
+            return x + self.figure_offset_x, self.flip_y(y + self.figure_offset_y)
+        else:
+            return x + self.figure_offset_x, y + self.figure_offset_y
 
     def apply_transforms_figure(self, x, y):
         return x + self.figure_offset_x, self.flip_y(y + self.figure_offset_y)
@@ -1045,36 +1061,47 @@ class PDFInterpreter:
     def parse(self):
         if not self.prepared:
             raise Warning('Interpreter isn\'t prepared')
-        for command_line in self.content.split('\n')[1:]:  # type:str
-            command_line = command_line.replace('\(', '%LB%')  # temp fix for escaped parentheses
-            command_line = command_line.replace('\)', '%RB%')
-            command_line = command_line.replace('\>', '%RTB%')
-            command_line = command_line.replace('\<', '%LTB%')
-            command_line = command_line.replace('\[', '%LSB%')
-            command_line = command_line.replace('\]', '%RSB%')
-            if not command_line:
-                continue
-            if command_line.startswith('/'):
-                args = command_line.split(' ')
-                opcode = args[-1]
-                args = args[:-1]
-                self.commands.append((opcode, args))
-                continue
-            if DEBUG:
-                print(command_line)
-            # if '<' in command_line or '>' in command_line:
-            #     continue
-            if self.debug:
-                print('Parsing ', command_line)
-            try:
+        # print(self.content)
+        command_line = ''
+        for line in self.content.split('\n'):  # type:str
 
-                command = OneOrMore(COMMAND).parseString(command_line)  # parse line to command
-            except Exception:
-                print('Failed parsing "{}"'.format(command_line))
-                if self.debug:
+            while command_line and len(command_line) > 3:
+                command_line = command_line.replace('\(', '%LB%')  # temp fix for escaped parentheses
+                command_line = command_line.replace('\)', '%RB%')
+                command_line = command_line.replace('\>', '%RTB%')
+                command_line = command_line.replace('\<', '%LTB%')
+                command_line = command_line.replace('\[', '%LSB%')
+                command_line = command_line.replace('\]', '%RSB%')
+                command_line = command_line.replace('\\200', '.')
+                if not command_line:
                     continue
-                # raise # FUCK IT, WE ARE NOT GOING FOR THAT
-            self.commands.extend(command)
+                # if command_line.startswith('/'):
+                #     args = command_line.split(' ')
+                #     opcode = args[-1]
+                #     args = args[:-1]
+                #     command_line
+                #     self.commands.append((opcode, args))
+                #     continue
+                # if '<' in command_line or '>' in command_line:
+                #     continue
+                if self.debug:
+                    print('Parsing ', command_line)
+                try:
+
+                    commands = COMMAND.parseString(command_line)  # parse line to command
+                    for command in commands:
+                        location, opcode, args = command
+                        self.commands.append((opcode, args))
+                        loc = command_line.index(opcode)
+                        command_line = command_line[loc + len(opcode):]
+                except Exception as ex:
+                    print('Failed to parse {}'.format(command_line))
+                    print('Exception:{}'.format(ex))
+                    break
+                    if self.debug:
+                        pass
+                    # raise # FUCK IT, WE ARE NOT GOING FOR THAT
+            command_line += ' ' + line.replace('\n', '')
 
     def store_text(self, text: str, point: Point):
         if self.debug:
@@ -1084,50 +1111,51 @@ class PDFInterpreter:
     def render(self):
         text_line = ''
         for command_num, command in enumerate(
-                tqdm(self.commands, desc='Rendering page', total=len(self.commands), unit='commands', file=sys.stdout,disable=self.debug)):
+                tqdm(self.commands, desc='Rendering page', total=len(self.commands), unit='commands', file=sys.stdout,
+                     disable=self.debug)):
             if DEBUG:
                 print(command)
             opcode = command[0]  # Command opcode
             args = command[1]  # command args
 
-            if opcode == 'c':
-                a1, a2, b1, b2, c1, c2 = args  # bezier points
-
-                # a1, a2 = self.apply_transforms_figure(a1, a2)
-                # b1, b2 = self.apply_transforms_figure(b1, b2)
-                oc1, oc2 = c1, c2
-                c1, c2 = self.apply_transforms_figure(c1, c2)
-                d1, d2 = self.get_transformed_figure_cursor
-                self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
-                self.figure_cursor = (oc1, oc2)
-                # print('Drawing C bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
-            if opcode == 'v':
-                a1, a2, c1, c2 = args  # bezier points
-
-                # a1, a2 = self.apply_transforms_figure(a1, a2)
-                oc1, oc2 = c1, c2
-                c1, c2 = self.apply_transforms_figure(c1, c2)
-                d1, d2 = self.get_transformed_figure_cursor
-                self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
-                self.figure_cursor = (oc1, oc2)
-                # print('Drawing V bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
-            if opcode == 'y':
-                a1, a2, c1, c2 = args  # bezier points
-                oc1, oc2 = c1, c2
-                # a1, a2 = self.apply_transforms_figure(a1, a2)
-                c1, c2 = self.apply_transforms_figure(c1, c2)
-                d1, d2 = self.get_transformed_figure_cursor
-                self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
-                self.figure_cursor = (oc1, oc2)
-                # print('Drawing Y bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
-            if opcode == 'l':
-                c1, c2 = args  # bezier points
-                oc1, oc2 = c1, c2
-                c1, c2 = self.apply_transforms_figure(c1, c2)
-                d1, d2 = self.get_transformed_figure_cursor
-                self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
-                self.figure_cursor = (oc1, oc2)
-                # print('Drawing line           at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+            # if opcode == 'c':
+            #     a1, a2, b1, b2, c1, c2 = args  # bezier points
+            #
+            #     # a1, a2 = self.apply_transforms_figure(a1, a2)
+            #     # b1, b2 = self.apply_transforms_figure(b1, b2)
+            #     oc1, oc2 = c1, c2
+            #     c1, c2 = self.apply_transforms_figure(c1, c2)
+            #     d1, d2 = self.get_transformed_figure_cursor
+            #     self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
+            #     self.figure_cursor = (oc1, oc2)
+            #     # print('Drawing C bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+            # if opcode == 'v':
+            #     a1, a2, c1, c2 = args  # bezier points
+            #
+            #     # a1, a2 = self.apply_transforms_figure(a1, a2)
+            #     oc1, oc2 = c1, c2
+            #     c1, c2 = self.apply_transforms_figure(c1, c2)
+            #     d1, d2 = self.get_transformed_figure_cursor
+            #     self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
+            #     self.figure_cursor = (oc1, oc2)
+            #     # print('Drawing V bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+            # if opcode == 'y':
+            #     a1, a2, c1, c2 = args  # bezier points
+            #     oc1, oc2 = c1, c2
+            #     # a1, a2 = self.apply_transforms_figure(a1, a2)
+            #     c1, c2 = self.apply_transforms_figure(c1, c2)
+            #     d1, d2 = self.get_transformed_figure_cursor
+            #     self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
+            #     self.figure_cursor = (oc1, oc2)
+            #     # print('Drawing Y bezier curve at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
+            # if opcode == 'l':
+            #     c1, c2 = args  # bezier points
+            #     oc1, oc2 = c1, c2
+            #     c1, c2 = self.apply_transforms_figure(c1, c2)
+            #     d1, d2 = self.get_transformed_figure_cursor
+            #     self.canvas.line(((d1, d2), (c1, c2)), fill='black', width=1)
+            #     self.figure_cursor = (oc1, oc2)
+            #     # print('Drawing line           at X1:{:.2f} Y1:{:.2f} X3:{:.2f} Y3:{:.2f}'.format(d1, d2, c1, c2))
 
             if opcode == 'f':
                 pass  # do nothing
@@ -1211,8 +1239,13 @@ class PDFInterpreter:
                 self.text_scale_y = scale_y
                 self.text_offset_x = offset_x
                 self.text_offset_y = offset_y
-                self.text_cursor = (offset_x, self.flip_y(offset_y))
-                # print('Transformed TEXT cursor now at', self.text_cursor, self.text_scale_x)
+                print('New offsets:',offset_x,offset_y)
+                print('Cursor before',self.text_cursor)
+                if self.text_scale_y>0:
+                    self.text_cursor = (offset_x, self.flip_y(offset_y))
+                else:
+                    self.text_cursor = (offset_x, offset_y)
+                print('Transformed TEXT cursor now at', self.text_cursor, 'scale:' ,self.text_scale_x,self.text_scale_y)
 
             if opcode == 'TJ':  # RENDER TEXT
                 orig_cursor = self.text_cursor
@@ -1294,10 +1327,13 @@ class PDFInterpreter:
             with path.open('wb') as fp:
                 self.image.save(fp)
 
+# def pdfplumber_table_to_table():
+
 
 if __name__ == '__main__':
-    datasheet = DataSheet('STM32L431')
-    pdf_interpreter = PDFInterpreter(pdf_file=datasheet.pdf_file, page=13)
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6\KL17P64M48SF6_ds.pdf")
+    # datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L431\stm32L431_ds.pdf")
+    pdf_interpreter = PDFInterpreter(pdf_file=datasheet.pdf_file, page=1)
     pdf_interpreter.draw = True
     pdf_interpreter.debug = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])

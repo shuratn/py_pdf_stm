@@ -13,14 +13,18 @@ def fetch_from_all(lists, num):
 
 class FeatureListExtractor:  # This class is adapted to STM
 
-    def __init__(self, controller:str):
+    KNOWN_NAMES = {
+        'Flash memory':'ROM',
+    }
+
+    def __init__(self, controller:str,datasheet:DataSheet):
         """
         Class for comparing multiple STM32 controllers
 
         :type controller_list: list of stm controllers that you want to compare
         """
         self.controller = controller
-        self.datasheet = DataSheet(controller)
+        self.datasheet = datasheet
         self.features_tables = []  # type: List[Table]
         self.features = {}
 
@@ -39,7 +43,7 @@ class FeatureListExtractor:  # This class is adapted to STM
         pdf_int.process()
         return pdf_int.table
 
-    def extract_tables(self):  # OVERRIDE THIS FUCTION FOR NEW CONTROLLER
+    def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
         print('Extracting tables for', self.controller)
         datasheet = self.datasheet
         table_page = datasheet.table_root.childs[1].page
@@ -105,7 +109,13 @@ class FeatureListExtractor:  # This class is adapted to STM
                             continue
                         else:
                             controller_features[stm_name2][feature_name] = value
+
+        controller_features = self.unify_names(controller_features)
+
         self.features = controller_features
+        return controller_features
+
+    def unify_names(self, controller_features): # OVERRIDE IN SUBCLASS
         return controller_features
 
 

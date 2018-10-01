@@ -13,6 +13,9 @@ class STM32FeatureListExtractor(FeatureListExtractor):
         if 'ADC' in name and 'Number' in name:
             adc_type = name.split('ADC')[0] + 'ADC'
             values = value.split('\n')
-            return [(adc_type,{'count':values[0],'channels':values[1]})]
+            return [(adc_type, {'count': values[0], 'channels': values[1]})]
 
         return super().handle_feature(name, value)
+
+    def unify_names(self, controller_features):
+        return controller_features

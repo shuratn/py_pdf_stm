@@ -173,21 +173,21 @@ class DataSheetNode:
 
 class DataSheetTableNode(DataSheetNode):
 
-    def __init__(self, name: str, path: List[int], table_number, table):
+    def __init__(self, name: str, path: List[int], table_number, page):
         super().__init__(name, path)
         self.path.append(table_number)
         self.table_number = table_number
-        self.table = table
+        self._page = page
 
     def get_table_name(self):
-        return self.table['/Title']
+        return self.name
 
     def get_data(self):
-        return self.table.page.getObject()['/Contents'].getData().decode('cp1251')
+        return self._page.getObject()['/Contents'].getData().decode('cp1251')
 
     @property
     def page(self):
-        return self.table.page.getObject()
+        return self._page.page.getObject()
 
     @property
     def table_name(self):
@@ -206,8 +206,9 @@ class DataSheet:
         self.table_of_content.append(self.table_root)
         self.flatten_outline()
         self.sort_raw_outline()
+        self.collect_tables()
 
-    def get_tables(self):
+    def collect_tables(self):
         pass
 
     def flatten_outline(self, line=None):
@@ -236,7 +237,7 @@ class DataSheet:
                     figure_id = int(name.split('.')[0].split(' ')[-1])
                     self.figures[figure_id] = entry
                 else:
-                    tmp = name.split(' ')
+                    tmp = name.split(' ') #type: List[str]
 
                     if '.' in tmp[0]:
                         order = list(map(int, tmp[0].split('.')))
@@ -246,10 +247,14 @@ class DataSheet:
                         parent = node.get_node_by_path(order[:-1])
                         parent.append(node)
                     else:
-                        node = DataSheetNode(join(tmp[1:]), [int(tmp[0])])
-                        self.table_of_content.append(node)
-                        # pos = self.recursive_create_toc([int(tmp[0])])
-                        # pos['name'] = ' '.join(tmp[1:])
+                        if tmp[0].isnumeric():
+                            node = DataSheetNode(join(tmp[1:]), [int(tmp[0])])
+                            self.table_of_content.append(node)
+                            # pos = self.recursive_create_toc([int(tmp[0])])
+                            # pos['name'] = ' '.join(tmp[1:])
+                        else:
+                            node = DataSheetNode(name, [1])
+                            self.table_of_content.append(node)
                     top_level_node = node
 
             else:
@@ -279,16 +284,15 @@ class DataSheet:
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 3:
+    if len(sys.argv) < 1:
         print('Usage: {} DATASHEET.pdj DATASHEET2.pdf'.format(os.path.basename(sys.argv[0])))
         exit(0)
-    a = DataSheet(sys.argv[1])
-    b = DataSheet(sys.argv[2])
+    a = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6\KL17P64M48SF6_ds.pdf")
     # b.table_of_content.print_tree()
     # a.table_of_content.print_tree()
     table = a.table_root.childs[1]
-    print(table)
-    print(a.get_page_num(table.page))
+    # print(table)
+    # print(a.get_page_num(table.page))
     # a.get_difference(b)
     # a.table_of_content.print_tree()
     # print(a.table_of_content.get_node_by_type(DataSheetTableNode))
