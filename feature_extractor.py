@@ -130,11 +130,7 @@ class FeatureListExtractor:  # This class is adapted to STM
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('Usage: {} DATASHEET.pdj'.format(os.path.basename(sys.argv[0])))
-        exit(0xDEADBEEF)
-    controllers = sys.argv[1]
-    datasheet = KL_DataSheet()
-    feature_extractor = FeatureListExtractor(controllers)
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
+    feature_extractor = FeatureListExtractor('stm32L476',datasheet,{})
     feature_extractor.process()
     pprint(feature_extractor.features)

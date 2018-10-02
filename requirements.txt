@@ -1,3 +1,4 @@
+xlsxwriter
 pdfplumber
 pdfminer.six
 pyparsing

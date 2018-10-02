@@ -266,19 +266,7 @@ class DataSheet:
                 return n
         return -1
 
-    def get_difference(self, other: 'DataSheet'):
-        print('Comparing {} and {}'.format(self.name, other.name))
-        flat1 = self.table_of_content.to_set()
-        flat2 = self.table_of_content.to_set()
-        diff1 = flat1.difference(flat2)
-        diff2 = flat2.difference(flat1)
-        diff_test = flat1.symmetric_difference(flat2)
-        if not diff1 and not diff2 and not diff_test:
-            print('No difference')
-        else:
-            print(diff1)
-            print(diff2)
-            print(diff_test)
+
 
 
 if __name__ == '__main__':

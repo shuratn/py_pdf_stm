@@ -14,7 +14,7 @@ class KLFeatureListExtractor(FeatureListExtractor):
         family, sub_family = re.findall(r'KL(\d)(\d)\w+', self.controller)[0]
         # print(family, sub_family)
         self.mc_name = None
-        self.mc_family = 'K{}'.format(family)
+        self.mc_family = 'KL{}'.format(family)
         for n, table in enumerate(self.datasheet.tables.values()):
             if table['name'].upper() == 'KL{}X'.format(family):
                 self.mc_name = 'KL{}X-{}'.format(family, n)
