@@ -600,7 +600,8 @@ class PDFInterpreter:
 
     def __init__(self, path):
         self.pdf = pdfplumber.open(path)
-
+        self.draw = False
+        self.debug = False
     def filter_points(self, points: List[Point]):
         new_points = []
         for p1 in tqdm(points, desc='Filtering points', unit='points'):
@@ -682,16 +683,21 @@ class PDFInterpreter:
         return rows
 
     def parse_page(self, page_n):
-        print('Parsing page', page_n)
+        if self.debug:
+            print('Parsing page', page_n)
         page = self.pdf.pages[page_n]
-        print('Rendering page')
+        if self.debug:
+            print('Rendering page')
         p_im = page.to_image(resolution=100)
-        print('Finding tables')
+        if self.debug:
+            print('Finding tables')
         tables = TableFinder(page, {'snap_tolerance': 3, 'join_tolerance': 3})
-        print('Found', len(tables.tables), 'tables')
+        if self.debug:
+            print('Found', len(tables.tables), 'tables')
         beaut_tables = []
-        p_im.draw_lines(page.lines)
-        p_im.save('page-{}-lines.png'.format(page_n + 1))
+        if self.draw:
+            p_im.draw_lines(page.lines)
+            p_im.save('page-{}-lines.png'.format(page_n + 1))
         if len(tables.tables) > 5:
             return []
         for n, table in enumerate(tables.tables):
@@ -727,13 +733,15 @@ class PDFInterpreter:
                 lines.append(line4)
                 cell = Cell(p1, p2, p3, p4)
                 cells.append(cell)
-            p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
+
             # for line in lines:
             #     p_im.draw_line(line.as_tuple)
             lines = self.filter_lines(lines)
             # for line in lines:
             #     line.draw(canvas, color='green')
-            im.save('page-{}-{}.png'.format(page_n + 1, n))
+            if self.draw:
+                p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
+                im.save('page-{}-{}.png'.format(page_n + 1, n))
             skeleton_points, skeleton = self.build_skeleton(lines.copy())
             if not skeleton_points:
                 continue
@@ -747,9 +755,11 @@ class PDFInterpreter:
             beaut_table.build_table()
             for cell in beaut_table.cells:
                 cell.draw(canvas)
-            print('Saving rendered table')
-            p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
-            im.save('page-{}-{}.png'.format(page_n + 1, n))
+            if self.debug:
+                print('Saving rendered table')
+            if self.draw:
+                p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
+                im.save('page-{}-{}.png'.format(page_n + 1, n))
             beaut_tables.append(beaut_table)
 
         return beaut_tables

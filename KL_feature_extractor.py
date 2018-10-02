@@ -27,7 +27,7 @@ class KLFeatureListExtractor(FeatureListExtractor):
                     self.features_tables.extend(table)
 
     def extract_table(self, datasheet, page):
-        print('Extracting table from {} page'.format(page + 1))
+        # print('Extracting table from {} page'.format(page + 1))
         pdf_int = PDFInterpreter(str(datasheet.path))
         table = pdf_int.parse_page(page)
         self.update_cache(self.mc_name, table)
@@ -66,43 +66,31 @@ class KLFeatureListExtractor(FeatureListExtractor):
         self.features = controller_features
         return controller_features
 
-    name_corrector = {
-        'C(PMU FrHz)equency': 'CPU Frequency',
-        'SSPI eleQTct Y (of #EChip ach SPI)': 'SPI QTY',
-        'GPenWeral-PurM (6ch/2pcosh)e': 'SPI QTY',
-        '(WSatcW/hHdoW)g': 'Watchdog(SW/HW)',
-        '(N1o. 6 of Bit/A1D2 C MBit)odules': 'No. of ADC Modules (16 Bit/12 Bit)',
-        'ADDC P) Channels (SE/': 'ADC Channels (SE/DP)',
-        'IAnnaloputsg Comparator': 'Analog Comparator',
-        'GPIHigO h-WitDrivh Interre Pinsupt/': 'GPIO With Interrupt/High-Drive Pins',
-        'TTSI (oucCah) pCacitihanvne els': 'TSI (CapacitiveTouch) Channels',
-        'Ev(Aaluatioppendin x BPoaard ge 17)': 'Evaluation Board(Appendix Page 17)',
-    }
-
     def handle_feature(self, name, value):
         name = name.strip()
-        name = self.name_corrector.get(name, name)
+        if name in self.config['corrections']:
+            name = self.config['corrections'][name]
         if 'ADC Modules' in name:
             adc_types = re.findall(r'.*\((.*)/(.*)\)', name)[0]
             name = 'ADC Modules'
             values = value.split('/')
-            return [name, {t: v for t, v in zip(adc_types, values)}]
+            return [(name, {t: v for t, v in zip(adc_types, values)})]
         if 'Watchdog' in name:
             adc_types = re.findall(r'.*\((.*)/(.*)\)', name)[0]
             name = 'Watchdog'
             values = value.split('/')
-            return [name, {t: v for t, v in zip(adc_types, values)}]
+            return [(name, {t: v for t, v in zip(adc_types, values)})]
         if 'GPIO With Interrupt/High-Drive Pins' in name:
             adc_types = re.findall(r'.* (.*)/(.*) .*', name)[0]
             name = 'GPIO special pins'
             values = value.split('/')
-            return [name, {t: v for t, v in zip(adc_types, values)}]
+            return [(name, {t: v for t, v in zip(adc_types, values)})]
         if 'Evaluation Board' in name:
-            return [None, None]
+            return [(None, None)]
 
         if value == '-':
             value = 'No'
-        return [name, value]
+        return super().handle_feature(name, value)
 
     @classmethod
     def update_cache(cls, table_name, table):

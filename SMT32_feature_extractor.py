@@ -6,6 +6,7 @@ class STM32FeatureListExtractor(FeatureListExtractor):
     def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
         print('Extracting tables for', self.controller)
         datasheet = self.datasheet
+        self.mc_family = 'STM32'
         table_page = datasheet.table_root.childs[1].page
         page_num = datasheet.get_page_num(table_page)
         table_pt1 = self.extract_table(datasheet, page_num)
@@ -19,6 +20,8 @@ class STM32FeatureListExtractor(FeatureListExtractor):
             self.features_tables.append(table_pt3[0])
 
     def handle_feature(self, name, value):
+        if name in self.config['corrections']:
+            name = self.config['corrections'][name]
         if 'USART' in name and 'LPUART' in name:
             values = value.split('\n')
             return [('USART', values[0]), ('LPUART', values[1])]

@@ -28,7 +28,8 @@ class FeatureListExtractor:  # This class is adapted to STM
         self.config = config  # type: Dict[str,Dict]
         self.datasheet = datasheet
         self.features_tables = []  # type: List[Table]
-        self.features = {}
+        self.features = {} # type: Dict[str,Dict]
+        self.mc_family = 'UNKNOWN CONTROLLER'
 
     def process(self):
         self.extract_tables()
@@ -45,6 +46,8 @@ class FeatureListExtractor:  # This class is adapted to STM
         return
 
     def handle_feature(self, name, value):
+        if name in self.config['corrections']:
+            name = self.config['corrections'][name]
         return [(name, value)]  # Can be list of values and names
 
     def extract_features(self):
@@ -103,9 +106,26 @@ class FeatureListExtractor:  # This class is adapted to STM
         self.features = controller_features
         return controller_features
 
-    def unify_names(self):  # OVERRIDE IN SUBCLASS
-        for mc, feature_name in self.features.items():
-            print(mc, feature_name)
+    def unify_names(self):
+        unknown_names = []
+        for mc, features in self.features.items():
+            # print(mc)
+
+            for feature_name,features_value in features.items():
+                if feature_name not in self.config['unify']:
+                    if feature_name not in unknown_names:
+                        unknown_names.append(feature_name)
+                else:
+                    new_name = self.config['unify'][feature_name]
+                    values = self.features[mc].pop(feature_name)
+                    self.features[mc][new_name] = values
+        print('List of unknown features for', self.mc_family)
+        print('Add correction if name is mangled')
+        print('Or add unify for this feature')
+        for unknown_feature in unknown_names:
+
+            print('\t',unknown_feature)
+        print('='*20)
 
 
 if __name__ == '__main__':

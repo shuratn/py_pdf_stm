@@ -10,7 +10,6 @@ class MKFeatureListExtractor(KLFeatureListExtractor):
     table_cache = {}
 
     def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
-
         print('Extracting tables for', self.controller)
         datasheet = self.datasheet
         family = re.findall(r'MK(\d+)\w+', self.controller)[0]  # MK11DN512AVMC5
@@ -32,30 +31,14 @@ class MKFeatureListExtractor(KLFeatureListExtractor):
                     self.features_tables.extend(table)
 
     def extract_table(self, datasheet, page):
-        print('Extracting table from {} page'.format(page))
+        # print('Extracting table from {} page'.format(page))
         pdf_int = PDFInterpreter(str(datasheet.path))
         table = pdf_int.parse_page(page)
         self.update_cache(self.mc_name, table)
         return table
 
     def extract_features(self):
-        self.name_corrector.update({
-            'Total (KB)Flash Memory': 'Flash',
-            'EEP(KB)ROM/FlexRAM': 'EEPROM/FlexRAM(KB)',
-            'HiUgAh BRT auw/IdrSate O7816': 'High Baudrate UART w/ISO7816',
-            'HiUgAh RTBaudrate': 'High Baudrate UART',
-            'MPotWor MControl': 'Motor Control PWM',
-            'QPuaWd MDecoder': 'Quad Decoder PWM',
-            'TotDPal 16-bit ADC': 'Total 16-bit ADC DP',
-            'RanGendoerm Nator umber': 'Random Number Generator',
-            'SyAcmmetriceleratc Cror ypto': 'Symmetric Crypto Accelerator',
-            'T(aDrmper yIce)Detect': 'Accelerator Tamper Detect (DryIce)',
-            'NuTamber of Emper Pinsxternal': 'Number of External Tamper Pins',
-            'Evalu(SeeatiPaon ge Bo17)ard': 'Evaluation Board (See Page 17)',
-        })
-        controller_features_names = []
         controller_features = {}
-        feature_offset = 0
         for table in self.features_tables:
             try:
                 if not table.global_map:
@@ -63,7 +46,6 @@ class MKFeatureListExtractor(KLFeatureListExtractor):
                 header = table.get_row(0)[2:]
                 for feature_cell in header:  # fixing cell text
                     feature_cell.text = ''.join(feature_cell.text.split('\n')[::-1])
-                # print(header)
                 for row_id in range(1, len(table.get_col(1))):
                     row = table.get_row(row_id)[1:]
                     controller_name = row.pop(0).text
@@ -88,7 +70,8 @@ class MKFeatureListExtractor(KLFeatureListExtractor):
 
     def handle_feature(self, name, value):
         name = name.strip()
-        name = self.name_corrector.get(name, name)
+        if name in self.config['corrections']:
+            name = self.config['corrections'][name]
         if 'ADC Modules' in name:
             adc_types = re.findall(r'.*\((.*)/(.*)\)', name)[0]
             name = 'ADC Modules'
@@ -112,7 +95,7 @@ class MKFeatureListExtractor(KLFeatureListExtractor):
 
         if value == '-':
             value = 'No'
-        return [(name, value)]
+        return super().handle_feature(name, value)
 
     @classmethod
     def update_cache(cls, table_name, table):
