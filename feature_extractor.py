@@ -113,8 +113,9 @@ class FeatureListExtractor:  # This class is adapted to STM
 
             for feature_name,features_value in features.items():
                 if feature_name not in self.config['unify']:
-                    if feature_name not in unknown_names:
-                        unknown_names.append(feature_name)
+                    if feature_name not in list(self.config['unify'].values()):
+                        if feature_name not in unknown_names:
+                            unknown_names.append(feature_name)
                 else:
                     new_name = self.config['unify'][feature_name]
                     values = self.features[mc].pop(feature_name)
