@@ -1,12 +1,9 @@
-import copy
 import math
-import random
-from functools import partial
 from typing import Tuple
 
 import pdfplumber
 from PIL import ImageDraw, ImageFont, Image
-from pdfplumber.table import cells_to_tables, TableFinder
+from pdfplumber.table import TableFinder
 
 from DataSheet import *
 
@@ -157,6 +154,9 @@ class Point:
             return False
         return almost_equals(self.y, other.y)
 
+    def __hash__(self):
+        return hash((self.x, self.y))
+
 
 class Line:
 
@@ -181,6 +181,9 @@ class Line:
         else:
             self.p1.right = True
             self.p2.left = True
+
+    def __hash__(self):
+        return hash((self.p1, self.p2, self.vertical))
 
     @property
     def x(self):
@@ -451,7 +454,10 @@ class Cell:
         |       |
        P4-------P3
     """
-    font = ImageFont.truetype('arial', size=9)
+    try:
+        font = ImageFont.truetype('arial', size=9)
+    except:
+        font = ImageFont.load_default()
 
     def __init__(self, p1, p2, p3, p4):
         self.p1: Point = p1
@@ -476,8 +482,6 @@ class Cell:
 
     def on_same_row(self, other: 'Cell'):
         return self.p1.y == other.p1.y
-
-
 
     @property
     def as_tuple(self):
@@ -540,7 +544,7 @@ class Cell:
 
 class Table:
 
-    def __init__(self, cells: List[Cell], skeleton: List[List[Cell]], ugly_table: List[List[str]],canvas=None):
+    def __init__(self, cells: List[Cell], skeleton: List[List[Cell]], ugly_table: List[List[str]], canvas=None):
         self.cells = cells
         self.canvas = canvas
         self.skeleton = skeleton
@@ -558,7 +562,6 @@ class Table:
         if self.canvas:
             for cell in self.cells:
                 cell.draw(self.canvas)
-
 
     def get_col(self, col_id) -> List[Cell]:
         col = []
@@ -595,30 +598,30 @@ class Table:
 
 class PDFInterpreter:
 
-
     def __init__(self, path):
-        self.roi = Cell(Point(65, 77), Point(65 + 456, 77), Point(65 + 456, 77 + 654), Point(65, 77 + 654))
         self.pdf = pdfplumber.open(path)
 
-    def filter_points(self,points: List[Point]):
+    def filter_points(self, points: List[Point]):
         new_points = []
         for p1 in tqdm(points, desc='Filtering points', unit='points'):
             for p2 in points:
                 if p1 == p2:
                     p1.merge(p2)
-            if p1 not in new_points and self.roi.point_inside_polygon(p1):
+            if p1 not in new_points:
                 new_points.append(p1)
         return new_points
 
     @staticmethod
     def filter_lines(lines: List[Line]):
         new_lines = []
-        for line1 in lines:
-            for line2 in lines:
-                if not line1.on_same_line(line2):
-                    if line1 not in new_lines:
-                        new_lines.append(line1)
-
+        lines = list(set(lines))
+        la = new_lines.append
+        for line1 in tqdm(lines, desc='Filtering lines', unit='lines'):
+            if line1 in new_lines:
+                continue
+            la(line1)
+        new_lines = list(set(new_lines))
+        # print('Before filtering', len(lines), ', after', len(new_lines))
         return new_lines
 
     @staticmethod
@@ -631,17 +634,18 @@ class PDFInterpreter:
         skeleton = []
         temp_point = Point(0, 0)
         temp_point.down = temp_point.up = temp_point.left = temp_point.right = True
-        for line1 in tqdm(lines, desc='Building table skeleton', total=len(lines), unit='lines', file=sys.stdout):
+        vertical = list(filter(lambda l: l.vertical, lines))
+        horizontal = list(filter(lambda l: not l.vertical, lines))
+        for line1 in tqdm(vertical, desc='Building table skeleton', unit='lines'):
             sys.stdout.flush()
-            if line1.length < 5.0:
+            if line1.length < 3.0:
                 continue
             self.add_skeleton_points(skeleton_points, line1)
-            for line2 in lines:
-                if line1 == line2 or line2.length < 5.0:
+            for line2 in horizontal:
+            # for line2 in tqdm(horizontal,desc='Checking horizontal lines', unit='lines'):
+                if line1 == line2:
                     continue
                 self.add_skeleton_points(skeleton_points, line2)
-                if line2.vertical == line1.vertical:
-                    continue
                 if line1.infite_intersect(line2):
                     p1 = Point(line1.infite_intersect(line2))
                     if p1 not in skeleton_points:
@@ -652,12 +656,9 @@ class PDFInterpreter:
                         if p == p1:
                             p1.copy(p)
                             skeleton_points[n] = p1
-        if len(skeleton_points)>5000:
-            return None,None
-        skeleton_points = self.filter_points(skeleton_points)
-
+        skeleton_points = list(set(skeleton_points))
         sorted_y_points = sorted(skeleton_points, key=lambda other: other.y)
-        for p1 in sorted_y_points:
+        for p1 in tqdm(sorted_y_points,desc='Building skeleton cells',unit='point'):
             p2 = p1.get_right(skeleton_points)
             if p2:
                 p3 = p2.get_bottom(skeleton_points, right=True)
@@ -673,7 +674,7 @@ class PDFInterpreter:
     @staticmethod
     def skeleton_to_2d_table(skeleton: List[Cell]) -> List[List[Cell]]:
         rows = []
-        for cell in skeleton:
+        for cell in tqdm(skeleton,desc='Analyzing cell positions',unit='cells'):
             row = tuple(sorted(filter(lambda c: cell.on_same_row(c), skeleton), key=lambda c: c.p1.x))
             rows.append(row)
         rows = list(sorted(list(set(rows)), key=lambda c: c[0].p1.y))
@@ -681,21 +682,27 @@ class PDFInterpreter:
         return rows
 
     def parse_page(self, page_n):
+        print('Parsing page', page_n)
         page = self.pdf.pages[page_n]
-
+        print('Rendering page')
         p_im = page.to_image(resolution=100)
-        tables = TableFinder(page)
+        print('Finding tables')
+        tables = TableFinder(page, {'snap_tolerance': 3, 'join_tolerance': 3})
+        print('Found', len(tables.tables), 'tables')
         beaut_tables = []
-        if len(tables.tables)>5:
+        p_im.draw_lines(page.lines)
+        p_im.save('page-{}-lines.png'.format(page_n + 1))
+        if len(tables.tables) > 5:
             return []
         for n, table in enumerate(tables.tables):
             p_im.reset()
             im = Image.new('RGB', (page.width, page.height), (255,) * 3)
             canvas = ImageDraw.ImageDraw(im)
+
             ugly_table = table.extract()
             lines = []  # type: List[Line]
             cells = []  # type: List[Cell]
-            for cell in table.cells:
+            for cell in tqdm(table.cells, desc='Parsing cells', unit='cells'):
                 p_im.draw_rect(cell)
                 x1, y1, x2, y2 = cell
                 p1 = Point(x1, y1)
@@ -710,8 +717,6 @@ class PDFInterpreter:
                 p4 = Point(x1, y2)
                 p4.up = True
                 p4.right = True
-                # if not self.roi.point_inside_polygon(p1):
-                #     continue
                 line1 = Line(p1, p2)
                 line2 = Line(p2, p3)
                 line3 = Line(p3, p4)
@@ -721,9 +726,14 @@ class PDFInterpreter:
                 lines.append(line3)
                 lines.append(line4)
                 cell = Cell(p1, p2, p3, p4)
-                # cell.draw(canvas)
                 cells.append(cell)
+            p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
+            # for line in lines:
+            #     p_im.draw_line(line.as_tuple)
             lines = self.filter_lines(lines)
+            # for line in lines:
+            #     line.draw(canvas, color='green')
+            im.save('page-{}-{}.png'.format(page_n + 1, n))
             skeleton_points, skeleton = self.build_skeleton(lines.copy())
             if not skeleton_points:
                 continue
@@ -737,24 +747,30 @@ class PDFInterpreter:
             beaut_table.build_table()
             for cell in beaut_table.cells:
                 cell.draw(canvas)
-            beaut_tables.append(beaut_table)
-            im.save('page-{}-{}.png'.format(page_n + 1, n))
+            print('Saving rendered table')
             p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
+            im.save('page-{}-{}.png'.format(page_n + 1, n))
+            beaut_tables.append(beaut_table)
+
         return beaut_tables
+
 
 # def pdfplumber_table_to_table():
 
 
 if __name__ == '__main__':
     # datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L431\stm32L431_ds.pdf")
-    pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
-    # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6\KL17P64M48SF6_ds.pdf")
+    # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/stm32/stm32L476/stm32L476_ds.pdf")
+    # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
+    # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/KL/KL17P64M48SF6_ds.pdf")
+    pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK11DN512AVMC5_ds.pdf")
+    # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6_ds.pdf")
     pdf_interpreter.draw = True
     pdf_interpreter.debug = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
-    pdf_interpreter.flip_page = True
     # print(pdf_interpreter.content)
-    tables = pdf_interpreter.parse_page(14)
+    # tables = pdf_interpreter.parse_page(5)
+    tables = pdf_interpreter.parse_page(8)
     print(tables)
     # pdf_interpreter.parse_page(1)
     # pdf_interpreter.save()

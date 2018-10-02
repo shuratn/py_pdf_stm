@@ -18,7 +18,6 @@ class STM32FeatureListExtractor(FeatureListExtractor):
         if table_pt3:
             self.features_tables.append(table_pt3[0])
 
-
     def handle_feature(self, name, value):
         if 'USART' in name and 'LPUART' in name:
             values = value.split('\n')
@@ -32,6 +31,3 @@ class STM32FeatureListExtractor(FeatureListExtractor):
             return [(adc_type, {'count': values[0], 'channels': values[1]})]
 
         return super().handle_feature(name, value)
-
-    def unify_names(self, controller_features):
-        return controller_features

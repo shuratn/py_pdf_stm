@@ -1,3 +1,4 @@
+pdfplumber
 pdfminer.six
 pyparsing
 Pillow

@@ -9,8 +9,6 @@ import requests
 from PyPDF3.pdf import PageObject
 
 
-
-
 def join(to_join, separator=' '):
     return separator.join(map(str, to_join))
 
@@ -198,9 +196,9 @@ class DataSheet:
 
     def __init__(self, datasheet_path):
         self.path = Path(datasheet_path)
-        self.pdf_file =  PyPDF3.PdfFileReader(self.path.open('rb'))
+        self.pdf_file = PyPDF3.PdfFileReader(self.path.open('rb'))
         self.raw_outline = []
-        self.tables, self.figures = {}, {}
+        self.tables, self.figures = {}, {}  # type: Dict
         self.table_of_content = DataSheetNode('ROOT', [0])
         self.table_root = DataSheetNode('TABLES', [-1])
         self.table_of_content.append(self.table_root)
@@ -237,7 +235,7 @@ class DataSheet:
                     figure_id = int(name.split('.')[0].split(' ')[-1])
                     self.figures[figure_id] = entry
                 else:
-                    tmp = name.split(' ') #type: List[str]
+                    tmp = name.split(' ')  # type: List[str]
 
                     if '.' in tmp[0]:
                         order = list(map(int, tmp[0].split('.')))
@@ -265,7 +263,7 @@ class DataSheet:
         # return self.pdf_file.getPageNumber(page)
         for n, pdf_page in enumerate(self.pdf_file.pages):
             if pdf_page.raw_get('/Contents') == page.raw_get('/Contents'):
-                        return n
+                return n
         return -1
 
     def get_difference(self, other: 'DataSheet'):

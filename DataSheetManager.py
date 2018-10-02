@@ -6,31 +6,38 @@ import requests
 from tqdm import tqdm
 
 from DataSheet import DataSheet
+from MK_DataSheet import MK_DataSheet
 from KL_DataSheet import KL_DataSheet
 
 
 class DataSheetManager:
     STM32_DATASHEET_URL = 'https://www.st.com/resource/en/datasheet/{}re.pdf'
-    KL_DATASHEET_URL = 'https://www.nxp.com/docs/en/data-sheet/{}.pdf' #KL17P64M48SF6
+    KL_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISLMCUSELGD.pdf'  # KL17P64M48SF6
+    MK_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISKMCUSELGD.pdf'  # MK11DN512AVMC5
+    # KL_DATASHEET_URL = 'https://www.nxp.com/docs/en/data-sheet/{}.pdf' #KL17P64M48SF6
     DATASHEET_URLS = {
-        'STM32': (STM32_DATASHEET_URL,DataSheet),
-        'KL': (KL_DATASHEET_URL,KL_DataSheet),
+        'STM32': (STM32_DATASHEET_URL, DataSheet),
+        'KL': (KL_DATASHEET_URL, KL_DataSheet),
+        'MK': (MK_DATASHEET_URL, MK_DataSheet),
     }
 
-    def __init__(self, controllers:List[str]):
+    def __init__(self, controllers: List[str]):
         self.controllers = controllers
         self.controller_datasheets = {}
 
-
     def get_or_download(self):
         for controller in self.controllers:
-            for known_controller, (url,datasheet_loader) in self.DATASHEET_URLS.items():  # type: str,str
+            for known_controller, (url, datasheet_loader) in self.DATASHEET_URLS.items():  # type: str,str
                 if known_controller.upper() in controller.upper():
-                    path = Path('./') /'Datasheets'/ known_controller / controller / "{}_ds.pdf".format(controller)
+                    if known_controller == 'KL' or known_controller == 'MK':
+                        path = Path('./') / 'Datasheets' / known_controller / "{}_ds.pdf".format(controller)
+                    else:
+                        path = Path('./') / 'Datasheets' / known_controller / controller / "{}_ds.pdf".format(
+                            controller)
                     if path.exists():
                         datasheet = datasheet_loader(str(path))
                     else:
-                        print(controller,' is unknown , trying to download datasheet')
+                        print(controller, ' is unknown , trying to download datasheet')
                         r = requests.get(url.format(controller), stream=True)
                         if r.status_code == 200:
                             os.makedirs(path.parent, exist_ok=True)
@@ -47,12 +54,11 @@ class DataSheetManager:
                             raise Exception('Invalid controller name')
                     self.controller_datasheets[controller.upper()] = datasheet
 
-    def __getitem__(self, item:str):
-        return self.controller_datasheets.get(item.upper(),None)
+    def __getitem__(self, item: str):
+        return self.controller_datasheets.get(item.upper(), None)
 
 
 if __name__ == '__main__':
-    manager = DataSheetManager(['STM32L451','STM32L452','KL17P64M48SF6'])
+    manager = DataSheetManager(['KL17P64M48SF6'])
     manager.get_or_download()
     print(manager.controller_datasheets)
-

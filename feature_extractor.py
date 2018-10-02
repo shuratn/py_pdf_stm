@@ -4,6 +4,7 @@ from pprint import pprint
 from typing import List, Dict
 
 from DataSheet import DataSheet
+from KL_DataSheet import KL_DataSheet
 from PDFInterpreter import PDFInterpreter, Table
 
 
@@ -14,16 +15,17 @@ def fetch_from_all(lists, num):
 class FeatureListExtractor:  # This class is adapted to STM
 
     KNOWN_NAMES = {
-        'Flash memory':'ROM',
+        'Flash memory': 'ROM',
     }
 
-    def __init__(self, controller:str,datasheet:DataSheet):
+    def __init__(self, controller: str, datasheet: DataSheet, config):
         """
         Class for comparing multiple STM32 controllers
 
         :type controller_list: list of stm controllers that you want to compare
         """
         self.controller = controller
+        self.config = config  # type: Dict[str,Dict]
         self.datasheet = datasheet
         self.features_tables = []  # type: List[Table]
         self.features = {}
@@ -33,10 +35,7 @@ class FeatureListExtractor:  # This class is adapted to STM
         self.extract_features()
         return self.features
 
-
-
-    @staticmethod
-    def extract_table(datasheet, page):
+    def extract_table(self, datasheet, page):
         print('Extracting table from {} page'.format(page + 1))
         pdf_int = PDFInterpreter(str(datasheet.path))
         table = pdf_int.parse_page(page)
@@ -83,7 +82,7 @@ class FeatureListExtractor:  # This class is adapted to STM
                             continue
                         feature_name = controller_features_names[feature_offset + n - 1]
                         feature_value = feature.text
-                        for n,v in self.handle_feature(feature_name,feature_value):
+                        for n, v in self.handle_feature(feature_name, feature_value):
                             controller_features[current_stm_name][n] = v
                 feature_offset = len(controller_features_names)
             except:
@@ -101,13 +100,12 @@ class FeatureListExtractor:  # This class is adapted to STM
                         else:
                             controller_features[stm_name2][feature_name] = value
 
-        controller_features = self.unify_names(controller_features)
-
         self.features = controller_features
         return controller_features
 
-    def unify_names(self, controller_features): # OVERRIDE IN SUBCLASS
-        return controller_features
+    def unify_names(self):  # OVERRIDE IN SUBCLASS
+        for mc, feature_name in self.features.items():
+            print(mc, feature_name)
 
 
 if __name__ == '__main__':
@@ -115,6 +113,7 @@ if __name__ == '__main__':
         print('Usage: {} DATASHEET.pdj'.format(os.path.basename(sys.argv[0])))
         exit(0xDEADBEEF)
     controllers = sys.argv[1]
+    datasheet = KL_DataSheet()
     feature_extractor = FeatureListExtractor(controllers)
     feature_extractor.process()
     pprint(feature_extractor.features)
