@@ -86,6 +86,11 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
         return controller_features
 
     def handle_feature(self, name, value):
+        if '\u2013' in name:
+            name = name.replace('\u2013','-')
+        if type(value)==str:
+            if '\u2013' in value:
+                value = value.replace('\u2013','-')
         if value == '-':
             value = 0
         name = name.strip()
@@ -96,6 +101,7 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
             name = 'ADC Modules'
             values = value.split('/')
             return [(name, {t: v for t, v in zip(adc_types, values)})]
+
         if 'Watchdog' in name:
             adc_types = re.findall(r'.*\((.*)/(.*)\)', name)[0]
             name = 'Watchdog'

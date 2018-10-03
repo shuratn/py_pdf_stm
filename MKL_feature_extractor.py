@@ -105,8 +105,11 @@ class MKLFeatureListExtractor(FeatureListExtractor):
 
     def handle_feature(self, name, value):
         name = name.strip()
-        if value == '\u2013':
-            value = '-'
+        if '\u2013' in name:
+            name = name.replace('\u2013','-')
+        if type(value)==str:
+            if '\u2013' in value:
+                value = value.replace('\u2013','-')
         if value == '-':
             value = 0
 
@@ -121,6 +124,13 @@ class MKLFeatureListExtractor(FeatureListExtractor):
                 if int(value)>0:
                     adcs[adc_type] = {'count': int(value), 'channels': -1}
             return [('ADC',adcs)]
+
+        if 'DAC' in name:
+            adc_type = name.split(' ')[0]
+            count = int(value)
+            if count:
+                return [('DAC', {adc_type:{'count':int(value)}})]
+
         if 'ADC Channels' in name:
             value = sum(map(int,value.split('/')))
             return [('ADC_CHANNELS',value)]

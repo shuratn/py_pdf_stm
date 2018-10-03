@@ -69,6 +69,11 @@ class FeatureListExtractor:  # This class is adapted to STM
         return
 
     def handle_feature(self, name, value):
+        if '\u2013' in name:
+            name = name.replace('\u2013','-')
+        if type(value)==str:
+            if '\u2013' in value:
+                value = value.replace('\u2013','-')
         if name in self.config['corrections']:
             name = self.config['corrections'][name]
 
