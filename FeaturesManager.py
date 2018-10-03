@@ -1,9 +1,10 @@
+import copy
 import os
 import sys
 from typing import List
 
 from DataSheetManager import DataSheetManager
-from KL_feature_extractor import KLFeatureListExtractor
+from MKL_feature_extractor import MKLFeatureListExtractor
 from MK_feature_extractor import MKFeatureListExtractor
 from SMT32_feature_extractor import STM32FeatureListExtractor
 import xlsxwriter
@@ -12,7 +13,7 @@ import xlsxwriter
 class FeatureManager:
     EXTRACTORS = {
         'STM32': STM32FeatureListExtractor,
-        'KL': KLFeatureListExtractor,
+        'MKL': MKLFeatureListExtractor,
         'MK': MKFeatureListExtractor,
     }
 
@@ -30,24 +31,29 @@ class FeatureManager:
         self.excel = xlsxwriter.Workbook('FeatureList.xlsx')
         self.sheet = self.excel.add_worksheet()
 
+    def get_extractor(self,mc:str):
+        for extractor_name in sorted(self.EXTRACTORS,key=lambda l:len(l),reverse=True):
+            if extractor_name.upper() in mc.upper():
+                return self.EXTRACTORS[extractor_name]
+
+
     def parse(self):
         self.datasheet_manager.get_or_download()
-        for extractor_name, extractor in self.EXTRACTORS.items():
-            for mc in self.mcs:
-                if extractor_name.upper() in mc.upper():
-                    datasheet = self.datasheet_manager[mc]
-                    if datasheet:
-                        extractor_obj = extractor(mc, datasheet, self.config)
-                        extractor_obj.process()
-                        extractor_obj.unify_names()
-                        self.mcs_features[mc] = extractor_obj.features
-                        pass  # handle feature extraction
-                    else:
-                        raise Exception('Can\' find {} in database'.format(mc))
+        for mc in self.mcs:
+            extractor = self.get_extractor(mc)
+            datasheet = self.datasheet_manager[mc]
+            if datasheet:
+                extractor_obj = extractor(mc, datasheet, self.config)
+                extractor_obj.process()
+                extractor_obj.unify_names()
+                self.mcs_features[mc] = extractor_obj.features
+                pass  # handle feature extraction
+            else:
+                raise Exception('Can\' find {} in database'.format(mc))
 
     def collect_same_features(self):
         same_features = set()
-        for _, mcs in self.mcs_features.items():
+        for _, mcs in self.mcs_features.copy().items():
             for mc, features in mcs.items():
                 if not same_features:
                     same_features = set(features.keys())
@@ -69,8 +75,10 @@ class FeatureManager:
         sheet.write(1, 0, 'MCU')
         name_offset = 0
         sub_name_offset = 1
-        for n, (mc_name, sub_mcs) in enumerate(self.mcs_features.items()):
-            sheet.merge_range(0, 1+name_offset, 0, 1+name_offset + len(sub_mcs)-1, mc_name, cell_format=merge_format)
+        mcs_features = copy.deepcopy(self.mcs_features)
+        for n, (mc_name, sub_mcs) in enumerate(mcs_features.items()):
+            sheet.merge_range(0, 1 + name_offset, 0, 1 + name_offset + len(sub_mcs) - 1, mc_name,
+                              cell_format=merge_format)
             for sub_mc_name in sub_mcs.keys():
                 sheet.write(1, sub_name_offset, sub_mc_name)
                 sheet.set_column(sub_name_offset, sub_name_offset, width=len(sub_mc_name) + 3)
@@ -82,16 +90,19 @@ class FeatureManager:
         mc_offset = 0
         sub_mc_offset = 0
         for n, common_feature in enumerate(self.same_features):
-            sheet.write(feature_vertical_offset+n, 0, common_feature)
+            sheet.write(feature_vertical_offset + n, 0, common_feature)
             mc_offset = 0
-            for mc_name, sub_mcs in self.mcs_features.items():
+            for mc_name, sub_mcs in mcs_features.items():
                 sub_mc_offset = 0
                 for sub_mc_name, features in sub_mcs.items():
+                    if common_feature not in features:
+                        continue
                     feature = features.pop(common_feature)
                     if type(feature) == dict:
-                        feature = '/'.join(feature.values())
-                    # print(feature)
-                    sheet.write(n + feature_vertical_offset, 1+sub_mc_offset + mc_offset, feature)
+                        feature = r'/'.join(feature.keys())
+                    if type(feature) == list:
+                        feature = r'/'.join(feature)
+                    sheet.write(n + feature_vertical_offset, 1 + sub_mc_offset + mc_offset, feature)
                     sub_mc_offset += 1
                 mc_offset += len(sub_mcs)
         feature_vertical_offset += len(self.same_features)
@@ -109,15 +120,7 @@ if __name__ == '__main__':
     feature_manager = FeatureManager(controllers)
     feature_manager.parse()
     feature_manager.write_excel_file()
-    temp = {}
-    for mc, features in feature_manager.mcs_features.items():
-        try:
-            nn = list(features.keys())[0]
-            print(nn)
-            temp[mc] = list(features[nn].keys())
-        except:
-            print(mc, features)
     with open('features.json', 'w') as fp:
-        json.dump(temp, fp, indent=2)
+        json.dump(feature_manager.mcs_features, fp, indent=2)
     # KL17P64M48SF6 stm32L451 MK11DN512AVMC5
     a = 5

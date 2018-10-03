@@ -7,17 +7,17 @@ from tqdm import tqdm
 
 from DataSheet import DataSheet
 from MK_DataSheet import MK_DataSheet
-from KL_DataSheet import KL_DataSheet
+from MKL_DataSheet import MKL_DataSheet
 
 
 class DataSheetManager:
     STM32_DATASHEET_URL = 'https://www.st.com/resource/en/datasheet/{}re.pdf'
-    KL_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISLMCUSELGD.pdf'  # KL17P64M48SF6
+    MKL_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISLMCUSELGD.pdf'  # KL17P64M48SF6
     MK_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISKMCUSELGD.pdf'  # MK11DN512AVMC5
     # KL_DATASHEET_URL = 'https://www.nxp.com/docs/en/data-sheet/{}.pdf' #KL17P64M48SF6
     DATASHEET_URLS = {
         'STM32': (STM32_DATASHEET_URL, DataSheet),
-        'KL': (KL_DATASHEET_URL, KL_DataSheet),
+        'MKL': (MKL_DATASHEET_URL, MKL_DataSheet),
         'MK': (MK_DATASHEET_URL, MK_DataSheet),
     }
 
@@ -25,34 +25,40 @@ class DataSheetManager:
         self.controllers = controllers
         self.controller_datasheets = {}
 
+    def get_datasheet_loader(self,mc:str):
+        for loader in sorted(self.DATASHEET_URLS,key=lambda l:len(l),reverse=True):
+            if loader.upper() in mc.upper():
+                return loader,self.DATASHEET_URLS[loader]
+        return None,None
+
     def get_or_download(self):
         for controller in self.controllers:
-            for known_controller, (url, datasheet_loader) in self.DATASHEET_URLS.items():  # type: str,str
-                if known_controller.upper() in controller.upper():
-                    if known_controller == 'KL' or known_controller == 'MK':
-                        path = Path('./') / 'Datasheets' / known_controller / "{}_ds.pdf".format(controller)
-                    else:
-                        path = Path('./') / 'Datasheets' / known_controller / controller / "{}_ds.pdf".format(
-                            controller)
-                    if path.exists():
+            known_controller, (url, datasheet_loader) =  self.get_datasheet_loader(controller)
+            if known_controller.upper() in controller.upper():
+                if known_controller == 'MKL' or known_controller == 'MK':
+                    path = Path('./') / 'Datasheets' / known_controller / "{}_ds.pdf".format(known_controller)
+                else:
+                    path = Path('./') / 'Datasheets' / known_controller / controller / "{}_ds.pdf".format(
+                        controller)
+                if path.exists():
+                    datasheet = datasheet_loader(str(path))
+                else:
+                    print(controller, ' is unknown , trying to download datasheet')
+                    r = requests.get(url.format(controller), stream=True)
+                    if r.status_code == 200:
+                        os.makedirs(path.parent, exist_ok=True)
+                        with path.open('wb') as f:
+                            total_length = int(r.headers.get('content-length'))
+                            for chunk in tqdm(r.iter_content(chunk_size=1024), total=int(total_length / 1024) + 1,
+                                              unit='Kbit'):
+                                if chunk:
+                                    f.write(chunk)
+                                    f.flush()
+                            f.close()
                         datasheet = datasheet_loader(str(path))
                     else:
-                        print(controller, ' is unknown , trying to download datasheet')
-                        r = requests.get(url.format(controller), stream=True)
-                        if r.status_code == 200:
-                            os.makedirs(path.parent, exist_ok=True)
-                            with path.open('wb') as f:
-                                total_length = int(r.headers.get('content-length'))
-                                for chunk in tqdm(r.iter_content(chunk_size=1024), total=int(total_length / 1024) + 1,
-                                                  unit='Kbit'):
-                                    if chunk:
-                                        f.write(chunk)
-                                        f.flush()
-                                f.close()
-                            datasheet = datasheet_loader(str(path))
-                        else:
-                            raise Exception('Invalid controller name')
-                    self.controller_datasheets[controller.upper()] = datasheet
+                        raise Exception('Invalid controller name')
+                self.controller_datasheets[controller.upper()] = datasheet
 
     def __getitem__(self, item: str):
         return self.controller_datasheets.get(item.upper(), None)

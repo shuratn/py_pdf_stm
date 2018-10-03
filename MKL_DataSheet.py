@@ -5,7 +5,7 @@ from DataSheet import DataSheet, DataSheetTableNode
 import re
 
 
-class KL_DataSheet(DataSheet):
+class MKL_DataSheet(DataSheet):
     FAMILY_NAME = re.compile(r'SUB-FAMILY (KL\d+[X\d]+):[\w+ ]*', re.IGNORECASE | re.MULTILINE)
 
     def collect_tables(self):

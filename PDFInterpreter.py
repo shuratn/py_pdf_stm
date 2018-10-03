@@ -602,6 +602,7 @@ class PDFInterpreter:
         self.pdf = pdfplumber.open(path)
         self.draw = False
         self.debug = False
+
     def filter_points(self, points: List[Point]):
         new_points = []
         for p1 in tqdm(points, desc='Filtering points', unit='points'):
@@ -643,7 +644,7 @@ class PDFInterpreter:
                 continue
             self.add_skeleton_points(skeleton_points, line1)
             for line2 in horizontal:
-            # for line2 in tqdm(horizontal,desc='Checking horizontal lines', unit='lines'):
+                # for line2 in tqdm(horizontal,desc='Checking horizontal lines', unit='lines'):
                 if line1 == line2:
                     continue
                 self.add_skeleton_points(skeleton_points, line2)
@@ -659,7 +660,7 @@ class PDFInterpreter:
                             skeleton_points[n] = p1
         skeleton_points = list(set(skeleton_points))
         sorted_y_points = sorted(skeleton_points, key=lambda other: other.y)
-        for p1 in tqdm(sorted_y_points,desc='Building skeleton cells',unit='point'):
+        for p1 in tqdm(sorted_y_points, desc='Building skeleton cells', unit='point'):
             p2 = p1.get_right(skeleton_points)
             if p2:
                 p3 = p2.get_bottom(skeleton_points, right=True)
@@ -675,7 +676,7 @@ class PDFInterpreter:
     @staticmethod
     def skeleton_to_2d_table(skeleton: List[Cell]) -> List[List[Cell]]:
         rows = []
-        for cell in tqdm(skeleton,desc='Analyzing cell positions',unit='cells'):
+        for cell in tqdm(skeleton, desc='Analyzing cell positions', unit='cells'):
             row = tuple(sorted(filter(lambda c: cell.on_same_row(c), skeleton), key=lambda c: c.p1.x))
             rows.append(row)
         rows = list(sorted(list(set(rows)), key=lambda c: c[0].p1.y))
@@ -704,7 +705,6 @@ class PDFInterpreter:
             p_im.reset()
             im = Image.new('RGB', (page.width, page.height), (255,) * 3)
             canvas = ImageDraw.ImageDraw(im)
-
             ugly_table = table.extract()
             lines = []  # type: List[Line]
             cells = []  # type: List[Cell]
@@ -773,14 +773,14 @@ if __name__ == '__main__':
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/stm32/stm32L476/stm32L476_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/KL/KL17P64M48SF6_ds.pdf")
-    pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK11DN512AVMC5_ds.pdf")
+    pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6_ds.pdf")
     pdf_interpreter.draw = True
     pdf_interpreter.debug = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
     # print(pdf_interpreter.content)
     # tables = pdf_interpreter.parse_page(5)
-    tables = pdf_interpreter.parse_page(8)
+    tables = pdf_interpreter.parse_page(9)
     print(tables)
     # pdf_interpreter.parse_page(1)
     # pdf_interpreter.save()
