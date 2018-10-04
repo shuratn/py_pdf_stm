@@ -7,7 +7,7 @@ import re
 
 from DataSheet import DataSheet
 from MKL_DataSheet import MKL_DataSheet
-from TableExtractor import PDFInterpreter, Table
+from TableExtractor import TableExtractor, Table
 
 
 def fetch_from_all(lists, num):
@@ -61,7 +61,7 @@ class FeatureListExtractor:  # This class is adapted to STM
 
     def extract_table(self, datasheet, page):
         print('Extracting table from {} page'.format(page + 1))
-        pdf_int = PDFInterpreter(str(datasheet.path))
+        pdf_int = TableExtractor(str(datasheet.path))
         table = pdf_int.parse_page(page)
         return table
 

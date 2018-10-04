@@ -551,7 +551,7 @@ class Table:
     #             self.global_map[row][col].print_cell()
 
 
-class PDFInterpreter:
+class TableExtractor:
 
     def __init__(self, path):
         self.pdf = pdfplumber.open(path)
@@ -727,7 +727,7 @@ class PDFInterpreter:
 if __name__ == '__main__':
     # datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L431\stm32L431_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/stm32/stm32L476/stm32L476_ds.pdf")
-    pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
+    pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/KL/KL17P64M48SF6_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6_ds.pdf")

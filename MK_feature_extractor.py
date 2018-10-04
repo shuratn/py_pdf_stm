@@ -6,7 +6,7 @@ from PyPDF3.pdf import PageObject
 
 from DataSheet import DataSheet
 from MKL_feature_extractor import MKLFeatureListExtractor
-from TableExtractor import PDFInterpreter
+from TableExtractor import TableExtractor
 from feature_extractor import FeatureListExtractor
 
 
@@ -42,7 +42,7 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
                     self.features_tables.extend(table)
 
     def extract_table(self, datasheet, page):
-        pdf_int = PDFInterpreter(str(datasheet.path))
+        pdf_int = TableExtractor(str(datasheet.path))
         table = pdf_int.parse_page(page)
         return table
 
