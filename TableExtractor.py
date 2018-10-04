@@ -649,27 +649,27 @@ class TableExtractor:
         page = self.pdf.pages[page_n]
         if self.debug:
             print('Rendering page')
-        p_im = page.to_image(resolution=100)
+        # p_im = page.to_image(resolution=100)
         if self.debug:
             print('Finding tables')
         tables = TableFinder(page, {'snap_tolerance': 3, 'join_tolerance': 3})
         if self.debug:
             print('Found', len(tables.tables), 'tables')
         beaut_tables = []
-        if self.draw:
-            p_im.draw_lines(page.lines)
-            p_im.save('page-{}-lines.png'.format(page_n + 1))
+        # if self.draw:
+            # p_im.draw_lines(page.lines)
+            # p_im.save('page-{}-lines.png'.format(page_n + 1))
         if len(tables.tables) > 5:
             return []
         for n, table in enumerate(tables.tables):
-            p_im.reset()
-            im = Image.new('RGB', (page.width, page.height), (255,) * 3)
-            canvas = ImageDraw.ImageDraw(im)
+            # p_im.reset()
+            # im = Image.new('RGB', (page.width, page.height), (255,) * 3)
+            # canvas = ImageDraw.ImageDraw(im)
             ugly_table = table.extract()
             lines = []  # type: List[Line]
             cells = []  # type: List[Cell]
             for cell in tqdm(table.cells, desc='Parsing cells', unit='cells'):
-                p_im.draw_rect(cell)
+                # p_im.draw_rect(cell)
                 x1, y1, x2, y2 = cell
                 p1 = Point(x1, y1)
                 p1.right = True
@@ -699,9 +699,9 @@ class TableExtractor:
             lines = self.filter_lines(lines)
             # for line in lines:
             #     line.draw(canvas, color='green')
-            if self.draw:
-                p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
-                im.save('page-{}-{}.png'.format(page_n + 1, n))
+            # if self.draw:
+            #     p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
+            #     im.save('page-{}-{}.png'.format(page_n + 1, n))
             skeleton_points, skeleton = self.build_skeleton(lines.copy())
             if not skeleton_points:
                 continue
@@ -710,22 +710,22 @@ class TableExtractor:
             # for p in points:
             #     p.draw(canvas)
 
-            beaut_table = Table(cells, skeleton, ugly_table, page.extract_words(), canvas=canvas)
+            beaut_table = Table(cells, skeleton, ugly_table, page.extract_words())
             beaut_table.build_table()
-            for cell in beaut_table.cells:
-                cell.draw(canvas)
+            # for cell in beaut_table.cells:
+            #     cell.draw(canvas)
             if self.debug:
                 print('Saving rendered table')
-            if self.draw:
-                p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
-                im.save('page-{}-{}.png'.format(page_n + 1, n))
-            if self.draw:
-                canvas.rectangle((0,0,page.width,page.height),fill='white') #cleaning canvas
-                for row_id, row in enumerate(skeleton):
-                    for cell_id, cell in enumerate(row):
-                        cell.text = '{}-{}'.format(row_id, cell_id)
-                        cell.draw(canvas, color='green',text_color='red')
-                im.save('page-{}-{}-skeleton.png'.format(page_n + 1, n))
+            # if self.draw:
+            #     p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
+            #     im.save('page-{}-{}.png'.format(page_n + 1, n))
+            # if self.draw:
+            #     canvas.rectangle((0,0,page.width,page.height),fill='white') #cleaning canvas
+            #     for row_id, row in enumerate(skeleton):
+            #         for cell_id, cell in enumerate(row):
+            #             cell.text = '{}-{}'.format(row_id, cell_id)
+            #             cell.draw(canvas, color='green',text_color='red')
+            #     im.save('page-{}-{}-skeleton.png'.format(page_n + 1, n))
             beaut_tables.append(beaut_table)
 
         return beaut_tables
