@@ -98,4 +98,8 @@ if __name__ == '__main__':
     if sys.argv[1] == 'parse':
         parse_all()
         exit(0xDEADBEEF)
+    if sys.argv[1] == 'download':
+        feature_manager = FeatureManager(sys.argv[2:])
+        feature_manager.parse()
+        exit(0xDEADCAFE)
     MCUHelper(sys.argv[1]).collect_matching()
