@@ -6,7 +6,7 @@ from PyPDF3.pdf import PageObject
 
 from DataSheet import DataSheet
 from MKL_feature_extractor import MKLFeatureListExtractor
-from PDFInterpreter import PDFInterpreter
+from TableExtractor import PDFInterpreter
 from feature_extractor import FeatureListExtractor
 
 

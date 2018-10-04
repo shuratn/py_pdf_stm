@@ -6,7 +6,7 @@ from typing import List
 from PyPDF3.pdf import PageObject
 
 from DataSheet import DataSheet
-from PDFInterpreter import PDFInterpreter, Cell
+from TableExtractor import PDFInterpreter, Cell
 from feature_extractor import FeatureListExtractor
 
 

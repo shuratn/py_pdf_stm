@@ -7,7 +7,7 @@ import re
 
 from DataSheet import DataSheet
 from MKL_DataSheet import MKL_DataSheet
-from PDFInterpreter import PDFInterpreter, Table
+from TableExtractor import PDFInterpreter, Table
 
 
 def fetch_from_all(lists, num):

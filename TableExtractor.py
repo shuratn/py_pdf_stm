@@ -727,16 +727,16 @@ class PDFInterpreter:
 if __name__ == '__main__':
     # datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L431\stm32L431_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/stm32/stm32L476/stm32L476_ds.pdf")
-    # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
+    pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/KL/KL17P64M48SF6_ds.pdf")
-    pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK_ds.pdf")
+    # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6_ds.pdf")
     pdf_interpreter.draw = True
     pdf_interpreter.debug = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
     # print(pdf_interpreter.content)
     # tables = pdf_interpreter.parse_page(5)
-    tables = pdf_interpreter.parse_page(8)
+    tables = pdf_interpreter.parse_page(14)
     print(tables)
     # pdf_interpreter.parse_page(1)
     # pdf_interpreter.save()
