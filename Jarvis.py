@@ -51,7 +51,7 @@ class MCUHelper:
                             mismatch = True
                             print('ERROR:',ex)
                             print('INFO:',req,':',req_value)
-                            print('INFO2:',':',feature_value)
+                            print('INFO2:',mcu_name,':',feature_value)
                             traceback.print_exc()
                     else:
                         continue

@@ -196,6 +196,8 @@ class FeatureListExtractor:  # This class is adapted to STM
         print('=' * 20)
 
     def convert_type(self, name: str, value):
+        if type(value) == str:
+            value = value.replace(',','')
         if 'KB' in name.upper():
             name = self.remove_units(name, 'kb')
             if self.is_numeric(value):

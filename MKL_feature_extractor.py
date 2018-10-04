@@ -89,7 +89,7 @@ class MKLFeatureListExtractor(FeatureListExtractor):
                                         if type(value) == int:
                                             controller_features[controller_name][feature] += value
                                         elif type(value) == str:
-                                            controller_features[controller_name][feature] += '/' + value
+                                            controller_features[controller_name][feature] = value
                                     else:
                                         raise Exception('SHOULD NOT BE HAPPENING!')
                                 else:
