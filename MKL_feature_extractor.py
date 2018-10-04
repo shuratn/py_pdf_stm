@@ -15,30 +15,25 @@ class MKLFeatureListExtractor(FeatureListExtractor):
     def __init__(self, controller: str, datasheet: DataSheet, config):
         super().__init__(controller, datasheet, config)
         self.shared_features = {}
-        self.family, self.sub_family = '0','0'
-        self.mc_name = ''
+        self.family, self.sub_family = '0', '0'
         self.page_text = ''
         self.shared_features = {}
         self.mc_family = ''
         self.post_init()
 
-
     def post_init(self):
         self.shared_features = {}
-        self.family, self.sub_family = re.findall(r'MKL(\d)(\d)\w+', self.controller)[0]
-        self.mc_name = ''
         self.page_text = ''
         self.shared_features = {}
         self.config_name = 'MKL'
-        self.mc_family = 'KL{}'.format(self.family)
+        self.mc_family = 'MKL'
 
     def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
         print('Extracting tables for', self.controller)
         datasheet = self.datasheet
 
         for n, table in enumerate(self.datasheet.tables.values()):
-            if table['name'].upper() == 'KL{}X'.format(self.family):
-                self.mc_name = 'MKL{}{}'.format(self.family,self.sub_family)
+            if self.mc_family in table['name'].upper():
                 page_num = datasheet.get_page_num(table['data'])
                 page = datasheet.pdf_file.pages[page_num]  # type:PageObject
                 self.page_text += page.extractText()
@@ -52,7 +47,7 @@ class MKLFeatureListExtractor(FeatureListExtractor):
         table = pdf_int.parse_page(page)
         return table
 
-    def handle_shared(self,row:List[Cell]):
+    def handle_shared(self, row: List[Cell]):
         for cell in row:
             for sub_row in cell.text.split('\n'):
                 if 'Temp Range:' in sub_row:
@@ -77,16 +72,16 @@ class MKLFeatureListExtractor(FeatureListExtractor):
                             continue
                         self.handle_shared(row)
                         continue
-                    if self.mc_name not in controller_name:
+                    if self.mc_family not in controller_name:
                         continue
                     if controller_name not in controller_features:
                         controller_features[controller_name] = {}
                     for feature, value in zip(header, row):
                         new_names_values = self.handle_feature(feature.text, value.text)
                         for feature, value in new_names_values:
-                            if feature == 'ADC_CHANNELS': #Special case
-                                for adc_type,adc_values in controller_features[controller_name]['ADC'].items():
-                                    adc_values['channels']=value
+                            if feature == 'ADC_CHANNELS':  # Special case
+                                for adc_type, adc_values in controller_features[controller_name]['ADC'].items():
+                                    adc_values['channels'] = value
                                 continue
                             if feature and value:
                                 if feature in controller_features[controller_name]:
@@ -110,7 +105,7 @@ class MKLFeatureListExtractor(FeatureListExtractor):
             except Exception as ex:
                 sys.stderr.write("ERROR {}".format(ex))
                 traceback.print_exc()
-        for _,features in controller_features.items():
+        for _, features in controller_features.items():
             features.update(self.shared_features)
         self.features = controller_features
         return controller_features
@@ -118,10 +113,10 @@ class MKLFeatureListExtractor(FeatureListExtractor):
     def handle_feature(self, name, value):
         name = name.strip()
         if '\u2013' in name:
-            name = name.replace('\u2013','-')
-        if type(value)==str:
+            name = name.replace('\u2013', '-')
+        if type(value) == str:
             if '\u2013' in value:
-                value = value.replace('\u2013','-')
+                value = value.replace('\u2013', '-')
         if value == '-':
             value = 0
         name = name.strip()
@@ -131,19 +126,19 @@ class MKLFeatureListExtractor(FeatureListExtractor):
             values = value.split('/')
             adcs = {}
             for adc_type, value in zip(adc_types, values):
-                if int(value)>0:
+                if int(value) > 0:
                     adcs[adc_type] = {'count': int(value), 'channels': -1}
-            return [('ADC',adcs)]
+            return [('ADC', adcs)]
 
         if 'DAC' in name:
             adc_type = name.split(' ')[0]
             count = int(value)
             if count:
-                return [('DAC', {adc_type:{'count':int(value)}})]
+                return [('DAC', {adc_type: {'count': int(value)}})]
 
         if 'ADC Channels' in name:
-            value = sum(map(int,value.split('/')))
-            return [('ADC_CHANNELS',value)]
+            value = sum(map(int, value.split('/')))
+            return [('ADC_CHANNELS', value)]
         if 'Watchdog' in name:
             adc_types = re.findall(r'.*\((.*)/(.*)\)', name)[0]
             name = 'Watchdog'
@@ -171,4 +166,3 @@ class MKLFeatureListExtractor(FeatureListExtractor):
             return [('UART', value), ]
 
         return super().handle_feature(name, value)
-

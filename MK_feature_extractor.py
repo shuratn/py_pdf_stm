@@ -17,10 +17,8 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
 
     def post_init(self):
         self.shared_features = {}
-        self.family = re.findall(r'MK(\d+)\w+', self.controller)[0]  # MK11DN512AVMC5
-        self.mc_name = None
         self.config_name = 'MK'
-        self.mc_family = 'MK{}'.format(self.family)
+        self.mc_family = 'MK'
         self.page_text = ''
 
     def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
@@ -28,8 +26,7 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
         datasheet = self.datasheet
 
         for n, table in enumerate(self.datasheet.tables.values()):
-            if table['name'].upper() == 'K{}'.format(self.family):
-                self.mc_name = 'K{}-{}'.format(self.family, n)
+            if self.mc_family in table['name'].upper():
                 page_num = datasheet.get_page_num(table['data'])
                 page = datasheet.pdf_file.pages[page_num]  # type:PageObject
                 self.page_text += page.extractText()

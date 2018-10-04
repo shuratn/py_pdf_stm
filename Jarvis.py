@@ -1,5 +1,6 @@
 import json
 import sys
+from pathlib import Path
 from pprint import pprint
 from typing import Dict, Any
 
@@ -55,12 +56,11 @@ class MCUHelper:
         else:
             self.print_matching(matching)
 
-    def print_matching(self,matching):
-        for match_name,match_features in matching.items():
+    def print_matching(self, matching):
+        for match_name, match_features in matching.items():
             print(match_name)
-            for feature,value in match_features.items():
-                print('\t',feature,':',value)
-
+            for feature, value in match_features.items():
+                print('\t', feature, ':', value)
 
     def print_user_req(self):
         print('Your requirements were:')
@@ -73,9 +73,21 @@ class MCUHelper:
             print('\t', req_name, cmp_type, req_value)
 
 
+datasheets_path = Path('./datasheets/').absolute()
+
+
+def parse_all():
+    to_parse = []
+    for folder in datasheets_path.iterdir():
+        if folder.is_dir():
+            for ds in folder.iterdir():
+                if ds.is_file():
+                    to_parse.append(ds.stem)
+    FeatureManager(to_parse).parse()
 
 
 if __name__ == '__main__':
     if sys.argv[1] == 'parse':
-        pass
+        parse_all()
+        exit(0xDEADBEEF)
     MCUHelper(sys.argv[1]).collect_matching()
