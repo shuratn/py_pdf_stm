@@ -701,9 +701,10 @@ class TableExtractor:
             if not skeleton_points:
                 continue
             skeleton = self.skeleton_to_2d_table(skeleton)
-            # for row in skeleton:
-            #     for cell in row:
-            #         cell.draw(canvas, color='green')
+            for row in skeleton:
+                for cell in row:
+                    cell.draw(canvas, color='green')
+            im.save('page-{}-{}-skeleton.png'.format(page_n + 1, n))
             # for p in points:
             #     p.draw(canvas)
 
