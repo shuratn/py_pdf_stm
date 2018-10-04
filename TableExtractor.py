@@ -1,4 +1,5 @@
 import math
+from operator import itemgetter
 from typing import Tuple
 
 import pdfplumber
@@ -409,10 +410,13 @@ class Cell:
         self.p3: Point = p3
         self.p4: Point = p4
         self.text = ''
-        self.chars = []  # type: List[Dict]
+        self.words = []  # type: List[str]
 
     def __repr__(self):
         return 'Cell <"{}"> '.format(self.text.replace('\n', ' '))
+
+    def get_text(self):
+        return ''.join(map(itemgetter('text'),self.words))
 
     @property
     def clean_text(self):
@@ -488,10 +492,10 @@ class Cell:
 
 class Table:
 
-    def __init__(self, cells: List[Cell], skeleton: List[List[Cell]], ugly_table: List[List[str]], chars, canvas=None):
+    def __init__(self, cells: List[Cell], skeleton: List[List[Cell]], ugly_table: List[List[str]], words, canvas=None):
         self.cells = cells
         self.canvas = canvas
-        self.chars = chars
+        self.words = words
         self.skeleton = skeleton
         self.ugly_table = ugly_table
         self.global_map = {}
@@ -509,13 +513,14 @@ class Table:
         for cell in tqdm(self.cells, desc='Analyzing cells', unit='cells'):
             if cell in processed_cells:
                 continue
-            in_chars = list(filter(lambda char: cell.point_inside_polygon(
-                Point(char['x0'], char['y0']) if not char['upright'] else Point(char['y0'], char['x0'])), self.chars))
-            cell.chars = in_chars
+            in_words = list(filter(lambda char: cell.point_inside_polygon(
+                Point(char['x0'], char['top'])), self.words))
+            cell.words = in_words
             processed_cells.append(cell)
 
         if self.canvas:
             for cell in self.cells:
+                # print(cell.get_text())
                 cell.draw(self.canvas)
 
     def get_col(self, col_id) -> List[Cell]:
@@ -705,7 +710,7 @@ class TableExtractor:
             # for p in points:
             #     p.draw(canvas)
 
-            beaut_table = Table(cells, skeleton, ugly_table, table.page.chars, canvas=canvas)
+            beaut_table = Table(cells, skeleton, ugly_table, page.extract_words(), canvas=canvas)
             beaut_table.build_table()
             for cell in beaut_table.cells:
                 cell.draw(canvas)
@@ -732,9 +737,9 @@ class TableExtractor:
 if __name__ == '__main__':
     # datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L431\stm32L431_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/stm32/stm32L476/stm32L476_ds.pdf")
-    pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
+    # pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/KL/KL17P64M48SF6_ds.pdf")
-    # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK_ds.pdf")
+    pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6_ds.pdf")
     pdf_interpreter.draw = True
     pdf_interpreter.debug = True

@@ -15,7 +15,6 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
     def __init__(self, controller: str, datasheet: DataSheet, config):
         super().__init__(controller, datasheet, config)
 
-
     def post_init(self):
         self.shared_features = {}
         self.family = re.findall(r'MK(\d+)\w+', self.controller)[0]  # MK11DN512AVMC5
@@ -58,6 +57,8 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
                 for row_id in range(1, len(table.get_col(1))):
                     row = table.get_row(row_id)[1:]
                     controller_name = row.pop(0).text
+                    if self.mc_family not in controller_name:
+                        continue
                     if 'Common Features' in controller_name:
                         if self.mc_family not in controller_name:
                             continue
@@ -91,8 +92,8 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
                 value = value.replace('\u2013', '-')
         if value == '-':
             value = 0
-        name = self.fix_name(name)
         name = name.strip()
+        name = self.fix_name(name)
         if 'ADC Modules' in name:
             adc_types = re.findall(r'.*\((.*)/(.*)\)', name)[0]
             name = 'ADC Modules'
@@ -113,4 +114,3 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
             return [(None, None)]
 
         return super().handle_feature(name, value)
-

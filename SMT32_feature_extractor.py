@@ -9,6 +9,7 @@ class STM32FeatureListExtractor(FeatureListExtractor):
         print('Extracting tables for', self.controller)
         datasheet = self.datasheet
         self.config_name = 'STM32'
+
         table_page = datasheet.table_root.childs[1].page
         page_num = datasheet.get_page_num(table_page)
         table_pt1 = self.extract_table(datasheet, page_num)
@@ -20,6 +21,9 @@ class STM32FeatureListExtractor(FeatureListExtractor):
             self.features_tables.append(table_pt2[0])
         if table_pt3:
             self.features_tables.append(table_pt3[0])
+
+    def post_init(self):
+        self.mc_family = self.controller[:9]  # STM32L451
 
     def handle_feature(self, name, value):
         if name in self.config['corrections']:

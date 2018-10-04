@@ -1,8 +1,11 @@
 import copy
 import os
 import sys
-from typing import List
+from pathlib import Path
+from typing import List, Dict
+import json
 
+from DataSheet import DataSheet
 from DataSheetManager import DataSheetManager
 from MKL_feature_extractor import MKLFeatureListExtractor
 from MK_feature_extractor import MKFeatureListExtractor
@@ -17,39 +20,59 @@ class FeatureManager:
         'MK': MKFeatureListExtractor,
     }
 
-    def __init__(self, microcontrollers: List[str]):
+    cache_path = Path(r'./cache/mcu_cache.json').absolute()
+
+    def __init__(self, datasheets: List[str]):
         with open('config.json', 'r') as fp:
             if not fp.read():
                 self.config = {'corrections': {}, 'unify': {}}
             else:
                 fp.seek(0)
                 self.config = json.load(fp)
-        self.datasheet_manager = DataSheetManager(microcontrollers)
-        self.mcs = microcontrollers
+        self.datasheets = datasheets
         self.mcs_features = {}
         self.same_features = []
+        self.load_cache()
+        self.datasheet_manager = DataSheetManager(datasheets)
         self.excel = xlsxwriter.Workbook('FeatureList.xlsx')
         self.sheet = self.excel.add_worksheet()
 
-    def get_extractor(self,mc:str):
-        for extractor_name in sorted(self.EXTRACTORS,key=lambda l:len(l),reverse=True):
+    def get_extractor(self, mc: str):
+        for extractor_name in sorted(self.EXTRACTORS, key=lambda l: len(l), reverse=True):
             if extractor_name.upper() in mc.upper():
                 return self.EXTRACTORS[extractor_name]
 
-
     def parse(self):
         self.datasheet_manager.get_or_download()
-        for mc in self.mcs:
+        for mc in self.datasheets:
             extractor = self.get_extractor(mc)
             datasheet = self.datasheet_manager[mc]
             if datasheet:
                 extractor_obj = extractor(mc, datasheet, self.config)
                 extractor_obj.process()
                 extractor_obj.unify_names()
-                self.mcs_features[mc] = extractor_obj.features
+                self.mcs_features[extractor_obj.mc_family] = extractor_obj.features
                 pass  # handle feature extraction
             else:
                 raise Exception('Can\' find {} in database'.format(mc))
+        self.save()
+
+    def load_cache(self):
+        if not self.cache_path.exists():
+            self.cache_path.parent.mkdir(exist_ok=True)
+            self.mcs_features = {}
+            return
+        with self.cache_path.open('r+') as fp:
+            new = json.load(fp)  # type: Dict
+        self.mcs_features.update(new)
+
+    def save(self):
+        if self.cache_path.exists():
+            with self.cache_path.open('r+') as fp:
+                old = json.load(fp)  # type: Dict
+            old.update(self.mcs_features)
+        with self.cache_path.open('w') as fp:
+            json.dump(self.mcs_features, fp)
 
     def collect_same_features(self):
         same_features = set()

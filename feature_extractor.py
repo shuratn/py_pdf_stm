@@ -37,9 +37,11 @@ class FeatureListExtractor:  # This class is adapted to STM
                 string = string[:index + 1] + string[:index + 2]
         return string
 
-    def fix_name(self,name):
-        name  = "".join([part[::-1] for part in name[::1][::-1].split('\n')])
-        return self.config['corrections'].get(name,name)
+    def fix_name(self, name):
+        # print('Fixing name',name)
+        name = "".join([part[::-1] for part in name[::1][::-1].split('\n')])
+        # print('Fixed',name)
+        return self.config['corrections'].get(name, name)
 
     def __init__(self, controller: str, datasheet: DataSheet, config):
         """
@@ -53,6 +55,12 @@ class FeatureListExtractor:  # This class is adapted to STM
         self.features_tables = []  # type: List[Table]
         self.features = {}  # type: Dict[str,Dict]
         self.config_name = 'UNKNOWN CONTROLLER'
+        self.mc_family = 'UNKNOWN'
+        self.post_init()
+
+
+    def post_init(self):
+        pass
 
     def process(self):
         self.extract_tables()
@@ -74,6 +82,8 @@ class FeatureListExtractor:  # This class is adapted to STM
         if type(value) == str:
             if '\u2013' in value:
                 value = value.replace('\u2013', '-')
+            if '\n' in value:
+                value = value.replace('\n','/')
 
         return [(name, value)]  # Can be list of values and names
 

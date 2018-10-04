@@ -124,7 +124,8 @@ class MKLFeatureListExtractor(FeatureListExtractor):
                 value = value.replace('\u2013','-')
         if value == '-':
             value = 0
-
+        name = name.strip()
+        name = self.fix_name(name)
         if 'ADC Modules' in name:
             adc_types = re.findall(r'.*\((.*)/(.*)\)', name)[0]
             values = value.split('/')
@@ -162,7 +163,10 @@ class MKLFeatureListExtractor(FeatureListExtractor):
             cs_string = values.pop(0).replace(')', '')
             cs_count = sum(map(int, cs_string.split('/')))
             return [('SPI QTY', spi_count), ('Chip Select', cs_count)]
-        if 'UART w/ISO7816' in name:
+        if 'UART w/ ISO7816' in name:
+            value = int(value)
+            return [('UART', value), ]
+        if 'Low-Power UART' in name:
             value = int(value)
             return [('UART', value), ]
 

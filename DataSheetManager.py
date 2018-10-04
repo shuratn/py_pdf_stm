@@ -21,9 +21,9 @@ class DataSheetManager:
         'MK': (MK_DATASHEET_URL, MK_DataSheet),
     }
 
-    def __init__(self, controllers: List[str]):
-        self.controllers = controllers
-        self.controller_datasheets = {}
+    def __init__(self, datasheets: List[str]):
+        self.datasheets = datasheets
+        self.datasheets_datasheets = {}
 
     def get_datasheet_loader(self,mc:str):
         for loader in sorted(self.DATASHEET_URLS,key=lambda l:len(l),reverse=True):
@@ -32,14 +32,16 @@ class DataSheetManager:
         return None,None
 
     def get_or_download(self):
-        for controller in self.controllers:
+        for controller in self.datasheets:
             known_controller, (url, datasheet_loader) =  self.get_datasheet_loader(controller)
             if known_controller.upper() in controller.upper():
                 if known_controller == 'MKL' or known_controller == 'MK':
-                    path = Path('./') / 'Datasheets' / known_controller / "{}_ds.pdf".format(known_controller)
+                    path = Path('./') / 'Datasheets' / known_controller / "{}.pdf".format(known_controller)
                 else:
-                    path = Path('./') / 'Datasheets' / known_controller / controller / "{}_ds.pdf".format(
+                    path = Path('./') / 'Datasheets' / known_controller / "{}.pdf".format(
                         controller)
+                if not path.parent.exists():
+                    path.parent.mkdir(exist_ok=True)
                 if path.exists():
                     datasheet = datasheet_loader(str(path))
                 else:
@@ -58,13 +60,13 @@ class DataSheetManager:
                         datasheet = datasheet_loader(str(path))
                     else:
                         raise Exception('Invalid controller name')
-                self.controller_datasheets[controller.upper()] = datasheet
+                self.datasheets_datasheets[controller.upper()] = datasheet
 
     def __getitem__(self, item: str):
-        return self.controller_datasheets.get(item.upper(), None)
+        return self.datasheets_datasheets.get(item.upper(), None)
 
 
 if __name__ == '__main__':
     manager = DataSheetManager(['KL17P64M48SF6'])
     manager.get_or_download()
-    print(manager.controller_datasheets)
+    print(manager.datasheets_datasheets)
