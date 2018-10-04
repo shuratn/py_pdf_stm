@@ -117,6 +117,8 @@ class MCUHelper:
                 feature_value = mc_features.pop(common_feature)
                 if type(feature_value) is list:
                     feature_value = '/'.join(feature_value)
+                if type(feature_value) is dict:
+                    feature_value = str(feature_value)
                 sheet.write(1 + n, 1 + m, feature_value)
             row_offset = n + 1
 
