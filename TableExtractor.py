@@ -414,7 +414,6 @@ class Cell:
     def __repr__(self):
         return 'Cell <"{}"> '.format(self.text.replace('\n', ' '))
 
-
     @property
     def clean_text(self):
         return self.text.replace('\n', ' ')
@@ -449,7 +448,7 @@ class Cell:
         centroid = Point(sum(x) / 4, sum(y) / 4)
         return centroid
 
-    def draw(self, canvas: ImageDraw.ImageDraw, color='black', width=1):
+    def draw(self, canvas: ImageDraw.ImageDraw, color='black', width=1, text_color='black'):
 
         # canvas.rectangle((self.p1.as_tuple, self.p3.as_tuple), outline=color,)
         canvas.line((self.p1.as_tuple, self.p2.as_tuple), color, width)
@@ -457,7 +456,7 @@ class Cell:
         canvas.line((self.p3.as_tuple, self.p4.as_tuple), color, width)
         canvas.line((self.p4.as_tuple, self.p1.as_tuple), color, width)
         if self.text:
-            canvas.text((self.p1.x + 3, self.p1.y + 3), self.text, fill='black', font=self.font)
+            canvas.text((self.p1.x + 3, self.p1.y + 3), self.text, fill=text_color, font=self.font)
 
     def print_cell(self):
         buffer = ''
@@ -510,7 +509,8 @@ class Table:
         for cell in tqdm(self.cells, desc='Analyzing cells', unit='cells'):
             if cell in processed_cells:
                 continue
-            in_chars = list(filter(lambda char: cell.point_inside_polygon(Point(char['x0'], char['y0'])if not char['upright'] else Point(char['y0'], char['x0'])), self.chars))
+            in_chars = list(filter(lambda char: cell.point_inside_polygon(
+                Point(char['x0'], char['y0']) if not char['upright'] else Point(char['y0'], char['x0'])), self.chars))
             cell.chars = in_chars
             processed_cells.append(cell)
 
@@ -701,10 +701,7 @@ class TableExtractor:
             if not skeleton_points:
                 continue
             skeleton = self.skeleton_to_2d_table(skeleton)
-            for row in skeleton:
-                for cell in row:
-                    cell.draw(canvas, color='green')
-            im.save('page-{}-{}-skeleton.png'.format(page_n + 1, n))
+
             # for p in points:
             #     p.draw(canvas)
 
@@ -717,6 +714,13 @@ class TableExtractor:
             if self.draw:
                 p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
                 im.save('page-{}-{}.png'.format(page_n + 1, n))
+            if self.draw:
+                canvas.rectangle((0,0,page.width,page.height),fill='white') #cleaning canvas
+                for row_id, row in enumerate(skeleton):
+                    for cell_id, cell in enumerate(row):
+                        cell.text = '{}-{}'.format(row_id, cell_id)
+                        cell.draw(canvas, color='green',text_color='red')
+                im.save('page-{}-{}-skeleton.png'.format(page_n + 1, n))
             beaut_tables.append(beaut_table)
 
         return beaut_tables
