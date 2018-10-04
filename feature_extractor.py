@@ -37,9 +37,9 @@ class FeatureListExtractor:  # This class is adapted to STM
                 string = string[:index + 1] + string[:index + 2]
         return string
 
-    KNOWN_NAMES = {
-        'Flash memory': 'ROM',
-    }
+    def fix_name(self,name):
+        name  = "".join([part[::-1] for part in name[::1][::-1].split('\n')])
+        return self.config['corrections'].get(name,name)
 
     def __init__(self, controller: str, datasheet: DataSheet, config):
         """
@@ -70,12 +70,10 @@ class FeatureListExtractor:  # This class is adapted to STM
 
     def handle_feature(self, name, value):
         if '\u2013' in name:
-            name = name.replace('\u2013','-')
-        if type(value)==str:
+            name = name.replace('\u2013', '-')
+        if type(value) == str:
             if '\u2013' in value:
-                value = value.replace('\u2013','-')
-        if name in self.config['corrections']:
-            name = self.config['corrections'][name]
+                value = value.replace('\u2013', '-')
 
         return [(name, value)]  # Can be list of values and names
 

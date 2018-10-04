@@ -260,48 +260,20 @@ class Line:
                 else:
                     return False
         det_tolerance = 0.0001
-        # the first line is pt1 + r*(pt2-pt1)
-        # in component form:
         x1, y1 = point_1
         x2, y2 = point_2
         dx1 = x2 - x1
         dy1 = y2 - y1
-        # the second line is ptA + s*(ptB-ptA)
         x, y = point_a
         xb, yb = point_b
         dx = xb - x
         dy = yb - y
-        # we need to find the (typically unique) values of r and s
-        # that will satisfy
-        #
-        # (x1, y1) + r(dx1, dy1) = (x, y) + s(dx, dy)
-        #
-        # which is the same as
-        #
-        #    [ dx1  -dx ][ r ] = [ x-x1 ]
-        #    [ dy1  -dy ][ s ] = [ y-y1 ]
-        #
-        # whose solution is
-        #
-        #    [ r ] = _1_  [  -dy   dx ] [ x-x1 ]
-        #    [ s ] = DET  [ -dy1  dx1 ] [ y-y1 ]
-        #
-        # where DET = (-dx1 * dy + dy1 * dx)
-        #
-        # if DET is too small, they're parallel
-        #
         det = (-dx1 * dy + dy1 * dx)
-
         if math.fabs(det) < det_tolerance:
-            # print('Lines are parallel')
             return False
-        # now, the determinant should be OK
         det_inv = 1.0 / det
-        # find the scalar amount along the "self" segment
         r = det_inv * (-dy * (x - x1) + dx * (y - y1))
-        # find the scalar amount along the input line
         s = det_inv * (-dy1 * (x - x1) + dx1 * (y - y1))
-        # return the average of the two descriptions
         if print_fulness:
             print('self segment', r)
             print('other segment', s)
@@ -323,50 +295,22 @@ class Line:
         point_2 = self.cx, self.cy
         point_a = other.x, other.y
         point_b = other.cx, other.cy
-
         det_tolerance = 1
-        # the first line is pt1 + r*(pt2-pt1)
-        # in component form:
         x1, y1 = point_1
         x2, y2 = point_2
         dx1 = x2 - x1
         dy1 = y2 - y1
-        # the second line is ptA + s*(ptB-ptA)
         x, y = point_a
         xb, yb = point_b
         dx = xb - x
         dy = yb - y
-        # we need to find the (typically unique) values of r and s
-        # that will satisfy
-        #
-        # (x1, y1) + r(dx1, dy1) = (x, y) + s(dx, dy)
-        #
-        # which is the same as
-        #
-        #    [ dx1  -dx ][ r ] = [ x-x1 ]
-        #    [ dy1  -dy ][ s ] = [ y-y1 ]
-        #
-        # whose solution is
-        #
-        #    [ r ] = _1_  [  -dy   dx ] [ x-x1 ]
-        #    [ s ] = DET  [ -dy1  dx1 ] [ y-y1 ]
-        #
-        # where DET = (-dx1 * dy + dy1 * dx)
-        #
-        # if DET is too small, they're parallel
-        #
         det = (-dx1 * dy + dy1 * dx)
 
         if math.fabs(det) < det_tolerance:
-            print('parallel')
             return None, None
-        # now, the determinant should be OK
         det_inv = 1.0 / det
-        # find the scalar amount along the "self" segment
         r = det_inv * (-dy * (x - x1) + dx * (y - y1))
-        # find the scalar amount along the input line
         s = det_inv * (-dy1 * (x - x1) + dx1 * (y - y1))
-        # return the average of the two descriptions
         xi = (x1 + r * dx1 + x + s * dx) / 2.0
         yi = (y1 + r * dy1 + y + s * dy) / 2.0
         if print_fulness:
@@ -465,11 +409,39 @@ class Cell:
         self.p3: Point = p3
         self.p4: Point = p4
         self.text = ''
-        self.texts = []  # type: List[Tuple[str, Point]]
+        self.chars = []  # type: List[Dict]
 
     def __repr__(self):
         return 'Cell <"{}"> '.format(self.text.replace('\n', ' '))
 
+    def get_text(self):
+        text = ''
+        chars = []  # type: List[Tuple[str,Point,bool]]
+        upright = False
+        for char in self.chars:
+            p1 = Point(char['x0'], char['y0'])
+            if char['upright']:
+                upright = True
+            chars.append((char['text'], p1, char['upright']))
+            text += char['text']
+
+        if upright:
+            print(text)
+            print(chars)
+            #  split chars into vertical cols
+            xs = set([char[1].x for char in chars])
+            print(xs)
+            new_xs = []
+            for x in xs:
+                for x2 in xs:
+                    if almost_equals(x, x2):
+                        continue
+                    if x == x2:
+                        continue
+                    new_xs.append(x)
+            xs = sorted(set(new_xs))
+            print(xs)
+            print('CELL END')
     @property
     def clean_text(self):
         return self.text.replace('\n', ' ')
@@ -544,9 +516,10 @@ class Cell:
 
 class Table:
 
-    def __init__(self, cells: List[Cell], skeleton: List[List[Cell]], ugly_table: List[List[str]], canvas=None):
+    def __init__(self, cells: List[Cell], skeleton: List[List[Cell]], ugly_table: List[List[str]], chars, canvas=None):
         self.cells = cells
         self.canvas = canvas
+        self.chars = chars
         self.skeleton = skeleton
         self.ugly_table = ugly_table
         self.global_map = {}
@@ -559,8 +532,18 @@ class Table:
                     if t_cell.point_inside_polygon(cell.center):
                         t_cell.text += text if text else ''
                         self.global_map[y][x] = t_cell
+
+        processed_cells = []
+        for cell in tqdm(self.cells, desc='Analyzing cells', unit='cells'):
+            if cell in processed_cells:
+                continue
+            in_chars = list(filter(lambda char: cell.point_inside_polygon(Point(char['x0'], char['y0'])if not char['upright'] else Point(char['y0'], char['x0'])), self.chars))
+            cell.chars = in_chars
+            processed_cells.append(cell)
+
         if self.canvas:
             for cell in self.cells:
+                print(cell.get_text())
                 cell.draw(self.canvas)
 
     def get_col(self, col_id) -> List[Cell]:
@@ -751,7 +734,8 @@ class PDFInterpreter:
             #         cell.draw(canvas, color='green')
             # for p in points:
             #     p.draw(canvas)
-            beaut_table = Table(cells, skeleton, ugly_table)
+
+            beaut_table = Table(cells, skeleton, ugly_table, table.page.chars, canvas=canvas)
             beaut_table.build_table()
             for cell in beaut_table.cells:
                 cell.draw(canvas)
@@ -780,7 +764,7 @@ if __name__ == '__main__':
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
     # print(pdf_interpreter.content)
     # tables = pdf_interpreter.parse_page(5)
-    tables = pdf_interpreter.parse_page(9)
+    tables = pdf_interpreter.parse_page(8)
     print(tables)
     # pdf_interpreter.parse_page(1)
     # pdf_interpreter.save()

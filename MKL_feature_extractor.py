@@ -5,26 +5,40 @@ from typing import List
 
 from PyPDF3.pdf import PageObject
 
+from DataSheet import DataSheet
 from PDFInterpreter import PDFInterpreter, Cell
 from feature_extractor import FeatureListExtractor
 
 
 class MKLFeatureListExtractor(FeatureListExtractor):
-    table_cache = {}
 
-    def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
-        print('Extracting tables for', self.controller)
-        datasheet = self.datasheet
-        family, sub_family = re.findall(r'MKL(\d)(\d)\w+', self.controller)[0]
-        # print(family, sub_family)
+    def __init__(self, controller: str, datasheet: DataSheet, config):
+        super().__init__(controller, datasheet, config)
+        self.shared_features = {}
+        self.family, self.sub_family = '0','0'
+        self.mc_name = ''
+        self.page_text = ''
+        self.shared_features = {}
+        self.mc_family = ''
+        self.post_init()
+
+
+    def post_init(self):
+        self.shared_features = {}
+        self.family, self.sub_family = re.findall(r'MKL(\d)(\d)\w+', self.controller)[0]
         self.mc_name = ''
         self.page_text = ''
         self.shared_features = {}
         self.config_name = 'MKL'
-        self.mc_family = 'KL{}'.format(family)
+        self.mc_family = 'KL{}'.format(self.family)
+
+    def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
+        print('Extracting tables for', self.controller)
+        datasheet = self.datasheet
+
         for n, table in enumerate(self.datasheet.tables.values()):
-            if table['name'].upper() == 'KL{}X'.format(family):
-                self.mc_name = 'MKL{}{}'.format(family,sub_family)
+            if table['name'].upper() == 'KL{}X'.format(self.family):
+                self.mc_name = 'MKL{}{}'.format(self.family,self.sub_family)
                 page_num = datasheet.get_page_num(table['data'])
                 page = datasheet.pdf_file.pages[page_num]  # type:PageObject
                 self.page_text += page.extractText()
@@ -36,7 +50,6 @@ class MKLFeatureListExtractor(FeatureListExtractor):
         # print('Extracting table from {} page'.format(page + 1))
         pdf_int = PDFInterpreter(str(datasheet.path))
         table = pdf_int.parse_page(page)
-        self.update_cache(self.mc_name, table)
         return table
 
     def handle_shared(self,row:List[Cell]):
@@ -56,7 +69,6 @@ class MKLFeatureListExtractor(FeatureListExtractor):
                 header = table.get_row(0)[2:]
                 for feature_cell in header:  # fixing cell text
                     feature_cell.text = ''.join(feature_cell.text.split('\n')[::-1])
-                # print(header)
                 for row_id in range(1, len(table.get_col(1))):
                     row = table.get_row(row_id)[1:]
                     controller_name = row.pop(0).text
@@ -113,9 +125,6 @@ class MKLFeatureListExtractor(FeatureListExtractor):
         if value == '-':
             value = 0
 
-
-        if name in self.config['corrections']:
-            name = self.config['corrections'][name]
         if 'ADC Modules' in name:
             adc_types = re.findall(r'.*\((.*)/(.*)\)', name)[0]
             values = value.split('/')
@@ -159,9 +168,3 @@ class MKLFeatureListExtractor(FeatureListExtractor):
 
         return super().handle_feature(name, value)
 
-    @classmethod
-    def update_cache(cls, table_name, table):
-        if table_name in cls.table_cache:
-            cls.table_cache[table_name].extend(table)
-        else:
-            cls.table_cache[table_name] = table
