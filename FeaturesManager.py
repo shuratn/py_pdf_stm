@@ -34,8 +34,7 @@ class FeatureManager:
         self.same_features = []
         self.load_cache()
         self.datasheet_manager = DataSheetManager(datasheets)
-        self.excel = xlsxwriter.Workbook('FeatureList.xlsx')
-        self.sheet = self.excel.add_worksheet()
+        
 
     def get_extractor(self, mc: str):
         for extractor_name in sorted(self.EXTRACTORS, key=lambda l: len(l), reverse=True):
@@ -86,14 +85,15 @@ class FeatureManager:
         self.same_features = list(same_features)
 
     def write_excel_file(self):
+        excel = xlsxwriter.Workbook('FeatureList.xlsx')
+        sheet = excel.add_worksheet()
         self.collect_same_features()
 
         # UTIL VARS
-        merge_format = self.excel.add_format({'align': 'center', 'valign': 'center'})
+        merge_format = excel.add_format({'align': 'center', 'valign': 'center'})
         feature_vertical_offset = 0
 
         # Writing headers
-        sheet = self.sheet
         sheet.write(0, 0, 'MCU family')
         sheet.write(1, 0, 'MCU')
         name_offset = 0
@@ -130,7 +130,7 @@ class FeatureManager:
                 mc_offset += len(sub_mcs)
         feature_vertical_offset += len(self.same_features)
 
-        self.excel.close()
+        excel.close()
 
 
 if __name__ == '__main__':

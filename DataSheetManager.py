@@ -40,6 +40,7 @@ class DataSheetManager:
                 else:
                     path = Path('./') / 'Datasheets' / known_controller / "{}.pdf".format(
                         controller)
+                path = path.absolute()
                 if not path.parent.exists():
                     path.parent.mkdir(exist_ok=True)
                 if path.exists():
