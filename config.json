@@ -1,0 +1,62 @@
+{
+  "corrections": {
+    "SSPI PI) QTY (#Chip Select of Each": "SPI QTY (#Chip Select of Each SPI)",
+    "EEP(KB)ROM/FlexRAM": "EEPROM/FlexRAM (KB)",
+    "HiUgAh BRT auw/IdrSate O7816": "High Baud Rate UART",
+    "ACnoalmopg arator": "Analog Comparator",
+    "NuTamber of Emper Pinsxternal": "Number of External Tamper Pins",
+    "(N1o. 6 of Bit/A1D2 C MBit)odules": "No. of ADC Modules (16 Bit/12 Bit)",
+    "T(aDrmper yIce)Detect": "Tamper Detect(DryIce)",
+    "GPiPInsO With Interrupt/High-Drive": "GPIO With Interrupt/High-Drive Pins",
+    "Total (KB)Flash Memory": "Total Flash Memory (KB)",
+    "EPvaaluatioge 17)n Board (Appendix": "Evaluation Board(Appendix Page 17)"
+  },
+  "_comment": "SRAM:SRAM сделано специально, для пометки что эта фича известна",
+  "unify": {
+    "STM32": {
+      "GPIOs": "Total GPIOS",
+      "SRAM": "RAM",
+      "USART": "UART",
+      "LPUART": "UART",
+      "Max. CPU frequency": "CPU Frequency",
+      "Flash memory": "Flash memory",
+      "Quad SPI": "Quad SPI",
+      "Comm.  interfaces SPI": "SPI",
+      "SPI Comm.  interfaces": "SPI",
+      "Comm.  interfaces I2C": "I2C",
+      "I2C Comm.  interfaces": "I2C",
+      "Package": "Package",
+      "DAC": "DAC",
+      "ADC": "ADC"
+    },
+    "MKL": {
+      "Flash": "Flash memory",
+      "Flash (KB)": "Flash memory",
+      "Total GPIOS": "Total GPIOS",
+      "SRAM (KB)": "RAM",
+      "SPI QTY": "SPI",
+      "CPU Frequency (MHz)": "CPU Frequency",
+      "UART": "UART",
+      "Quad SPI": "Quad SPI",
+      "I2C": "I2C",
+      "Package": "Package",
+      "Pin Count": "Pin Count",
+      "DAC": "DAC",
+      "ADC": "ADC"
+    },
+    "MK": {
+      "Total Flash Memory (KB)": "Flash memory",
+      "Total GPIOs": "Total GPIOS",
+      "SRAM (KB)": "RAM",
+      "SPI Modules": "SPI",
+      "CPU Frequency (MHz)": "CPU Frequency",
+      "UART (Total)": "UART",
+      "Quad SPI": "Quad SPI",
+      "I2C": "I2C",
+      "Package": "Package",
+      "Pin Count": "Pin Count",
+      "DAC": "DAC",
+      "ADC": "ADC"
+    }
+  }
+}
