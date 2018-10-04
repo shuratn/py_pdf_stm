@@ -124,6 +124,7 @@ class MCUHelper:
 
         row_offset += 1
         sheet.write(row_offset, 0, 'OTHER')
+        #TODO: обрабатывать корпуса как фичи
         for m, mc_features in enumerate(matching.values()):  # type: int,dict
             row = ''
             count = 0
