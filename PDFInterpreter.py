@@ -414,34 +414,7 @@ class Cell:
     def __repr__(self):
         return 'Cell <"{}"> '.format(self.text.replace('\n', ' '))
 
-    def get_text(self):
-        text = ''
-        chars = []  # type: List[Tuple[str,Point,bool]]
-        upright = False
-        for char in self.chars:
-            p1 = Point(char['x0'], char['y0'])
-            if char['upright']:
-                upright = True
-            chars.append((char['text'], p1, char['upright']))
-            text += char['text']
 
-        if upright:
-            print(text)
-            print(chars)
-            #  split chars into vertical cols
-            xs = set([char[1].x for char in chars])
-            print(xs)
-            new_xs = []
-            for x in xs:
-                for x2 in xs:
-                    if almost_equals(x, x2):
-                        continue
-                    if x == x2:
-                        continue
-                    new_xs.append(x)
-            xs = sorted(set(new_xs))
-            print(xs)
-            print('CELL END')
     @property
     def clean_text(self):
         return self.text.replace('\n', ' ')
@@ -543,7 +516,6 @@ class Table:
 
         if self.canvas:
             for cell in self.cells:
-                print(cell.get_text())
                 cell.draw(self.canvas)
 
     def get_col(self, col_id) -> List[Cell]:
