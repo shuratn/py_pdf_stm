@@ -65,6 +65,7 @@ class FeatureListExtractor:  # This class is adapted to STM
     def process(self):
         self.extract_tables()
         self.extract_features()
+        del self.features_tables
         return self.features
 
     def extract_table(self, datasheet, page):

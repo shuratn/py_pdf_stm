@@ -1,5 +1,6 @@
 import json
 import sys
+import traceback
 from pathlib import Path
 from pprint import pprint
 from typing import Dict, Any
@@ -29,22 +30,29 @@ class MCUHelper:
                     else:
                         feature_value = mcu_features.get(req, None)
                     if feature_value:
-                        if req.endswith('>'):
-                            if not feature_value >= req_value:
-                                mismatch = True
-                                break
-                        elif req.endswith('<'):
-                            if not feature_value <= req_value:
-                                mismatch = True
-                                break
-                        elif req.endswith('='):
-                            if not feature_value == req_value:
-                                mismatch = True
-                                break
-                        else:
-                            if not mcu_features[req] > req_value:
-                                mismatch = True
-                                break
+                        try:
+                            if req.endswith('>'):
+                                if not feature_value >= req_value:
+                                    mismatch = True
+                                    break
+                            elif req.endswith('<'):
+                                if not feature_value <= req_value:
+                                    mismatch = True
+                                    break
+                            elif req.endswith('='):
+                                if not feature_value == req_value:
+                                    mismatch = True
+                                    break
+                            else:
+                                if not mcu_features[req] > req_value:
+                                    mismatch = True
+                                    break
+                        except Exception as ex:
+                            mismatch = True
+                            print('ERROR:',ex)
+                            print('INFO:',req,':',req_value)
+                            print('INFO2:',':',feature_value)
+                            traceback.print_exc()
                     else:
                         continue
                 if not mismatch:
