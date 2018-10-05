@@ -1,6 +1,9 @@
+import json
 import re
+from pprint import pprint
 
-from feature_extractor import FeatureListExtractor
+from DataSheet import DataSheet
+from feature_extractor import FeatureListExtractor, remove_units
 
 
 class STM32FeatureListExtractor(FeatureListExtractor):
@@ -28,9 +31,9 @@ class STM32FeatureListExtractor(FeatureListExtractor):
     def handle_feature(self, name, value):
         if name in self.config['corrections']:
             name = self.config['corrections'][name]
-        if 'USART' in name and 'LPUART' in name:
-            values = value.split('\n')
-            return [('USART', values[0]), ('LPUART', values[1])]
+        if 'USART' in name or 'LPUART' in name or 'LPUART' in name:
+            values = sum(map(int,value.split('\n')))
+            return [('UART', values)]
         if 'GPIOs' in name and 'Wakeup' in name:
             values = value.split('\n')
             if 'or' in values[0]:
@@ -43,13 +46,14 @@ class STM32FeatureListExtractor(FeatureListExtractor):
             values = value.split('\n')
             return [('ADC', {adc_type: {'count': values[0], 'channels': values[1]}})]
         if 'Operating voltage' in name:
-            value = self.remove_units(value, 'v')
+            value = remove_units(value, 'v')
             values = value.split('to')
             values = list(map(float, values))
             return [('Operating voltage', {'min': values[0], 'max': values[1]})]
 
         if 'Packages' in name:
-            return [('Package', value.split('\n'))]
+            values = value.split('\n')
+            return [(name,'Yes') for name in values]
 
         if 'Operating temperature' in name:
             # -40 to 85 °C / -40 to 125 °C
@@ -58,3 +62,10 @@ class STM32FeatureListExtractor(FeatureListExtractor):
             return [('Operating temperature', {'min': int(lo), 'max': int(hi)})]
 
         return super().handle_feature(name, value)
+if __name__ == '__main__':
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\STM32L451.pdf")
+    with open('config.json') as fp:
+        config = json.load(fp)
+    feature_extractor = STM32FeatureListExtractor('stm32L476', datasheet, config)
+    feature_extractor.process()
+    pprint(feature_extractor.features)

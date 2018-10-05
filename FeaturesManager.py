@@ -56,6 +56,12 @@ class FeatureManager:
                 raise Exception('Can\' find {} in database'.format(mc))
         self.save()
 
+    def get_config_name(self,mc):
+        for extractor_name in sorted(self.EXTRACTORS, key=lambda l: len(l), reverse=True):
+            if extractor_name.upper() in mc.upper():
+                return extractor_name
+        return None
+
     def load_cache(self):
         if not self.cache_path.exists():
             self.cache_path.parent.mkdir(exist_ok=True)

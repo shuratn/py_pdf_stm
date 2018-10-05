@@ -8,6 +8,7 @@ from typing import Dict, Any
 import xlsxwriter
 
 from FeaturesManager import FeatureManager
+from feature_extractor import convert_type
 
 
 class MCUHelper:
@@ -71,8 +72,8 @@ class MCUHelper:
     def print_matching(self):
         for match_name, match_features in self.matching.items():
             print(match_name)
-            for feature, value in match_features.items():
-                print('\t', feature, ':', value)
+            # for feature, value in match_features.items():
+            #     print('\t', feature, ':', value)
 
     def print_user_req(self):
         print('Your requirements were:')
@@ -113,12 +114,15 @@ class MCUHelper:
         for n, common_feature in enumerate(same_features):
             sheet.write(1 + n, 0, common_feature)
             for m, mc_features in enumerate(matching.values()):  # type: int,dict
-                feature_value = mc_features.pop(common_feature)
-                if type(feature_value) is list:
-                    feature_value = '/'.join(feature_value)
-                if type(feature_value) is dict:
-                    feature_value = str(feature_value)
-                sheet.write(1 + n, 1 + m, feature_value)
+                if mc_features.get(common_feature,False):
+                    feature_value = mc_features.pop(common_feature)
+                    if type(feature_value) is list:
+                        feature_value = '/'.join(feature_value)
+                    if type(feature_value) is dict:
+                        feature_value = str(feature_value)
+                    sheet.write(1 + n, 1 + m, feature_value)
+                else:
+                    sheet.write(1 + n, 1 + m, 'ERROR MISSING')
             row_offset = n + 1
 
         row_offset += 1
@@ -155,6 +159,42 @@ def parse_all():
     else:
         print('NO DATASHEETS FOUND')
 
+def reunify_cache():
+    feature_manager = FeatureManager([])
+    feature_manager.load_cache()
+    for mc_family_name,mc_family in feature_manager.mcs_features.items():
+        unknown_names = []
+        for mc, features in mc_family.items():
+
+            # print(mc)
+            mc_features = feature_manager.mcs_features[mc_family_name][mc].copy()
+            config_name = feature_manager.get_config_name(mc)
+            for feature_name, features_value in features.items():
+                if features_value:
+                    if config_name in feature_manager.config['unify']:
+                        unify_list = feature_manager.config['unify'][config_name]
+                        known = True
+                        if feature_name not in unify_list:
+                            if feature_name not in list(unify_list.values()):
+                                known = False
+                                if feature_name not in unknown_names:
+                                    unknown_names.append(feature_name)
+                        if known:
+                            new_name = unify_list.get(feature_name, feature_name)  # in case name is already unified
+                            values = mc_features.pop(feature_name)
+                            new_name, values = convert_type(new_name, values)
+                            mc_features[new_name] = values
+                    else:
+                        unknown_names.append(feature_name)
+
+            feature_manager.mcs_features[mc_family_name][mc] = mc_features
+        unknown_names = list(set(unknown_names))
+        print('List of unknown features for', mc_family_name)
+        print('Add correction if name is mangled')
+        print('Or add unify for this feature')
+        for unknown_feature in unknown_names:
+            print('\t', unknown_feature)
+        print('=' * 20)
 
 if __name__ == '__main__':
     if sys.argv[1] == 'parse':
@@ -164,4 +204,8 @@ if __name__ == '__main__':
         feature_manager = FeatureManager(sys.argv[2:])
         feature_manager.parse()
         exit(0xDEADCAFE)
+    if sys.argv[1] == 're-unify':
+        reunify_cache()
+        exit(0xBEEFCAFE)
+
     MCUHelper(sys.argv[1]).collect_matching().write_excel()

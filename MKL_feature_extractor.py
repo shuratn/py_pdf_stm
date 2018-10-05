@@ -1,13 +1,16 @@
+import json
 import re
 import sys
 import traceback
+from pprint import pprint
 from typing import List
 
 from PyPDF3.pdf import PageObject
 
 from DataSheet import DataSheet
+from MKL_DataSheet import MKL_DataSheet
 from TableExtractor import TableExtractor, Cell
-from feature_extractor import FeatureListExtractor
+from feature_extractor import FeatureListExtractor, convert_type
 
 
 class MKLFeatureListExtractor(FeatureListExtractor):
@@ -16,14 +19,13 @@ class MKLFeatureListExtractor(FeatureListExtractor):
         super().__init__(controller, datasheet, config)
         self.shared_features = {}
         self.family, self.sub_family = '0', '0'
-        self.page_text = ''
+        self.page_text = []
         self.shared_features = {}
         self.mc_family = ''
         self.post_init()
 
     def post_init(self):
         self.shared_features = {}
-        self.page_text = ''
         self.shared_features = {}
         self.config_name = 'MKL'
         self.mc_family = 'MKL'
@@ -36,10 +38,14 @@ class MKLFeatureListExtractor(FeatureListExtractor):
             if self.mc_family in table['name'].upper():
                 page_num = datasheet.get_page_num(table['data'])
                 page = datasheet.pdf_file.pages[page_num]  # type:PageObject
-                self.page_text += page.extractText()
+                text = page.extractText()
                 table = self.extract_table(datasheet, page_num)
                 if table:
+                    text = page.extractText()
+                    for _ in range(len(table)):
+                        self.page_text.append(text)
                     self.features_tables.extend(table)
+                    # return
 
     def extract_table(self, datasheet, page):
         # print('Extracting table from {} page'.format(page + 1))
@@ -47,31 +53,41 @@ class MKLFeatureListExtractor(FeatureListExtractor):
         table = pdf_int.parse_page(page)
         return table
 
-    def handle_shared(self, row: List[Cell]):
-        for cell in row:
-            for sub_row in cell.text.split('\n'):
-                if 'Temp Range:' in sub_row:
-                    if 'Operating temperature' not in self.shared_features:
-                        lo, hi = re.findall('(-?\d+)\s.*to\s(-?\d+)\s', sub_row, re.IGNORECASE)[0]
-                        self.shared_features['Operating temperature'] = {'min': int(lo), 'max': int(hi)}
+    def handle_shared(self,text,):
+        # print(text)
+        res = re.findall(r'Temp\srange:\s(-?\d+).*\sto\s(-?\d+).*',text,re.IGNORECASE)
+        if res:
+            lo,hi = res[0]
+            self.shared_features['Operating temperature'] = {'min': int(lo), 'max': int(hi)}
+        return
+
+        # for cell in row:
+        #     for sub_row in cell.text.split('\n'):
+        #         if 'Temp Range:' in sub_row:
+        #             if 'Operating temperature' not in self.shared_features:
+        #                 lo, hi = re.findall('(-?\d+)\s.*to\s(-?\d+)\s', sub_row, re.IGNORECASE)[0]
+        #                 self.shared_features['Operating temperature'] = {'min': int(lo), 'max': int(hi)}
 
     def extract_features(self):
         controller_features = {}
-        for table in self.features_tables:
+        for table,text in zip(self.features_tables,self.page_text):
+
             try:
+                self.handle_shared(text)
                 if not table.global_map:
                     continue
                 header = table.get_row(0)[2:]
                 for feature_cell in header:  # fixing cell text
-                    feature_cell.text = ''.join(feature_cell.text.split('\n')[::-1])
+                    feature_cell.text = self.fix_name(feature_cell.text)
+                    # feature_cell.text = ''.join(feature_cell.text.split('\n')[::-1])
                 for row_id in range(1, len(table.get_col(1))):
                     row = table.get_row(row_id)[1:]
                     controller_name = row.pop(0).text
-                    if 'Common Features' in controller_name:
-                        if self.mc_family not in controller_name:
-                            continue
-                        self.handle_shared(row)
-                        continue
+                    # if 'Common Features' in controller_name:
+                    #     if self.mc_family not in controller_name:
+                    #         continue
+                    #     self.handle_shared(row)
+                    #     continue
                     if self.mc_family not in controller_name:
                         continue
                     if controller_name not in controller_features:
@@ -84,17 +100,13 @@ class MKLFeatureListExtractor(FeatureListExtractor):
                                     adc_values['channels'] = value
                                 continue
                             if feature and value:
-                                if feature in controller_features[controller_name]:
-                                    if type(value) == type(controller_features[controller_name][feature]):
-                                        if type(value) == int:
-                                            controller_features[controller_name][feature] += value
-                                        elif type(value) == str:
-                                            controller_features[controller_name][feature] = value
-                                    else:
-                                        raise Exception('SHOULD NOT BE HAPPENING!')
+                                feature, value = convert_type(feature, value)
+                                if controller_features[controller_name].get(feature, False):
+                                    value = self.merge_features(controller_features[controller_name].get(feature), value)
+                                    controller_features[controller_name][feature] = value
                                 else:
                                     controller_features[controller_name][feature] = value
-                    if 'quad spi' in self.page_text.lower():
+                    if 'quad spi' in text.lower():
                         controller_features[controller_name]['Quad SPI'] = 'Yes'
                     else:
                         controller_features[controller_name]['Quad SPI'] = 'No'
@@ -165,4 +177,16 @@ class MKLFeatureListExtractor(FeatureListExtractor):
             value = int(value)
             return [('UART', value), ]
 
+        if 'package' in name.lower():
+            return [(value,'Yes')]
+
         return super().handle_feature(name, value)
+
+
+if __name__ == '__main__':
+    datasheet = MKL_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\MKL\MKL.pdf")
+    with open('config.json') as fp:
+        config = json.load(fp)
+    feature_extractor = MKLFeatureListExtractor('MKL28Z512VLL7', datasheet, config)
+    feature_extractor.process()
+    pprint(feature_extractor.features)

@@ -1,7 +1,9 @@
 {
   "corrections": {
     "SSPI PI) QTY (#Chip Select of Each": "SPI QTY (#Chip Select of Each SPI)",
+    "SPI of EQTY (ach S#CPI) hip Select": "SPI QTY (#Chip Select of Each SPI)",
     "EEP(KB)ROM/FlexRAM": "EEPROM/FlexRAM (KB)",
+    "SRAM SRAM (": "SRAM",
     "HiUgAh BRT auw/IdrSate O7816": "High Baud Rate UART",
     "ACnoalmopg arator": "Analog Comparator",
     "NuTamber of Emper Pinsxternal": "Number of External Tamper Pins",
@@ -16,8 +18,7 @@
     "STM32": {
       "GPIOs": "Total GPIOS",
       "SRAM": "RAM",
-      "USART": "UART",
-      "LPUART": "UART",
+      "UART": "UART",
       "Max. CPU frequency": "CPU Frequency",
       "Flash memory": "Flash memory",
       "Quad SPI": "Quad SPI",
@@ -30,12 +31,14 @@
       "ADC": "ADC"
     },
     "MKL": {
-      "Flash": "Flash memory",
       "Flash (KB)": "Flash memory",
-      "Total GPIOS": "Total GPIOS",
+      "Flash": "Flash memory",
       "SRAM (KB)": "RAM",
-      "SPI QTY": "SPI",
+      "SRAM": "RAM",
       "CPU Frequency (MHz)": "CPU Frequency",
+      "CPU Frequency": "CPU Frequency",
+      "Total GPIOS": "Total GPIOS",
+      "SPI QTY": "SPI",
       "UART": "UART",
       "Quad SPI": "Quad SPI",
       "I2C": "I2C",
@@ -45,11 +48,14 @@
       "ADC": "ADC"
     },
     "MK": {
-      "Total Flash Memory (KB)": "Flash memory",
-      "Total GPIOs": "Total GPIOS",
+      "Flash (KB)": "Flash memory",
+      "Flash": "Flash memory",
       "SRAM (KB)": "RAM",
-      "SPI Modules": "SPI",
+      "SRAM": "RAM",
       "CPU Frequency (MHz)": "CPU Frequency",
+      "CPU Frequency": "CPU Frequency",
+      "SPI Modules": "SPI",
+      "Total GPIOs": "Total GPIOS",
       "UART (Total)": "UART",
       "Quad SPI": "Quad SPI",
       "I2C": "I2C",

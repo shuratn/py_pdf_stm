@@ -43,29 +43,68 @@ def merge(source, dest):
         return dest
 
 
+def convert_type(name: str, value):
+    if type(value) == str:
+        value = value.replace(',', '')
+    if 'KB' in name.upper():
+        name = remove_units(name, 'kb')
+        if is_numeric(value):
+            value = int(value)
+    if 'MB' in name.upper():
+        name = remove_units(name, 'mb')
+        if is_numeric(value):
+            value = int(value) * 1024
+        elif type(value) == int:
+            value *= 1024
+
+    if 'MHZ' in name.upper():
+        name = remove_units(name, 'mhz')
+        if is_numeric(value):
+            value = int(value)
+
+    if type(value) == str:
+        if 'KB' in value:
+            value = replace_i(value, 'kb', '')
+            if is_numeric(value):
+                value = int(value)
+            elif type(value) == int:
+                pass
+            else:
+                value += 'KB'
+            return name,value
+        if 'MB' in value:
+            value = replace_i(value, 'mb', '')
+            if is_numeric(value):
+                value = int(value) * 1024
+            elif type(value) == int:
+                value *= 1024
+
+            else:
+                value += 'MB'
+                return name, value
+        if 'MHZ' in value.upper():
+            value = replace_i(value, 'MHz', '')
+            if is_numeric(value):
+                value = int(value)
+            elif type(value) == int:
+                pass
+            else:
+                value += 'MHz'
+            return name,value
+    # UNIFIED NAMES
+    # int_values = ['Flash memory', 'RAM', 'UART', 'SPI', 'Total GPIOS','CPU Frequency']
+    # if name in int_values:
+    if type(value) != int and is_numeric(value):
+        if type(value) == str:
+            if not (value.lower() == 'no' or value.lower() == 'yes'):
+                try:
+                    value = int(value)
+                except Exception as ex:
+                    print('Failed to convert {} {} to int\n{}'.format(name, value, ex))
+    return name,value
+
 
 class FeatureListExtractor:  # This class is adapted to STM
-    @staticmethod
-    def replace_i(string: str, sub: str, new: str):
-        result = re.search('{}'.format(sub.lower()), string, re.IGNORECASE)
-        string = string[:result.start()] + new + string[result.end():]
-        string = string.strip(' ')
-        return string
-
-    @staticmethod
-    def is_numeric(value):
-        return type(value) == str and value.isnumeric()
-
-    @staticmethod
-    def remove_units(string: str, unit: str):
-        index = string.upper().index(unit.upper())
-        string = FeatureListExtractor.replace_i(string, unit, '')
-        if '(' in string:
-            if string[index - 1] == '(':
-                string = string[:index - 1] + string[:index]
-            if string[index + 1] == ')':
-                string = string[:index + 1] + string[:index + 2]
-        return string
 
     def fix_name(self, name):
         # print('Fixing name',name)
@@ -113,7 +152,7 @@ class FeatureListExtractor:  # This class is adapted to STM
             if '\u2013' in value:
                 value = value.replace('\u2013', '-')
             if '\n' in value:
-                value = value.replace('\n', '/')
+                value = value.replace('\n', ' ')
 
         return [(name, value)]  # Can be list of values and names
 
@@ -162,11 +201,13 @@ class FeatureListExtractor:  # This class is adapted to STM
                         feature_name = controller_features_names[feature_offset + n - 1]
                         feature_value = feature.text
                         for n, v in self.handle_feature(feature_name, feature_value):
-                            if controller_features[name].get(n, False):
-                                v = self.merge_features(controller_features[name].get(n), v)
-                                controller_features[name][n] = v
-                            else:
-                                controller_features[name][n] = v
+                            if n and v:
+                                n,v = convert_type(n, v)
+                                if controller_features[name].get(n, False):
+                                    v = self.merge_features(controller_features[name].get(n), v)
+                                    controller_features[name][n] = v
+                                else:
+                                    controller_features[name][n] = v
                 feature_offset = len(controller_features_names)
             except Exception as ex:
                 sys.stderr.write("ERROR {}".format(ex))
@@ -206,7 +247,7 @@ class FeatureListExtractor:  # This class is adapted to STM
                         if known:
                             new_name = unify_list.get(feature_name, feature_name)  # in case name is already unified
                             values = mc_features.pop(feature_name)
-                            values = self.convert_type(new_name, values)
+                            new_name,values = convert_type(new_name, values)
                             mc_features[new_name] = values
                     else:
                         unknown_names.append(feature_name)
@@ -224,70 +265,30 @@ class FeatureListExtractor:  # This class is adapted to STM
 
         return merge(old, new)
 
-    def convert_type(self, name: str, value):
-        if type(value) == str:
-            value = value.replace(',', '')
-        if 'KB' in name.upper():
-            name = self.remove_units(name, 'kb')
-            if self.is_numeric(value):
-                value = int(value)
-        if 'MB' in name.upper():
-            name = self.remove_units(name, 'mb')
-            if self.is_numeric(value):
-                value = int(value) * 1024
-            elif type(value) == int:
-                value *= 1024
 
-        if 'MHz' in name.upper():
-            name = self.remove_units(name, 'mhz')
-            if self.is_numeric(value):
-                value = int(value)
+def replace_i(string: str, sub: str, new: str):
+    result = re.search('{}'.format(sub.lower()), string, re.IGNORECASE)
+    string = string[:result.start()] + new + string[result.end():]
+    string = string.strip(' ')
+    return string
 
-        if type(value) == str:
-            if 'KB' in value:
-                value = self.replace_i(value, 'kb', '')
-                if self.is_numeric(value):
-                    value = int(value)
-                elif type(value) == int:
-                    pass
-                else:
-                    value += 'KB'
-                return value
-            if 'MB' in value:
-                value = self.replace_i(value, 'mb', '')
-                if self.is_numeric(value):
-                    value = int(value) * 1024
-                elif type(value) == int:
-                    value *= 1024
 
-                else:
-                    value += 'MB'
-                return value
-            if 'MHz' in value:
-                value = self.replace_i(value, 'MHz', '')
-                if self.is_numeric(value):
-                    value = int(value)
-                elif type(value) == int:
-                    pass
-                else:
-                    value += 'MHz'
-                return value
-        # UNIFIED NAMES
-        # int_values = ['Flash memory', 'RAM', 'UART', 'SPI', 'Total GPIOS','CPU Frequency']
-        # if name in int_values:
-        if type(value) != int:
-            if type(value) == str:
-                if not (value.lower() == 'no' or value.lower() == 'yes'):
-                    try:
-                        value = int(value)
-                    except Exception as ex:
-                        print('Failed to convert {} {} to int\n{}'.format(name, value, ex))
-        return value
+def is_numeric(value):
+    return type(value) == str and value.isnumeric()
 
+
+def remove_units(string: str, unit: str):
+    if '(' in string:
+        string = replace_i(string, '{}'.format(unit), '')
+        string = string.replace('()','')
+    else:
+        string = replace_i(string, '{}'.format(unit), '')
+    string = string.strip()
+    return string
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
-    feature_extractor = FeatureListExtractor('stm32L476', datasheet, {})
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L451.pdf")
+    feature_extractor = FeatureListExtractor('stm32L476', datasheet, )
     feature_extractor.process()
     pprint(feature_extractor.features)
