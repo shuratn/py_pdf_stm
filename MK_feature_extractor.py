@@ -38,14 +38,13 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
                     for _ in range(len(table)):
                         self.page_text.append(text)
                     self.features_tables.extend(table)
-                page = datasheet.pdf_file.pages[page_num-1]  # type:PageObject
+                page = datasheet.pdf_file.pages[page_num - 1]  # type:PageObject
                 table = self.extract_table(datasheet, page_num - 1)
                 if table:
                     text = page.extractText()
                     for _ in range(len(table)):
                         self.page_text.append(text)
                     self.features_tables.extend(table)
-                    return
 
     def extract_table(self, datasheet, page):
         pdf_int = TableExtractor(str(datasheet.path))
@@ -80,16 +79,22 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
                     if controller_name not in controller_features:
                         controller_features[controller_name] = {}
                     for feature, value in zip(header, row):
-                        new_names_values = self.handle_feature(feature.text, value.text)
-                        for new_feature, new_value in new_names_values:
-                            if new_feature and new_value:
-                                feature, value = convert_type(new_feature, new_value)
-                                if controller_features[controller_name].get(feature, False):
-                                    value = self.merge_features(controller_features[controller_name].get(feature),
-                                                                value)
-                                    controller_features[controller_name][feature] = value
-                                else:
-                                    controller_features[controller_name][feature] = value
+                        try:
+                            new_names_values = self.handle_feature(feature.text, value.text)
+                            for new_feature, new_value in new_names_values:
+                                if new_feature and new_value:
+                                    feature, value = convert_type(new_feature, new_value)
+                                    if controller_features[controller_name].get(feature, False):
+                                        value = self.merge_features(controller_features[controller_name].get(feature),
+                                                                    value)
+                                        controller_features[controller_name][feature] = value
+                                    else:
+                                        controller_features[controller_name][feature] = value
+                        except Exception as ex:
+                            controller_features[controller_name][feature] = value
+                            sys.stderr.write("ERROR {}".format(ex))
+                            traceback.print_exc()
+
                     if 'quad spi' in text.lower():
                         controller_features[controller_name]['Quad SPI'] = 'Yes'
                     else:
@@ -139,6 +144,7 @@ if __name__ == '__main__':
     datasheet = MK_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK.pdf")
     with open('config.json') as fp:
         config = json.load(fp)
-    feature_extractor = MKFeatureListExtractor('MK40DX256VLH7', datasheet, config)
+    feature_extractor = MKFeatureListExtractor('MK', datasheet, config)
     feature_extractor.process()
+    feature_extractor.unify_names()
     pprint(feature_extractor.features)

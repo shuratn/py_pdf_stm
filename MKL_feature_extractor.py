@@ -10,7 +10,7 @@ from PyPDF3.pdf import PageObject
 from DataSheet import DataSheet
 from MKL_DataSheet import MKL_DataSheet
 from TableExtractor import TableExtractor, Cell
-from feature_extractor import FeatureListExtractor, convert_type
+from feature_extractor import FeatureListExtractor, convert_type, is_numeric
 
 
 class MKLFeatureListExtractor(FeatureListExtractor):
@@ -144,9 +144,13 @@ class MKLFeatureListExtractor(FeatureListExtractor):
 
         if 'DAC' in name:
             adc_type = name.split(' ')[0]
-            count = int(value)
-            if count:
-                return [('DAC', {adc_type: {'count': int(value)}})]
+            if is_numeric(value):
+                if '/' in value:
+                    value = int(value.split('/')[0])
+                else:
+                    value = int(value)
+            if value:
+                return [('DAC', {adc_type: {'count': value}})]
 
         if 'ADC Channels' in name:
             value = sum(map(int, value.split('/')))

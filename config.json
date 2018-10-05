@@ -55,6 +55,7 @@
       "CPU Frequency (MHz)": "CPU Frequency",
       "CPU Frequency": "CPU Frequency",
       "SPI Modules": "SPI",
+      "SPI (# of modules)": "SPI",
       "Total GPIOs": "Total GPIOS",
       "UART (Total)": "UART",
       "Quad SPI": "Quad SPI",
