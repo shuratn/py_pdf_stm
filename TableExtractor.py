@@ -568,7 +568,7 @@ class TableExtractor:
         for p1 in tqdm(points, desc='Filtering points', unit='points'):
             for p2 in points:
                 if p1 == p2:
-                    p1.merge(p2)
+                    merge(p2)
             if p1 not in new_points:
                 new_points.append(p1)
         return new_points

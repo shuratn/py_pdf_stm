@@ -14,6 +14,36 @@ def fetch_from_all(lists, num):
     return [arr[num] for arr in lists]
 
 
+def is_int(val):
+    return isinstance(val,int)
+
+
+def is_dict(val):
+    return isinstance(val, dict)
+
+
+def is_list(val):
+    return isinstance(val, list)
+
+
+def is_str(val):
+    return isinstance(val, str)
+
+
+def merge(source, dest):
+    if is_int(source) and is_int(dest):
+        return source + dest
+    if is_str(source) and is_str(dest):
+        return dest + '/' + source
+    if is_list(source) and is_list(dest):
+        return list(set(dest + source))
+    if is_dict(source) and is_dict(dest):
+        for key in set(source) | set(dest):
+            dest[key] = merge(source.get(key), dest.get(key))
+        return dest
+
+
+
 class FeatureListExtractor:  # This class is adapted to STM
     @staticmethod
     def replace_i(string: str, sub: str, new: str):
@@ -58,7 +88,6 @@ class FeatureListExtractor:  # This class is adapted to STM
         self.mc_family = 'UNKNOWN'
         self.post_init()
 
-
     def post_init(self):
         pass
 
@@ -84,7 +113,7 @@ class FeatureListExtractor:  # This class is adapted to STM
             if '\u2013' in value:
                 value = value.replace('\u2013', '-')
             if '\n' in value:
-                value = value.replace('\n','/')
+                value = value.replace('\n', '/')
 
         return [(name, value)]  # Can be list of values and names
 
@@ -111,6 +140,7 @@ class FeatureListExtractor:  # This class is adapted to STM
                 # EXTRACTING STM FEATURES
                 current_stm_name = ""
                 mcu_counter = {}
+                name = 'ERROR'
                 for col_id in range(features_cell_span, len(table.get_row(0))):
                     features = table.get_col(col_id)
                     for n, feature in enumerate(features):
@@ -133,13 +163,8 @@ class FeatureListExtractor:  # This class is adapted to STM
                         feature_value = feature.text
                         for n, v in self.handle_feature(feature_name, feature_value):
                             if controller_features[name].get(n, False):
-                                if type(controller_features[name][n]) == dict:
-                                    controller_features[name][n].update(v)
-                                if type(controller_features[name][n]) == int:
-                                    controller_features[name][n] += v
-                                else:
-                                    raise Exception('Don\'t know what to do in this situation\n' + \
-                                                    '{} and {}'.format(controller_features[name][n], v))
+                                v = self.merge_features(controller_features[name].get(n), v)
+                                controller_features[name][n] = v
                             else:
                                 controller_features[name][n] = v
                 feature_offset = len(controller_features_names)
@@ -195,9 +220,13 @@ class FeatureListExtractor:  # This class is adapted to STM
             print('\t', unknown_feature)
         print('=' * 20)
 
+    def merge_features(self, old, new):
+
+        return merge(old, new)
+
     def convert_type(self, name: str, value):
         if type(value) == str:
-            value = value.replace(',','')
+            value = value.replace(',', '')
         if 'KB' in name.upper():
             name = self.remove_units(name, 'kb')
             if self.is_numeric(value):
@@ -254,6 +283,7 @@ class FeatureListExtractor:  # This class is adapted to STM
                     except Exception as ex:
                         print('Failed to convert {} {} to int\n{}'.format(name, value, ex))
         return value
+
 
 
 if __name__ == '__main__':

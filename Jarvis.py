@@ -3,7 +3,6 @@ import json
 import sys
 import traceback
 from pathlib import Path
-from pprint import pprint
 from typing import Dict, Any
 
 import xlsxwriter
