@@ -1,5 +1,3 @@
 {
-  "CPU Frequency":80,
-  "UART":1,
-  "Pin Count":40
+  "Total GPIOS":80
 }

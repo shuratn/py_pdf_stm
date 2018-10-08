@@ -8,7 +8,7 @@ from typing import Dict, Any
 import xlsxwriter
 
 from FeaturesManager import FeatureManager
-from feature_extractor import convert_type
+from FeatureExtractors.feature_extractor import convert_type
 from Utils import *
 
 

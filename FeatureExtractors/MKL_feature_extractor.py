@@ -1,16 +1,14 @@
 import json
-import re
 import sys
 import traceback
 from pprint import pprint
-from typing import List
 
 from PyPDF3.pdf import PageObject
 
-from DataSheet import DataSheet
-from MKL_DataSheet import MKL_DataSheet
-from TableExtractor import TableExtractor, Cell
-from feature_extractor import FeatureListExtractor, convert_type, is_numeric
+from DataSheetParsers.DataSheet import DataSheet
+from DataSheetParsers.MKL_DataSheet import MKL_DataSheet
+from TableExtractor import TableExtractor
+from FeatureExtractors.feature_extractor import FeatureListExtractor, convert_type
 from Utils import *
 
 
@@ -193,12 +191,15 @@ class MKLFeatureListExtractor(FeatureListExtractor):
         if 'package' in name.lower():
             return [(value, 'Yes')]
 
-        return super().handle_feature(name, value)
+        try:
+            return super().handle_feature(name, value)
+        except:
+            return [(name,value)]
 
 
 if __name__ == '__main__':
     datasheet = MKL_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\MKL\MKL.pdf")
-    with open('config.json') as fp:
+    with open('./../config.json') as fp:
         config = json.load(fp)
     feature_extractor = MKLFeatureListExtractor('MKL28Z512VLL7', datasheet, config)
     feature_extractor.process()

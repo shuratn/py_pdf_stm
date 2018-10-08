@@ -6,11 +6,11 @@ from pprint import pprint
 
 from PyPDF3.pdf import PageObject
 
-from DataSheet import DataSheet
-from MKL_feature_extractor import MKLFeatureListExtractor
-from MK_DataSheet import MK_DataSheet
+from DataSheetParsers.DataSheet import DataSheet
+from FeatureExtractors.MKL_feature_extractor import MKLFeatureListExtractor
+from DataSheetParsers.MK_DataSheet import MK_DataSheet
 from TableExtractor import TableExtractor
-from feature_extractor import FeatureListExtractor, convert_type
+from FeatureExtractors.feature_extractor import convert_type
 
 
 class MKFeatureListExtractor(MKLFeatureListExtractor):
@@ -150,7 +150,10 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
                 channels = channels.replace('ch', '')
                 return [('I2C', {'count': int(modules), 'channels': int(channels)})]
 
-        return super().handle_feature(name, value)
+        try:
+            return super().handle_feature(name, value)
+        except:
+            return [(name,value)]
 
 
 if __name__ == '__main__':

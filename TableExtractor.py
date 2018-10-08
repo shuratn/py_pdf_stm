@@ -1,12 +1,11 @@
 import math
 from operator import itemgetter
-from typing import Tuple
 
 import pdfplumber
 from PIL import ImageDraw, ImageFont, Image
 from pdfplumber.table import TableFinder
 
-from DataSheet import *
+from DataSheetParsers.DataSheet import *
 
 
 def almost_equals(num1, num2, precision=5.0):
@@ -714,13 +713,14 @@ class TableExtractor:
 
             beaut_table = Table(cells, skeleton, ugly_table, page.extract_words())
             beaut_table.build_table()
-            # for cell in beaut_table.cells:
-            #     cell.draw(canvas)
+            if self.draw:
+                for cell in beaut_table.cells:
+                    cell.draw(canvas)
             if self.debug:
                 print('Saving rendered table')
-            # if self.draw:
-            #     p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
-            #     im.save('page-{}-{}.png'.format(page_n + 1, n))
+            if self.draw:
+                p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
+                im.save('page-{}-{}.png'.format(page_n + 1, n))
             if self.draw:
                 canvas.rectangle((0,0,page.width,page.height),fill='white') #cleaning canvas
                 for row_id, row in enumerate(skeleton):
@@ -737,18 +737,18 @@ class TableExtractor:
 
 
 if __name__ == '__main__':
-    # datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L431\stm32L431_ds.pdf")
-    # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/stm32/stm32L476/stm32L476_ds.pdf")
-    # pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
+    # datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32L\stm32L431\stm32L431_ds.pdf")
+    # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/stm32L/stm32L476/stm32L476_ds.pdf")
+    # pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\stm32L\stm32L476\stm32L476_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/KL/KL17P64M48SF6_ds.pdf")
-    pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK.pdf")
+    pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\STM32F\stm32f777.pdf")
     # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6_ds.pdf")
     pdf_interpreter.draw = True
     pdf_interpreter.debug = True
     # pdf_interpreter = PDFInterpreter(pdf.table_root.childs[table])
     # print(pdf_interpreter.content)
     # tables = pdf_interpreter.parse_page(5)
-    tables = pdf_interpreter.parse_page(14)
+    tables = pdf_interpreter.parse_page(16)
     print(tables)
     # pdf_interpreter.parse_page(1)
     # pdf_interpreter.save()

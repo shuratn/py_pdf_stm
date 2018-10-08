@@ -17,7 +17,7 @@
   },
   "_comment": "SRAM:SRAM сделано специально, для пометки что эта фича известна",
   "unify": {
-    "STM32": {
+    "STM32L": {
       "GPIOs": "Total GPIOS",
       "SRAM": "RAM",
       "UART": "UART",
@@ -29,6 +29,18 @@
       "Comm.  interfaces I2C": "I2C",
       "I2C Comm.  interfaces": "I2C",
       "Package": "Package",
+      "DAC": "DAC",
+      "ADC": "ADC"
+    },
+    "STM32F": {
+      "GPIOs": "Total GPIOS",
+      "UART": "UART",
+      "Maximum CPU frequency": "CPU Frequency",
+      "Flash memory in Kbytes": "Flash memory",
+      "Quad SPI": "Quad SPI",
+      "Communication  interfaces I2C": "I2C",
+      "Package": "Package",
+      "SRAM in  Kbytes System": "RAM",
       "DAC": "DAC",
       "ADC": "ADC"
     },

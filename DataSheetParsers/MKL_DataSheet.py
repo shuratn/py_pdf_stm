@@ -1,7 +1,7 @@
 from PyPDF3.pdf import PageObject
 from tqdm import tqdm
 
-from DataSheet import DataSheet, DataSheetTableNode
+from DataSheetParsers.DataSheet import DataSheet, DataSheetTableNode
 import re
 
 

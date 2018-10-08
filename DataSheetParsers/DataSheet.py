@@ -238,7 +238,10 @@ class DataSheet:
                     tmp = name.split(' ')  # type: List[str]
 
                     if '.' in tmp[0]:
-                        order = list(map(int, tmp[0].split('.')))
+                        try:
+                            order = list(map(int, tmp[0].split('.')))
+                        except ValueError:
+                            continue
 
                         node = DataSheetNode(join(tmp[1:]), order)
                         node.parent = self.table_of_content

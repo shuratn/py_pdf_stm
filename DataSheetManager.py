@@ -5,18 +5,20 @@ from typing import List
 import requests
 from tqdm import tqdm
 
-from DataSheet import DataSheet
-from MK_DataSheet import MK_DataSheet
-from MKL_DataSheet import MKL_DataSheet
+from DataSheetParsers.DataSheet import DataSheet
+from DataSheetParsers.MK_DataSheet import MK_DataSheet
+from DataSheetParsers.MKL_DataSheet import MKL_DataSheet
 
 
 class DataSheetManager:
-    STM32_DATASHEET_URL = 'https://www.st.com/resource/en/datasheet/{}re.pdf'
+    STM32L_DATASHEET_URL = 'https://www.st.com/resource/en/datasheet/{}re.pdf'
+    STM32F_DATASHEET_URL = 'https://www.st.com/resource/en/datasheet/{}.pdf'
     MKL_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISLMCUSELGD.pdf'  # KL17P64M48SF6
     MK_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISKMCUSELGD.pdf'  # MK11DN512AVMC5
     # KL_DATASHEET_URL = 'https://www.nxp.com/docs/en/data-sheet/{}.pdf' #KL17P64M48SF6
     DATASHEET_URLS = {
-        'STM32': (STM32_DATASHEET_URL, DataSheet),
+        'STM32L': (STM32L_DATASHEET_URL, DataSheet),
+        'STM32F': (STM32F_DATASHEET_URL, DataSheet),
         'MKL': (MKL_DATASHEET_URL, MKL_DataSheet),
         'MK': (MK_DATASHEET_URL, MK_DataSheet),
     }
@@ -68,6 +70,6 @@ class DataSheetManager:
 
 
 if __name__ == '__main__':
-    manager = DataSheetManager(['KL17P64M48SF6'])
+    manager = DataSheetManager(['stm32f437ig'])
     manager.get_or_download()
     print(manager.datasheets_datasheets)

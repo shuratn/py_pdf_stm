@@ -5,17 +5,18 @@ from pathlib import Path
 from typing import List, Dict
 import json
 
-from DataSheet import DataSheet
 from DataSheetManager import DataSheetManager
-from MKL_feature_extractor import MKLFeatureListExtractor
-from MK_feature_extractor import MKFeatureListExtractor
-from SMT32_feature_extractor import STM32FeatureListExtractor
+from FeatureExtractors.MKL_feature_extractor import MKLFeatureListExtractor
+from FeatureExtractors.MK_feature_extractor import MKFeatureListExtractor
+from FeatureExtractors.SMT32L_feature_extractor import STM32LFeatureListExtractor
+from FeatureExtractors.SMT32F_feature_extractor import STM32FFeatureListExtractor
 import xlsxwriter
 
 
 class FeatureManager:
     EXTRACTORS = {
-        'STM32': STM32FeatureListExtractor,
+        'STM32L': STM32LFeatureListExtractor,
+        'STM32F': STM32FFeatureListExtractor,
         'MKL': MKLFeatureListExtractor,
         'MK': MKFeatureListExtractor,
     }

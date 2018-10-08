@@ -1,12 +1,9 @@
-import os
 import sys
 import traceback
 from pprint import pprint
 from typing import List, Dict
-import re
 
-from DataSheet import DataSheet
-from MKL_DataSheet import MKL_DataSheet
+from DataSheetParsers.DataSheet import DataSheet
 from TableExtractor import TableExtractor, Table
 from Utils import *
 
@@ -142,6 +139,7 @@ class FeatureListExtractor:  # This class is adapted to STM
                         if row_id == 0:
                             continue
                         features = set(list(row.values())[:features_cell_span])
+                        features = sorted(features,key = lambda cell:cell.center.x)
                         texts = list(map(lambda cell: cell.clean_text, features))
                         controller_features_names.append(' '.join(texts))
                 else:
