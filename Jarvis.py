@@ -230,29 +230,39 @@ def reunify_cache():
         for unknown_feature in unknown_names:
             print('\t', unknown_feature)
         print('=' * 20)
+    feature_manager.save()
 
 
 if __name__ == '__main__':
-    if sys.argv[1] == 'parse':
-        parse_all()
-        exit(0xDEADBEEF)
-    elif sys.argv[1] == 'download':
-        feature_manager = FeatureManager(sys.argv[2:])
-        feature_manager.parse()
-        exit(0xDEADCAFE)
-    elif sys.argv[1] == 're-unify':
-        reunify_cache()
-        exit(0xBEEFCAFE)
-    elif sys.argv[1] == 'dump_cache':
-        feature_manager = FeatureManager([])
-        with open('./dump.txt', 'w') as fp:
-            print('DUMPING ALL KNOWN MCU\'s')
-            for family_name, family_mcus in feature_manager.mcs_features.items():
-                fp.write(family_name + ' :\n')
-                print(family_name, ':')
-                for mcu_name in family_mcus.keys():
-                    fp.write('\t' + mcu_name + '\n')
-                    print('\t', mcu_name)
+    known_commands = ['parse', 'download', 'dump_cache']
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'parse':
+            parse_all()
+            exit(0xDEADBEEF)
+        elif sys.argv[1] == 'download':
+            feature_manager = FeatureManager(sys.argv[2:])
+            feature_manager.parse()
+            exit(0xDEADCAFE)
+        elif sys.argv[1] == 're-unify':
+            reunify_cache()
+            exit(0xBEEFCAFE)
+        elif sys.argv[1] == 'dump_cache':
+            feature_manager = FeatureManager([])
+            with open('./dump.txt', 'w') as fp:
+                print('DUMPING ALL KNOWN MCU\'s')
+                for family_name, family_mcus in feature_manager.mcs_features.items():
+                    fp.write(family_name + ' :\n')
+                    print(family_name, ':')
+                    for mcu_name in family_mcus.keys():
+                        fp.write('\t' + mcu_name + '\n')
+                        print('\t', mcu_name)
+
+        elif sys.argv[1] == 'filter':
+            MCUHelper(sys.argv[1]).collect_matching().write_excel()
 
     else:
-        MCUHelper(sys.argv[1]).collect_matching().write_excel()
+        print('USSAGE: {} [{}]'.format(sys.argv[0], '|'.join(known_commands)))
+        print('\tdownload [MCU NAME HERE] - downloads and parses new datasheet')
+        print('\tdump_cache - prints all MCUs in cache')
+        print('\tre-unify - tries to re-unify everything')
+        print('\tparse - re-parses all datasheets')
