@@ -30,6 +30,8 @@
       "I2C Comm.  interfaces": "I2C",
       "Package": "Package",
       "DAC": "DAC",
+      "SPI": "SPI",
+      "I2S": "I2S",
       "ADC": "ADC"
     },
     "STM32F": {
@@ -40,9 +42,11 @@
       "Quad SPI": "Quad SPI",
       "Communication  interfaces I2C": "I2C",
       "Package": "Package",
-      "SRAM in  Kbytes System": "RAM",
+      "SRAM in Kbytes System": "RAM",
       "DAC": "DAC",
-      "ADC": "ADC"
+      "ADC": "ADC",
+      "I2S": "I2S",
+      "SPI": "SPI"
     },
     "MKL": {
       "Flash (KB)": "Flash memory",
