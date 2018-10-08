@@ -234,7 +234,7 @@ def reunify_cache():
 
 
 def print_usage():
-    print('USSAGE: {} [{}]'.format(sys.argv[0], '|'.join(known_commands)))
+    print('USAGE: {} [{}]'.format(sys.argv[0], '|'.join(known_commands)))
     print('\tdownload [MCU NAME HERE] - downloads and parses new datasheet')
     print('\tfilter [NAME.json]- filters MCUs by rules in NAME.json')
     print('\tdump_cache - prints all MCUs in cache')
