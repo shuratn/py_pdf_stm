@@ -233,6 +233,14 @@ def reunify_cache():
     feature_manager.save()
 
 
+def print_usage():
+    print('USSAGE: {} [{}]'.format(sys.argv[0], '|'.join(known_commands)))
+    print('\tdownload [MCU NAME HERE] - downloads and parses new datasheet')
+    print('\tdump_cache - prints all MCUs in cache')
+    print('\tre-unify - tries to re-unify everything')
+    print('\tparse - re-parses all datasheets')
+
+
 if __name__ == '__main__':
     known_commands = ['parse', 'download', 'dump_cache']
     if len(sys.argv) > 1:
@@ -259,10 +267,7 @@ if __name__ == '__main__':
 
         elif sys.argv[1] == 'filter':
             MCUHelper(sys.argv[1]).collect_matching().write_excel()
-
+        else:
+            print_usage
     else:
-        print('USSAGE: {} [{}]'.format(sys.argv[0], '|'.join(known_commands)))
-        print('\tdownload [MCU NAME HERE] - downloads and parses new datasheet')
-        print('\tdump_cache - prints all MCUs in cache')
-        print('\tre-unify - tries to re-unify everything')
-        print('\tparse - re-parses all datasheets')
+        print_usage()
