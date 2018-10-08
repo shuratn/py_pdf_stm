@@ -9,6 +9,7 @@ import xlsxwriter
 
 from FeaturesManager import FeatureManager
 from feature_extractor import convert_type
+from Utils import *
 
 
 class MCUHelper:
@@ -22,45 +23,79 @@ class MCUHelper:
         # feature_manager.parse()
         self.mcu_features = self.feature_manager.mcs_features
 
-    def collect_matching(self):
+    def match(self, required_value, feature_value, cmp_type, ):
+        mismatch = False
+        if cmp_type == '>':
+            if not feature_value >= required_value:
+                mismatch = True
+        elif cmp_type == '<':
+            if not feature_value <= required_value:
+                mismatch = True
+        elif cmp_type == '=':
+            if not feature_value == required_value:
+                mismatch = True
+        else:
+            if not feature_value >= required_value:
+                mismatch = True
+        return not mismatch
 
+    def get_cmp_type(self, name):
+        if name[-1] in '<>=':
+            feature_name = name[:-1]
+            cmp_type = name[-1]
+        else:
+            feature_name = name
+            cmp_type = '>'
+        return feature_name, cmp_type
+
+    def compare(self, req_name, req_value, feature_name, feature_value):
+        match = False
+        req_name, cmp_type = self.get_cmp_type(req_name)
+        if req_name != feature_name:
+            if req_name != 'ANY':
+                return None
+        if is_dict(req_value) and is_dict(feature_value):
+            for rk, rv in req_value.items():
+                for fk, fv in feature_value.items():
+                    ret = self.compare(rk, rv, fk, fv)
+                    if ret is not None:
+                        if ret:
+                            match = True
+            return match
+        if is_int(req_value) and is_int(feature_value):
+            return self.match(req_value, feature_value, cmp_type)
+        if is_str(req_value) or is_str(feature_value):
+            print('STRINGS ARE NOT SUPPORTED YET')
+            return None
+
+    def collect_matching(self):
+        self.print_user_req()
+        print('Searching for matching microcontrolers!')
         for mcu_family, mcus in self.mcu_features.items():
             for mcu_name, mcu_features in mcus.items():
-                mismatch = False
-                for req, req_value in self.required_feature.items():
-                    if req[-1] in '<>=':
-                        feature_value = mcu_features.get(req[:-1], None)
-                    else:
-                        feature_value = mcu_features.get(req, None)
+                matched = True
+                for req_name, req_value in self.required_feature.items():
+                    req_feature, cmp_type = self.get_cmp_type(req_name)
+                    feature_value = mcu_features.get(req_feature, None)
                     if feature_value:
                         try:
-                            if req.endswith('>'):
-                                if not feature_value >= req_value:
-                                    mismatch = True
-                                    break
-                            elif req.endswith('<'):
-                                if not feature_value <= req_value:
-                                    mismatch = True
-                                    break
-                            elif req.endswith('='):
-                                if not feature_value == req_value:
-                                    mismatch = True
-                                    break
+                            if is_dict(req_value) and is_dict(feature_value):
+                                matched &= self.compare(req_name, req_value, req_name, feature_value)
                             else:
-                                if not mcu_features[req] > req_value:
-                                    mismatch = True
-                                    break
+                                matched &= self.match(req_value, feature_value, cmp_type)
+
                         except Exception as ex:
-                            mismatch = True
+                            matched = False
                             print('ERROR:', ex)
-                            print('INFO:', req, ':', req_value)
+                            print('INFO:', req_name, ':', req_value)
                             print('INFO2:', mcu_name, ':', feature_value)
                             traceback.print_exc()
                     else:
-                        continue
-                if not mismatch:
+                        matched = False
+                if matched:
                     self.matching[mcu_name] = mcu_features
-        self.print_user_req()
+
+        print('Found {} matching'.format(len(self.matching)))
         print('Matching microcontrolers:')
         if not self.matching:
             print('No matches')
@@ -71,12 +106,12 @@ class MCUHelper:
 
     def print_matching(self):
         for match_name, match_features in self.matching.items():
-            print(match_name)
+            print('\t',match_name)
             # for feature, value in match_features.items():
             #     print('\t', feature, ':', value)
 
     def print_user_req(self):
-        print('Your requirements were:')
+        print('Your requirements are:')
         for req_name, req_value in self.required_feature.items():
             if req_name[-1] in '<>=':
                 cmp_type = req_name[-1]
@@ -92,7 +127,7 @@ class MCUHelper:
                 same_features = set(features.keys())
                 continue
             same_features.intersection_update(set(features.keys()))
-        print(same_features)
+        # print(same_features)
         return same_features
 
     def write_excel(self):
@@ -114,7 +149,7 @@ class MCUHelper:
         for n, common_feature in enumerate(same_features):
             sheet.write(1 + n, 0, common_feature)
             for m, mc_features in enumerate(matching.values()):  # type: int,dict
-                if mc_features.get(common_feature,False):
+                if mc_features.get(common_feature, False):
                     feature_value = mc_features.pop(common_feature)
                     if type(feature_value) is list:
                         feature_value = '/'.join(feature_value)
@@ -127,7 +162,6 @@ class MCUHelper:
 
         row_offset += 1
         sheet.write(row_offset, 0, 'OTHER')
-        #TODO: обрабатывать корпуса как фичи
         for m, mc_features in enumerate(matching.values()):  # type: int,dict
             row = ''
             count = 0
@@ -136,7 +170,7 @@ class MCUHelper:
                 row += str(feature) + ' : ' + str(value) + '\n'
                 count += 1
                 if count > 10:
-                    sheet.write(row_offset+row_offset_sub, 1 + m, row, wraps)
+                    sheet.write(row_offset + row_offset_sub, 1 + m, row, wraps)
                     row_offset_sub = +1
                     count = 0
                     row = ''
@@ -159,10 +193,11 @@ def parse_all():
     else:
         print('NO DATASHEETS FOUND')
 
+
 def reunify_cache():
     feature_manager = FeatureManager([])
     feature_manager.load_cache()
-    for mc_family_name,mc_family in feature_manager.mcs_features.items():
+    for mc_family_name, mc_family in feature_manager.mcs_features.items():
         unknown_names = []
         for mc, features in mc_family.items():
 
@@ -195,6 +230,7 @@ def reunify_cache():
         for unknown_feature in unknown_names:
             print('\t', unknown_feature)
         print('=' * 20)
+
 
 if __name__ == '__main__':
     if sys.argv[1] == 'parse':

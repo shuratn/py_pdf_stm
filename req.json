@@ -1,6 +1,5 @@
 {
-  "Flash memory>":256,
-  "CPU Frequency>":500
-
-
+  "CPU Frequency":80,
+  "UART":1,
+  "Pin Count":40
 }

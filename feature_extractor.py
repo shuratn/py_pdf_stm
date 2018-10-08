@@ -8,39 +8,10 @@ import re
 from DataSheet import DataSheet
 from MKL_DataSheet import MKL_DataSheet
 from TableExtractor import TableExtractor, Table
+from Utils import *
 
 
-def fetch_from_all(lists, num):
-    return [arr[num] for arr in lists]
 
-
-def is_int(val):
-    return isinstance(val,int)
-
-
-def is_dict(val):
-    return isinstance(val, dict)
-
-
-def is_list(val):
-    return isinstance(val, list)
-
-
-def is_str(val):
-    return isinstance(val, str)
-
-
-def merge(source, dest):
-    if is_int(source) and is_int(dest):
-        return source + dest
-    if is_str(source) and is_str(dest):
-        return dest + '/' + source
-    if is_list(source) and is_list(dest):
-        return list(set(dest + source))
-    if is_dict(source) and is_dict(dest):
-        for key in set(source) | set(dest):
-            dest[key] = merge(source.get(key), dest.get(key))
-        return dest
 
 
 def convert_type(name: str, value):
@@ -71,7 +42,7 @@ def convert_type(name: str, value):
                 pass
             else:
                 value += 'KB'
-            return name,value
+            return name, value
         if 'MB' in value:
             value = replace_i(value, 'mb', '')
             if is_numeric(value):
@@ -90,7 +61,7 @@ def convert_type(name: str, value):
                 pass
             else:
                 value += 'MHz'
-            return name,value
+            return name, value
     # UNIFIED NAMES
     # int_values = ['Flash memory', 'RAM', 'UART', 'SPI', 'Total GPIOS','CPU Frequency']
     # if name in int_values:
@@ -101,7 +72,7 @@ def convert_type(name: str, value):
                     value = int(value)
                 except Exception as ex:
                     print('Failed to convert {} {} to int\n{}'.format(name, value, ex))
-    return name,value
+    return name, value
 
 
 class FeatureListExtractor:  # This class is adapted to STM
@@ -202,7 +173,7 @@ class FeatureListExtractor:  # This class is adapted to STM
                         feature_value = feature.text
                         for n, v in self.handle_feature(feature_name, feature_value):
                             if n and v:
-                                n,v = convert_type(n, v)
+                                n, v = convert_type(n, v)
                                 if controller_features[name].get(n, False):
                                     v = self.merge_features(controller_features[name].get(n), v)
                                     controller_features[name][n] = v
@@ -247,7 +218,7 @@ class FeatureListExtractor:  # This class is adapted to STM
                         if known:
                             new_name = unify_list.get(feature_name, feature_name)  # in case name is already unified
                             values = mc_features.pop(feature_name)
-                            new_name,values = convert_type(new_name, values)
+                            new_name, values = convert_type(new_name, values)
                             mc_features[new_name] = values
                     else:
                         unknown_names.append(feature_name)
@@ -266,25 +237,10 @@ class FeatureListExtractor:  # This class is adapted to STM
         return merge(old, new)
 
 
-def replace_i(string: str, sub: str, new: str):
-    result = re.search('{}'.format(sub.lower()), string, re.IGNORECASE)
-    string = string[:result.start()] + new + string[result.end():]
-    string = string.strip(' ')
-    return string
 
 
-def is_numeric(value):
-    return type(value) == str and value.isnumeric()
 
 
-def remove_units(string: str, unit: str):
-    if '(' in string:
-        string = replace_i(string, '{}'.format(unit), '')
-        string = string.replace('()','')
-    else:
-        string = replace_i(string, '{}'.format(unit), '')
-    string = string.strip()
-    return string
 
 
 if __name__ == '__main__':

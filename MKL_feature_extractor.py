@@ -11,6 +11,7 @@ from DataSheet import DataSheet
 from MKL_DataSheet import MKL_DataSheet
 from TableExtractor import TableExtractor, Cell
 from feature_extractor import FeatureListExtractor, convert_type, is_numeric
+from Utils import *
 
 
 class MKLFeatureListExtractor(FeatureListExtractor):
@@ -53,11 +54,11 @@ class MKLFeatureListExtractor(FeatureListExtractor):
         table = pdf_int.parse_page(page)
         return table
 
-    def handle_shared(self,text,):
+    def handle_shared(self, text, ):
         # print(text)
-        res = re.findall(r'Temp\srange:\s(-?\d+).*\sto\s(-?\d+).*',text,re.IGNORECASE)
+        res = re.findall(r'Temp\srange:\s(-?\d+).*\sto\s(-?\d+).*', text, re.IGNORECASE)
         if res:
-            lo,hi = res[0]
+            lo, hi = res[0]
             self.shared_features['Operating temperature'] = {'min': int(lo), 'max': int(hi)}
         return
 
@@ -70,7 +71,7 @@ class MKLFeatureListExtractor(FeatureListExtractor):
 
     def extract_features(self):
         controller_features = {}
-        for table,text in zip(self.features_tables,self.page_text):
+        for table, text in zip(self.features_tables, self.page_text):
 
             try:
                 self.handle_shared(text)
@@ -102,7 +103,8 @@ class MKLFeatureListExtractor(FeatureListExtractor):
                             if feature and value:
                                 feature, value = convert_type(feature, value)
                                 if controller_features[controller_name].get(feature, False):
-                                    value = self.merge_features(controller_features[controller_name].get(feature), value)
+                                    value = self.merge_features(controller_features[controller_name].get(feature),
+                                                                value)
                                     controller_features[controller_name][feature] = value
                                 else:
                                     controller_features[controller_name][feature] = value
@@ -115,7 +117,7 @@ class MKLFeatureListExtractor(FeatureListExtractor):
 
 
             except Exception as ex:
-                sys.stderr.write("ERROR {}".format(ex))
+                sys.stderr.write("ERROR {}\n".format(ex))
                 traceback.print_exc()
         for _, features in controller_features.items():
             features.update(self.shared_features)
@@ -134,21 +136,28 @@ class MKLFeatureListExtractor(FeatureListExtractor):
         name = name.strip()
         name = self.fix_name(name)
         if 'ADC Modules' in name:
-            adc_types = re.findall(r'.*\((.*)/(.*)\)', name)[0]
+            if '/' in name:
+                adc_types = re.findall(r'.*\((\d+) bit/(\d+) bit\)', name, re.IGNORECASE)[0]
+            else:
+                adc_types = ['12']
             values = value.split('/')
             adcs = {}
             for adc_type, value in zip(adc_types, values):
                 if int(value) > 0:
-                    adcs[adc_type] = {'count': int(value), 'channels': -1}
+                    adcs['{}-bit'.format(adc_type)] = {'count': int(value), 'channels': 0}
             return [('ADC', adcs)]
+
+        if 'Total' in name and '(Channels)' in name:
+            adc_type = re.findall('Total\s(\d+)-bit\s?ADC\s?', name)[0]
+            return [('ADC', {'{}-bit'.format(adc_type): {'channels': int(value)}})]
 
         if 'DAC' in name:
             adc_type = name.split(' ')[0]
-            if is_numeric(value):
+            if is_str(value):
                 if '/' in value:
                     value = int(value.split('/')[0])
-                else:
-                    value = int(value)
+            if is_numeric(value):
+                value = int(value)
             if value:
                 return [('DAC', {adc_type: {'count': value}})]
 
@@ -182,7 +191,7 @@ class MKLFeatureListExtractor(FeatureListExtractor):
             return [('UART', value), ]
 
         if 'package' in name.lower():
-            return [(value,'Yes')]
+            return [(value, 'Yes')]
 
         return super().handle_feature(name, value)
 

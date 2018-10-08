@@ -123,7 +123,6 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
             name = 'ADC Modules'
             values = value.split('/')
             return [(name, {t: v for t, v in zip(adc_types, values)})]
-
         if 'Watchdog' in name:
             adc_types = re.findall(r'.*\((.*)/(.*)\)', name)[0]
             name = 'Watchdog'
@@ -136,6 +135,20 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
             return [(name, {t: v for t, v in zip(adc_types, values)})]
         if 'Evaluation Board' in name:
             return [(None, None)]
+
+        if re.match('Total\s?(\d+)-bit\s?ADC\s?\w*', name):
+            adc_type = re.findall('Total\s?(\d+)-bit\s?ADC\s?\w*', name)[0]
+            return [('ADC', {'{}-bit'.format(adc_type): {'count': int(value)}})]
+
+        if re.match('(\d+)-bit\s?\w*\sADC\s?\w*', name):
+            adc_type = re.findall('(\d+)-bit\s?\w*\sADC\s?\w*', name)[0]
+            return [('ADC', {'{}-bit'.format(adc_type): {'channels': int(value)}})]
+
+        if 'I2C' in name:
+            if 'x' in value:
+                modules, channels = value.split('x')
+                channels = channels.replace('ch', '')
+                return [('I2C', {'count': int(modules), 'channels': int(channels)})]
 
         return super().handle_feature(name, value)
 

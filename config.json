@@ -11,6 +11,8 @@
     "T(aDrmper yIce)Detect": "Tamper Detect(DryIce)",
     "GPiPInsO With Interrupt/High-Drive": "GPIO With Interrupt/High-Drive Pins",
     "Total (KB)Flash Memory": "Total Flash Memory (KB)",
+    "UBART (Taudratoteal) High": "UART (Total) High Baudrate",
+    "Sinchaglne Enelnded ADC": "Single Ended ADC channel",
     "EPvaaluatioge 17)n Board (Appendix": "Evaluation Board(Appendix Page 17)"
   },
   "_comment": "SRAM:SRAM сделано специально, для пометки что эта фича известна",
@@ -57,7 +59,9 @@
       "SPI Modules": "SPI",
       "SPI (# of modules)": "SPI",
       "Total GPIOs": "Total GPIOS",
+      "GPIOs": "Total GPIOS",
       "UART (Total)": "UART",
+      "UART (Total) High Baudrate": "UART",
       "Quad SPI": "Quad SPI",
       "I2C": "I2C",
       "Package": "Package",

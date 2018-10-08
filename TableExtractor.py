@@ -563,15 +563,15 @@ class TableExtractor:
         self.draw = False
         self.debug = False
 
-    def filter_points(self, points: List[Point]):
-        new_points = []
-        for p1 in tqdm(points, desc='Filtering points', unit='points'):
-            for p2 in points:
-                if p1 == p2:
-                    merge(p2)
-            if p1 not in new_points:
-                new_points.append(p1)
-        return new_points
+    # def filter_points(self, points: List[Point]):
+    #     new_points = []
+    #     for p1 in tqdm(points, desc='Filtering points', unit='points'):
+    #         for p2 in points:
+    #             if p1 == p2:
+    #                 merge(p2)
+    #         if p1 not in new_points:
+    #             new_points.append(p1)
+    #     return new_points
 
     @staticmethod
     def filter_lines(lines: List[Line]):
@@ -649,22 +649,24 @@ class TableExtractor:
         page = self.pdf.pages[page_n]
         if self.debug:
             print('Rendering page')
-        # p_im = page.to_image(resolution=100)
+
         if self.debug:
             print('Finding tables')
         tables = TableFinder(page, {'snap_tolerance': 3, 'join_tolerance': 3})
         if self.debug:
             print('Found', len(tables.tables), 'tables')
         beaut_tables = []
-        # if self.draw:
-            # p_im.draw_lines(page.lines)
-            # p_im.save('page-{}-lines.png'.format(page_n + 1))
+        if self.draw:
+            p_im = page.to_image(resolution=100)
+            p_im.draw_lines(page.lines)
+            p_im.save('page-{}-lines.png'.format(page_n + 1))
         if len(tables.tables) > 5:
             return []
         for n, table in enumerate(tables.tables):
-            # p_im.reset()
-            # im = Image.new('RGB', (page.width, page.height), (255,) * 3)
-            # canvas = ImageDraw.ImageDraw(im)
+            if self.draw:
+                p_im.reset()
+                im = Image.new('RGB', (page.width, page.height), (255,) * 3)
+                canvas = ImageDraw.ImageDraw(im)
             ugly_table = table.extract()
             lines = []  # type: List[Line]
             cells = []  # type: List[Cell]
@@ -699,9 +701,9 @@ class TableExtractor:
             lines = self.filter_lines(lines)
             # for line in lines:
             #     line.draw(canvas, color='green')
-            # if self.draw:
-            #     p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
-            #     im.save('page-{}-{}.png'.format(page_n + 1, n))
+            if self.draw:
+                p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
+                im.save('page-{}-{}.png'.format(page_n + 1, n))
             skeleton_points, skeleton = self.build_skeleton(lines.copy())
             if not skeleton_points:
                 continue
@@ -719,13 +721,13 @@ class TableExtractor:
             # if self.draw:
             #     p_im.save('page-{}-{}_im.png'.format(page_n + 1, n))
             #     im.save('page-{}-{}.png'.format(page_n + 1, n))
-            # if self.draw:
-            #     canvas.rectangle((0,0,page.width,page.height),fill='white') #cleaning canvas
-            #     for row_id, row in enumerate(skeleton):
-            #         for cell_id, cell in enumerate(row):
-            #             cell.text = '{}-{}'.format(row_id, cell_id)
-            #             cell.draw(canvas, color='green',text_color='red')
-            #     im.save('page-{}-{}-skeleton.png'.format(page_n + 1, n))
+            if self.draw:
+                canvas.rectangle((0,0,page.width,page.height),fill='white') #cleaning canvas
+                for row_id, row in enumerate(skeleton):
+                    for cell_id, cell in enumerate(row):
+                        cell.text = '{}-{}'.format(row_id, cell_id)
+                        cell.draw(canvas, color='green',text_color='red')
+                im.save('page-{}-{}-skeleton.png'.format(page_n + 1, n))
             beaut_tables.append(beaut_table)
 
         return beaut_tables
@@ -739,7 +741,7 @@ if __name__ == '__main__':
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/stm32/stm32L476/stm32L476_ds.pdf")
     # pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L476\stm32L476_ds.pdf")
     # pdf_interpreter = PDFInterpreter(r"/mnt/d/PYTHON/py_pdf_stm/datasheets/KL/KL17P64M48SF6_ds.pdf")
-    pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK_ds.pdf")
+    pdf_interpreter = TableExtractor(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK.pdf")
     # pdf_interpreter = PDFInterpreter(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6_ds.pdf")
     pdf_interpreter.draw = True
     pdf_interpreter.debug = True

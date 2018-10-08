@@ -3,6 +3,7 @@ import re
 from pprint import pprint
 
 from DataSheet import DataSheet
+from Utils import *
 from feature_extractor import FeatureListExtractor, remove_units
 
 
@@ -29,6 +30,7 @@ class STM32FeatureListExtractor(FeatureListExtractor):
         self.mc_family = self.controller[:9]  # STM32L451
 
     def handle_feature(self, name, value):
+        value = remove_parentheses(value)
         if name in self.config['corrections']:
             name = self.config['corrections'][name]
         if 'USART' in name or 'LPUART' in name or 'LPUART' in name:
@@ -40,11 +42,11 @@ class STM32FeatureListExtractor(FeatureListExtractor):
                 values[0] = values[0].split('or')[0]
             if '(' in values[0]:
                 values[0] = values[0][:values[0].index('(')]
-            return [('GPIOs', values[0]), ('Wakeup pins', values[1])]
+            return [('GPIOs', int(values[0])), ('Wakeup pins', int(values[1]))]
         if 'ADC' in name and 'Number' in name:
-            adc_type = name.split('ADC')[0]
+            adc_type = re.findall('(\d+)-bit\s?\w*\sADC\s?\w*',name)[0]
             values = value.split('\n')
-            return [('ADC', {adc_type: {'count': values[0], 'channels': values[1]}})]
+            return [('ADC', {'{}-bit'.format(adc_type): {'count': int(values[0]), 'channels': int(values[1])}})]
         if 'Operating voltage' in name:
             value = remove_units(value, 'v')
             values = value.split('to')

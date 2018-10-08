@@ -77,7 +77,7 @@ class FeatureManager:
                 old = json.load(fp)  # type: Dict
             old.update(self.mcs_features)
         with self.cache_path.open('w') as fp:
-            json.dump(self.mcs_features, fp)
+            json.dump(self.mcs_features, fp,indent=1)
 
     def collect_same_features(self):
         same_features = set()
