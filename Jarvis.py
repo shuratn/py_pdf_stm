@@ -106,7 +106,7 @@ class MCUHelper:
 
     def print_matching(self):
         for match_name, match_features in self.matching.items():
-            print('\t',match_name)
+            print('\t', match_name)
             # for feature, value in match_features.items():
             #     print('\t', feature, ':', value)
 
@@ -236,12 +236,23 @@ if __name__ == '__main__':
     if sys.argv[1] == 'parse':
         parse_all()
         exit(0xDEADBEEF)
-    if sys.argv[1] == 'download':
+    elif sys.argv[1] == 'download':
         feature_manager = FeatureManager(sys.argv[2:])
         feature_manager.parse()
         exit(0xDEADCAFE)
-    if sys.argv[1] == 're-unify':
+    elif sys.argv[1] == 're-unify':
         reunify_cache()
         exit(0xBEEFCAFE)
+    elif sys.argv[1] == 'dump_cache':
+        feature_manager = FeatureManager([])
+        with open('./dump.txt', 'w') as fp:
+            print('DUMPING ALL KNOWN MCU\'s')
+            for family_name, family_mcus in feature_manager.mcs_features.items():
+                fp.write(family_name + ' :\n')
+                print(family_name, ':')
+                for mcu_name in family_mcus.keys():
+                    fp.write('\t' + mcu_name + '\n')
+                    print('\t', mcu_name)
 
-    MCUHelper(sys.argv[1]).collect_matching().write_excel()
+    else:
+        MCUHelper(sys.argv[1]).collect_matching().write_excel()
