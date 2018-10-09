@@ -234,6 +234,31 @@ def reunify_cache():
     feature_manager.save()
 
 
+def dump_unknown():
+    feature_manager = FeatureManager([])
+    config = feature_manager.config
+    all_features = {}
+    for mc_family,mcus in feature_manager.mcs_features.items():
+        mc_family = feature_manager.get_config_name(mc_family)
+        family_features = []
+        for mc,features in mcus.items():
+            family_features.extend(list(features.keys()))
+        family_features = set(family_features)
+        all_features[mc_family] = family_features
+    unify = config['unify']
+    with open('unknown.txt','w') as fp:
+        for mc_family,features in all_features.items():
+            fp.write(mc_family+' \n')
+            known = []
+            known.extend(unify[mc_family].values())
+            known.extend(unify[mc_family].keys())
+            known = set(known)
+            diffs = features.difference(known)
+            for diff in diffs:
+                fp.write('\t'+diff+'\n')
+
+    #
+
 def print_usage():
     print('USAGE: {} [{}]'.format(sys.argv[0], '|'.join(known_commands)))
     print('\tdownload [MCU NAME HERE] - downloads and parses new datasheet')
@@ -269,6 +294,8 @@ if __name__ == '__main__':
 
         elif sys.argv[1] == 'filter':
             MCUHelper(sys.argv[2]).collect_matching().write_excel()
+        elif sys.argv[1] == 'dump_unknown':
+            dump_unknown()
         else:
             print_usage()
     else:
