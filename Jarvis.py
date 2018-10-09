@@ -238,24 +238,26 @@ def dump_unknown():
     feature_manager = FeatureManager([])
     config = feature_manager.config
     all_features = {}
-    for mc_family,mcus in feature_manager.mcs_features.items():
+    for mc_family, mcus in feature_manager.mcs_features.items():
         mc_family = feature_manager.get_config_name(mc_family)
         family_features = []
-        for mc,features in mcus.items():
+        for mc, features in mcus.items():
             family_features.extend(list(features.keys()))
         family_features = set(family_features)
         all_features[mc_family] = family_features
     unify = config['unify']
-    with open('unknown.txt','w') as fp:
-        for mc_family,features in all_features.items():
-            fp.write(mc_family+' \n')
+    with open('unknown.txt', 'w') as fp:
+        for mc_family, features in all_features.items():
+            fp.write(mc_family + ' \n')
             known = []
             known.extend(unify[mc_family].values())
             known.extend(unify[mc_family].keys())
             known = set(known)
             diffs = features.difference(known)
             for diff in diffs:
-                fp.write('\t'+diff+'\n')
+                fp.write('\t' + diff + '\n')
+
+
 def list_known():
     dump_mcu_name = "UNKNOWN"
     dump_all = False
@@ -266,22 +268,24 @@ def list_known():
     feature_manager = FeatureManager([])
     config = feature_manager.config
     unify = config['unify']
-    all_mcus = feature_manager.mcs_features.copy()
-    for mcu_family,mcus in all_mcus.items():
-        unifier = set(unify[feature_manager.get_config_name(mcu_family)].values())
-        for mcu,features in mcus.items():
+    all_mcus = list(feature_manager.mcs_features.copy().values())
+    to_dump = []
+    for mcus in all_mcus:
+        for mcu, features in mcus.items():
+            unifier = set(unify[feature_manager.get_config_name(mcu)].values())
             if dump_mcu_name in mcu.upper() or dump_all:
 
                 feature_names = set(features.keys())
                 unknown = feature_names.difference(unifier)
                 for unk in unknown:
                     features.pop(unk)
-
+                to_dump.append({mcu:features})
 
     with open('mcu_list.json', 'w') as fp:
-        json.dump(all_mcus,fp,indent=2)
+        json.dump(to_dump, fp, indent=2)
 
     #
+
 
 def print_usage():
     print('USAGE: {} [{}]'.format(sys.argv[0], '|'.join(known_commands)))
