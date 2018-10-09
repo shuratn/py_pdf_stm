@@ -547,13 +547,6 @@ class Table:
         col_span = len(list(temp.values())[0])
         return row_span, col_span
 
-    # def print_table(self):
-    #     rows = len(self.table_skeleton)
-    #     cols = len(self.table_skeleton[0])
-    #     for col in range(cols):
-    #         for row in range(rows):
-    #             self.global_map[row][col].print_cell()
-
 
 class TableExtractor:
 
@@ -561,16 +554,6 @@ class TableExtractor:
         self.pdf = pdfplumber.open(path)
         self.draw = False
         self.debug = False
-
-    # def filter_points(self, points: List[Point]):
-    #     new_points = []
-    #     for p1 in tqdm(points, desc='Filtering points', unit='points'):
-    #         for p2 in points:
-    #             if p1 == p2:
-    #                 merge(p2)
-    #         if p1 not in new_points:
-    #             new_points.append(p1)
-    #     return new_points
 
     @staticmethod
     def filter_lines(lines: List[Line]):
@@ -582,7 +565,6 @@ class TableExtractor:
                 continue
             la(line1)
         new_lines = list(set(new_lines))
-        # print('Before filtering', len(lines), ', after', len(new_lines))
         return new_lines
 
     @staticmethod
@@ -603,7 +585,6 @@ class TableExtractor:
                 continue
             self.add_skeleton_points(skeleton_points, line1)
             for line2 in horizontal:
-                # for line2 in tqdm(horizontal,desc='Checking horizontal lines', unit='lines'):
                 if line1 == line2:
                     continue
                 self.add_skeleton_points(skeleton_points, line2)

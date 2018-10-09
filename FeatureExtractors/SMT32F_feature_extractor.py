@@ -11,6 +11,10 @@ from FeatureExtractors.feature_extractor import FeatureListExtractor, remove_uni
 
 class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
 
+    def __init__(self, controller: str, datasheet: DataSheet, config):
+        self.adc_count_found = False
+        super().__init__(controller, datasheet, config)
+
     def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
         print('Extracting tables for', self.controller)
         datasheet = self.datasheet
@@ -52,7 +56,12 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
             return [('GPIOs', int(values[0])), ('Wakeup pins', int(values[1]))]
         if 'ADC' in name:
             adc_type = re.findall('(\d+)-bit\s?\w*\sADC\s?\w*', name)[0]
-            return [('ADC', {'{}-bit'.format(adc_type): {'count': int(value)}})]
+            if not self.adc_count_found:
+                self.adc_count_found = True
+                return [('ADC', {'{}-bit'.format(adc_type): {'count': int(value)}})]
+            else:
+                return [('ADC', {'{}-bit'.format(adc_type): {'channels': int(value)}})]
+
         if 'DAC' in name and 'channels' in name:
             dac_type = re.findall('(\d+)-bit\s?\w*\sDAC\s?\w*', name)[0]
             count, channels = value.split('\n')
@@ -125,7 +134,9 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                 name = 'ERROR'
                 for col_id in range(features_cell_span, len(table.get_row(0))):
                     features = table.get_col(col_id)
+                    self.adc_count_found = False
                     for n, feature in enumerate(features):
+
                         if n == 0:
                             name = table.get_cell(col_id, 0).clean_text
 
@@ -173,9 +184,10 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32F\stm32f777.pdf")
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32F\stm32f777vi.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
-    feature_extractor = STM32FFeatureListExtractor('stm32L476', datasheet, config)
+    feature_extractor = STM32FFeatureListExtractor('stm32f777vi', datasheet, config)
     feature_extractor.process()
+    feature_extractor.unify_names()
     pprint(feature_extractor.features)

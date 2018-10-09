@@ -11,6 +11,7 @@ from FeatureExtractors.MKL_feature_extractor import MKLFeatureListExtractor
 from DataSheetParsers.MK_DataSheet import MK_DataSheet
 from TableExtractor import TableExtractor
 from FeatureExtractors.feature_extractor import convert_type
+from Utils import is_str
 
 
 class MKFeatureListExtractor(MKLFeatureListExtractor):
@@ -45,7 +46,8 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
                     for _ in range(len(table)):
                         self.page_text.append(text)
                     self.features_tables.extend(table)
-
+            if n==3:
+                break
     def extract_table(self, datasheet, page):
         pdf_int = TableExtractor(str(datasheet.path))
         table = pdf_int.parse_page(page)
@@ -59,7 +61,7 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
                 if not table.global_map:
                     continue
                 skip_firts = False
-                if table.get_row(0)[0].text == 'Footnotes':
+                if table.get_row(0)[0].clean_text == "s e ot n ot o F":
                     skip_firts = True
                 if skip_firts:
                     header = table.get_row(0)[2:]
@@ -75,6 +77,7 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
                         row.pop(0)
                     controller_name = row.pop(0).text
                     if self.mc_family not in controller_name:
+                        print('Skipping',controller_name)
                         continue
                     if controller_name not in controller_features:
                         controller_features[controller_name] = {}
@@ -138,6 +141,8 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
 
         if re.match('Total\s?(\d+)-bit\s?ADC\s?\w*', name):
             adc_type = re.findall('Total\s?(\d+)-bit\s?ADC\s?\w*', name)[0]
+            if is_str(value) and 'ch' in value:
+                return [('ADC', {'{}-bit'.format(adc_type): {'channels': int(value.replace('ch',''))}})]
             return [('ADC', {'{}-bit'.format(adc_type): {'count': int(value)}})]
 
         if re.match('(\d+)-bit\s?\w*\sADC\s?\w*', name):
@@ -158,7 +163,7 @@ class MKFeatureListExtractor(MKLFeatureListExtractor):
 
 if __name__ == '__main__':
     datasheet = MK_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK.pdf")
-    with open('config.json') as fp:
+    with open('./../config.json') as fp:
         config = json.load(fp)
     feature_extractor = MKFeatureListExtractor('MK', datasheet, config)
     feature_extractor.process()

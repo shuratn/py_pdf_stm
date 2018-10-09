@@ -231,35 +231,31 @@ class DataSheet:
                         table.path = top_level_node.path + [table_id]
                         top_level_node.append(table)
                     self.tables[table_id] = {'name': name, 'data': entry}
-                elif 'Figure' in name:
-                    figure_id = int(name.split('.')[0].split(' ')[-1])
-                    self.figures[figure_id] = entry
-                else:
-                    tmp = name.split(' ')  # type: List[str]
-
-                    if '.' in tmp[0]:
-                        try:
-                            order = list(map(int, tmp[0].split('.')))
-                        except ValueError:
-                            continue
-
-                        node = DataSheetNode(join(tmp[1:]), order)
-                        node.parent = self.table_of_content
-                        parent = node.get_node_by_path(order[:-1])
-                        parent.append(node)
-                    else:
-                        if tmp[0].isnumeric():
-                            node = DataSheetNode(join(tmp[1:]), [int(tmp[0])])
-                            self.table_of_content.append(node)
-                            # pos = self.recursive_create_toc([int(tmp[0])])
-                            # pos['name'] = ' '.join(tmp[1:])
-                        else:
-                            node = DataSheetNode(name, [1])
-                            self.table_of_content.append(node)
-                    top_level_node = node
+                # else:
+                #     tmp = name.split(' ')  # type: List[str]
+                #
+                #     if '.' in tmp[0]:
+                #         try:
+                #             order = list(map(int, tmp[0].split('.')))
+                #         except ValueError:
+                #             continue
+                #
+                #         node = DataSheetNode(join(tmp[1:]), order)
+                #         node.parent = self.table_of_content
+                #         parent = node.get_node_by_path(order[:-1])
+                #         parent.append(node)
+                #     else:
+                #         if tmp[0].isnumeric():
+                #             node = DataSheetNode(join(tmp[1:]), [int(tmp[0])])
+                #             self.table_of_content.append(node)
+                #             # pos = self.recursive_create_toc([int(tmp[0])])
+                #             # pos['name'] = ' '.join(tmp[1:])
+                #         else:
+                #             node = DataSheetNode(name, [1])
+                #             self.table_of_content.append(node)
+                #     top_level_node = node
 
             else:
-                # TODO
                 pass
 
     def get_page_num(self, page):
