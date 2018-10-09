@@ -256,6 +256,30 @@ def dump_unknown():
             diffs = features.difference(known)
             for diff in diffs:
                 fp.write('\t'+diff+'\n')
+def list_known():
+    dump_mcu_name = "UNKNOWN"
+    dump_all = False
+    if sys.argv[2] == '*':
+        dump_all = True
+    else:
+        dump_mcu_name = sys.argv[2].upper()
+    feature_manager = FeatureManager([])
+    config = feature_manager.config
+    unify = config['unify']
+    all_mcus = feature_manager.mcs_features.copy()
+    for mcu_family,mcus in all_mcus.items():
+        unifier = set(unify[feature_manager.get_config_name(mcu_family)].values())
+        for mcu,features in mcus.items():
+            if dump_mcu_name in mcu.upper() or dump_all:
+
+                feature_names = set(features.keys())
+                unknown = feature_names.difference(unifier)
+                for unk in unknown:
+                    features.pop(unk)
+
+
+    with open('mcu_list.json', 'w') as fp:
+        json.dump(all_mcus,fp,indent=2)
 
     #
 
@@ -266,6 +290,8 @@ def print_usage():
     print('\tdump_cache - prints all MCUs in cache')
     print('\tre-unify - tries to re-unify everything')
     print('\tparse - re-parses all datasheets')
+    print('\tdump_unknown - dumps all unknown features to file')
+    print('\tlist [MCU NAME or *] - dumps all known controller\'s features, unknown won\'t be dumped')
 
 
 if __name__ == '__main__':
@@ -296,6 +322,8 @@ if __name__ == '__main__':
             MCUHelper(sys.argv[2]).collect_matching().write_excel()
         elif sys.argv[1] == 'dump_unknown':
             dump_unknown()
+        elif sys.argv[1] == 'list':
+            list_known()
         else:
             print_usage()
     else:
