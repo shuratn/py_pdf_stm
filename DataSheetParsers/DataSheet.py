@@ -7,6 +7,7 @@ import PyPDF3
 from tqdm import tqdm
 import requests
 from PyPDF3.pdf import PageObject
+import pdfplumber
 
 
 def join(to_join, separator=' '):
@@ -185,7 +186,10 @@ class DataSheetTableNode(DataSheetNode):
 
     @property
     def page(self):
-        return self._page.page.getObject()
+        if type(self._page) is not PageObject:
+            return self._page.page.getObject()
+        else:
+            return self._page
 
     @property
     def table_name(self):
@@ -202,11 +206,30 @@ class DataSheet:
         self.table_of_content = DataSheetNode('ROOT', [0])
         self.table_root = DataSheetNode('TABLES', [-1])
         self.table_of_content.append(self.table_root)
+        self.fallback_table: DataSheetTableNode = None
         self.flatten_outline()
         self.sort_raw_outline()
         self.collect_tables()
 
     def collect_tables(self):
+        if len(self.tables) == 0:
+            print('NO TABLES WERE DETECTED IN OUTLINE! FALLING BACK TO PAGE SCANNING!')
+            start_page = 0
+            end_page = 0
+            for thing in self.raw_outline:
+                if 'Description' in thing['/Title']:
+                    start_page = self.get_page_num(thing.page.getObject())
+                if 'Functional' in thing['/Title']:
+                    end_page = self.get_page_num(thing.page.getObject())
+                    break
+            for page_num in range(start_page,end_page):
+                page = self.pdf_file.getPage(page_num) #type: PyPDF3.pdf.PageObject
+                text = page.extractText()
+                if 'features and peripheral' in text:
+
+                    table = DataSheetTableNode('Table 2. STM32F423xH features and peripheral counts', [0, 9999], 9999, page)
+                    self.fallback_table =table
+                    break
         pass
 
     def flatten_outline(self, line=None):
@@ -231,29 +254,29 @@ class DataSheet:
                         table.path = top_level_node.path + [table_id]
                         top_level_node.append(table)
                     self.tables[table_id] = {'name': name, 'data': entry}
-                # else:
-                #     tmp = name.split(' ')  # type: List[str]
-                #
-                #     if '.' in tmp[0]:
-                #         try:
-                #             order = list(map(int, tmp[0].split('.')))
-                #         except ValueError:
-                #             continue
-                #
-                #         node = DataSheetNode(join(tmp[1:]), order)
-                #         node.parent = self.table_of_content
-                #         parent = node.get_node_by_path(order[:-1])
-                #         parent.append(node)
-                #     else:
-                #         if tmp[0].isnumeric():
-                #             node = DataSheetNode(join(tmp[1:]), [int(tmp[0])])
-                #             self.table_of_content.append(node)
-                #             # pos = self.recursive_create_toc([int(tmp[0])])
-                #             # pos['name'] = ' '.join(tmp[1:])
-                #         else:
-                #             node = DataSheetNode(name, [1])
-                #             self.table_of_content.append(node)
-                #     top_level_node = node
+                else:
+                    tmp = name.split(' ')  # type: List[str]
+
+                    if '.' in tmp[0]:
+                        try:
+                            order = list(map(int, tmp[0].split('.')))
+                        except ValueError:
+                            continue
+
+                        node = DataSheetNode(join(tmp[1:]), order)
+                        node.parent = self.table_of_content
+                        parent = node.get_node_by_path(order[:-1])
+                        parent.append(node)
+                    else:
+                        if tmp[0].isnumeric():
+                            node = DataSheetNode(join(tmp[1:]), [int(tmp[0])])
+                            self.table_of_content.append(node)
+                            # pos = self.recursive_create_toc([int(tmp[0])])
+                            # pos['name'] = ' '.join(tmp[1:])
+                        else:
+                            node = DataSheetNode(name, [1])
+                            self.table_of_content.append(node)
+                    top_level_node = node
 
             else:
                 pass
@@ -266,16 +289,16 @@ class DataSheet:
         return -1
 
 
-
-
 if __name__ == '__main__':
     if len(sys.argv) < 1:
         print('Usage: {} DATASHEET.pdj DATASHEET2.pdf'.format(os.path.basename(sys.argv[0])))
         exit(0)
-    a = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF6\KL17P64M48SF6_ds.pdf")
+    # a = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32f\stm32f777vi.pdf")
+    a = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32f\stm32f423ch.pdf")
     # b.table_of_content.print_tree()
     # a.table_of_content.print_tree()
-    table = a.table_root.childs[1]
+    table = a.table_root.childs[1] if a.table_root.childs else a.fallback_table
+    print(table)
     # print(table)
     # print(a.get_page_num(table.page))
     # a.get_difference(b)

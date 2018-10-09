@@ -107,7 +107,11 @@ class FeatureListExtractor:  # This class is adapted to STM
     def extract_table(self, datasheet, page):
         print('Extracting table from {} page'.format(page + 1))
         pdf_int = TableExtractor(str(datasheet.path))
-        table = pdf_int.parse_page(page)
+        try:
+            table = pdf_int.parse_page(page)
+        except Exception as ex:
+            pass
+            table = None
         return table
 
     def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
@@ -223,7 +227,7 @@ class FeatureListExtractor:  # This class is adapted to STM
 
             self.features[mc] = mc_features
         unknown_names = list(set(unknown_names))
-        print('List of unknown features for', self.config_name)
+        print('List of unknown features for', self.mc_family)
         print('Add correction if name is mangled')
         print('Or add unify for this feature')
         for unknown_feature in unknown_names:

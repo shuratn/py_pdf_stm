@@ -28,7 +28,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
             self.features_tables.append(table_pt3[0])
 
     def post_init(self):
-        self.mc_family = self.controller[:9]  # STM32L451
+        self.mc_family = self.controller[:6].upper()  # STM32L451
 
     def handle_feature(self, name, value):
         value = remove_parentheses(value)

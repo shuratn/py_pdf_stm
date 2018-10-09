@@ -43,9 +43,11 @@
       "Communication  interfaces I2C": "I2C",
       "Package": "Package",
       "SRAM in Kbytes System": "RAM",
+      "SRAM in  Kbytes System": "RAM",
       "DAC": "DAC",
       "ADC": "ADC",
       "I2S": "I2S",
+      "Quad-SPI memory interface ": "Quad SPI",
       "SPI": "SPI"
     },
     "MKL": {

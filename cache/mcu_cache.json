@@ -10738,855 +10738,7 @@
    "Quad SPI": "No"
   }
  },
- "stm32f437": {
-  "STM32F437 Vx": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "No",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 1024,
-   "SPI": 4,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 82,
-   "ADC": {
-    "12-bit": {
-     "channels": 16,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "LQFP100"
-  },
-  "STM32F437 Vx-1": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "No",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 2048,
-   "SPI": 4,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 82,
-   "ADC": {
-    "12-bit": {
-     "channels": 16,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "LQFP100"
-  },
-  "STM32F439 Vx": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 1024,
-   "SPI": 4,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 82,
-   "ADC": {
-    "12-bit": {
-     "channels": 16,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "LQFP100"
-  },
-  "STM32F439 Vx-1": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 2048,
-   "SPI": 4,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 82,
-   "ADC": {
-    "12-bit": {
-     "channels": 16,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "LQFP100"
-  },
-  "STM32F437Zx": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "No",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 1024,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 114,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "WLCSP143 LQFP144"
-  },
-  "STM32F437Zx-1": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "No",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 2048,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 114,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "WLCSP143 LQFP144"
-  },
-  "STM32F437AI": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "No",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 2048,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 114,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "UFBGA169"
-  },
-  "STM32F439AI": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 2048,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 114,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "UFBGA169"
-  },
-  "STM32F439Zx": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 1024,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 114,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "WLCSP143 LQFP144"
-  },
-  "STM32F439Zx-1": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 2048,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 114,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "WLCSP143 LQFP144"
-  },
-  "STM32F437Ix": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "No",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 1024,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 140,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "UFBGA176 LQFP176"
-  },
-  "STM32F437Ix-1": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "No",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 2048,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 140,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "UFBGA176 LQFP176"
-  },
-  "STM32F439Ix": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 1024,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 140,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "UFBGA176 LQFP176"
-  },
-  "STM32F439Ix-1": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 2048,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 140,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "UFBGA176 LQFP176"
-  },
-  "STM32F439Bx": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 1024,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 168,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "LQFP208"
-  },
-  "STM32F439Bx-1": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 2048,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 168,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "LQFP208"
-  },
-  "STM32F439Nx": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 1024,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 168,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "TFBGA216"
-  },
-  "STM32F439Nx-1": {
-   "SRAM in  Kbytes System": 256,
-   "SRAM in  Kbytes Backup": 4,
-   "FMC memory controller": "Yes",
-   "Ethernet": "Yes",
-   "Timers General- purpose": 10,
-   "Timers Advance d-control": 2,
-   "Timers Basic": 2,
-   "Random number  generator": "Yes",
-   "Communication  interfaces USB  OTG FS": "Yes",
-   "Communication  interfaces USB  OTG HS": "Yes",
-   "Communication  interfaces CAN": 2,
-   "Communication  interfaces SAI": 1,
-   "Communication  interfaces SDIO": "Yes",
-   "Camera interface": "Yes",
-   "LCD-TFT": "Yes",
-   "Chrom-ART Accelerator\u2122  (DMA2D)": "Yes",
-   "Cryptography": "Yes",
-   "Operating voltage": {
-    "min": 1.7,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "Flash memory": 2048,
-   "SPI": 6,
-   "I2S": 2,
-   "I2C": 3,
-   "UART": 8,
-   "Total GPIOS": 168,
-   "ADC": {
-    "12-bit": {
-     "channels": 24,
-     "count": 3
-    }
-   },
-   "DAC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 2
-    }
-   },
-   "CPU Frequency": 180,
-   "Package": "TFBGA216"
-  }
- },
- "stm32f777": {
+ "STM32F": {
   "STM32F77xVx": {
    "SRAM in Kbytes Instruction": 16,
    "SRAM in Kbytes Backup": 4,
@@ -11621,7 +10773,8 @@
    },
    "Flash memory": 1024,
    "RAM": 512,
-   "SPI": 5,
+   "Quad SPI": 1,
+   "SPI": 4,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -11675,7 +10828,8 @@
    },
    "Flash memory": 2048,
    "RAM": 512,
-   "SPI": 5,
+   "Quad SPI": 1,
+   "SPI": 4,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -11729,7 +10883,8 @@
    },
    "Flash memory": 1024,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -11783,7 +10938,8 @@
    },
    "Flash memory": 2048,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -11837,7 +10993,8 @@
    },
    "Flash memory": 1024,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -11891,7 +11048,8 @@
    },
    "Flash memory": 2048,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -11945,7 +11103,8 @@
    },
    "Flash memory": 2048,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -11999,7 +11158,8 @@
    },
    "Flash memory": 1024,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -12053,7 +11213,8 @@
    },
    "Flash memory": 2048,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -12107,7 +11268,8 @@
    },
    "Flash memory": 1024,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -12161,7 +11323,8 @@
    },
    "Flash memory": 2048,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -12215,7 +11378,8 @@
    },
    "Flash memory": 1024,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -12269,7 +11433,8 @@
    },
    "Flash memory": 2048,
    "RAM": 512,
-   "SPI": 7,
+   "Quad SPI": 1,
+   "SPI": 6,
    "I2S": 3,
    "I2C": 4,
    "UART": 8,
@@ -12290,273 +11455,7 @@
    "Package": "TFBGA216"
   }
  },
- "STM32L451": {
-  "STM32L451Vx": {
-   "Timers Advanced  control": "1 ",
-   "Timers General  purpose": "2  1 (32-bit)",
-   "Timers Basic": "2 ",
-   "Timers Low -power": "2 ",
-   "Timers SysTick timer": 1,
-   "Timers Watchdog  timers  (independent,  window)": 2,
-   "Comm.  interfaces SAI": 1,
-   "Comm.  interfaces CAN": 1,
-   "Comm.  interfaces SDMMC": "Yes",
-   "RTC": "Yes",
-   "Tamper pins": 3,
-   "Random generator": "Yes",
-   "Wakeup pins": 5,
-   "Capacitive sensing  Number of channels": 21504,
-   "12-bit DAC channels": 1,
-   "Internal voltage reference  buffer": "Yes",
-   "Analog comparator": 2,
-   "Operational amplifiers": 1,
-   "Operating voltage": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "LQFP100": "Yes",
-   "UFBGA100": "Yes",
-   "Flash memory": 256,
-   "RAM": 160,
-   "Quad SPI": "Yes",
-   "SPI": 3,
-   "I2C": 4,
-   "UART": 5,
-   "Total GPIOS": 83,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
-   "CPU Frequency": 80
-  },
-  "STM32L451Vx-1": {
-   "Timers Advanced  control": "1 ",
-   "Timers General  purpose": "2  1 (32-bit)",
-   "Timers Basic": "2 ",
-   "Timers Low -power": "2 ",
-   "Timers SysTick timer": 1,
-   "Timers Watchdog  timers  (independent,  window)": 2,
-   "Comm.  interfaces SAI": 1,
-   "Comm.  interfaces CAN": 1,
-   "Comm.  interfaces SDMMC": "Yes",
-   "RTC": "Yes",
-   "Tamper pins": 3,
-   "Random generator": "Yes",
-   "Wakeup pins": 5,
-   "Capacitive sensing  Number of channels": 21504,
-   "12-bit DAC channels": 1,
-   "Internal voltage reference  buffer": "Yes",
-   "Analog comparator": 2,
-   "Operational amplifiers": 1,
-   "Operating voltage": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "LQFP100": "Yes",
-   "UFBGA100": "Yes",
-   "Flash memory": 512,
-   "RAM": 160,
-   "Quad SPI": "Yes",
-   "SPI": 3,
-   "I2C": 4,
-   "UART": 5,
-   "Total GPIOS": 83,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
-   "CPU Frequency": 80
-  },
-  "STM32L451Rx": {
-   "Timers Advanced  control": "1 ",
-   "Timers General  purpose": "2  1 (32-bit)",
-   "Timers Basic": "2 ",
-   "Timers Low -power": "2 ",
-   "Timers SysTick timer": 1,
-   "Timers Watchdog  timers  (independent,  window)": 2,
-   "Comm.  interfaces SAI": 1,
-   "Comm.  interfaces CAN": 1,
-   "Comm.  interfaces SDMMC": "Yes",
-   "RTC": "Yes",
-   "Tamper pins": 2,
-   "Random generator": "Yes",
-   "Wakeup pins": 4,
-   "Capacitive sensing  Number of channels": 12288,
-   "12-bit DAC channels": 1,
-   "Internal voltage reference  buffer": "No",
-   "Analog comparator": 2,
-   "Operational amplifiers": 1,
-   "Operating voltage": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "WLCSP64": "Yes",
-   "LQFP64": "Yes",
-   "UFBGA64": "Yes",
-   "Flash memory": 256,
-   "RAM": 160,
-   "Quad SPI": "Yes",
-   "SPI": 3,
-   "I2C": 4,
-   "UART": 5,
-   "Total GPIOS": 52,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
-   "CPU Frequency": 80
-  },
-  "STM32L451Rx-1": {
-   "Timers Advanced  control": "1 ",
-   "Timers General  purpose": "2  1 (32-bit)",
-   "Timers Basic": "2 ",
-   "Timers Low -power": "2 ",
-   "Timers SysTick timer": 1,
-   "Timers Watchdog  timers  (independent,  window)": 2,
-   "Comm.  interfaces SAI": 1,
-   "Comm.  interfaces CAN": 1,
-   "Comm.  interfaces SDMMC": "Yes",
-   "RTC": "Yes",
-   "Tamper pins": 2,
-   "Random generator": "Yes",
-   "Wakeup pins": 4,
-   "Capacitive sensing  Number of channels": 12288,
-   "12-bit DAC channels": 1,
-   "Internal voltage reference  buffer": "No",
-   "Analog comparator": 2,
-   "Operational amplifiers": 1,
-   "Operating voltage": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "WLCSP64": "Yes",
-   "LQFP64": "Yes",
-   "UFBGA64": "Yes",
-   "Flash memory": 512,
-   "RAM": 160,
-   "Quad SPI": "Yes",
-   "SPI": 3,
-   "I2C": 4,
-   "UART": 5,
-   "Total GPIOS": 52,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
-   "CPU Frequency": 80
-  },
-  "STM32L451Cx": {
-   "Timers Advanced  control": "1 ",
-   "Timers General  purpose": "2  1 (32-bit)",
-   "Timers Basic": "2 ",
-   "Timers Low -power": "2 ",
-   "Timers SysTick timer": 1,
-   "Timers Watchdog  timers  (independent,  window)": 2,
-   "Comm.  interfaces SAI": 1,
-   "Comm.  interfaces CAN": 1,
-   "Comm.  interfaces SDMMC": "No",
-   "RTC": "Yes",
-   "Tamper pins": 2,
-   "Random generator": "Yes",
-   "Wakeup pins": 3,
-   "Capacitive sensing  Number of channels": 6144,
-   "12-bit DAC channels": 1,
-   "Internal voltage reference  buffer": "No",
-   "Analog comparator": 2,
-   "Operational amplifiers": 1,
-   "Operating voltage": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "UFQFPN48": "Yes",
-   "Flash memory": 256,
-   "RAM": 160,
-   "Quad SPI": "Yes",
-   "SPI": 3,
-   "I2C": 4,
-   "UART": 5,
-   "Total GPIOS": 38,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 10
-    }
-   },
-   "CPU Frequency": 80
-  },
-  "STM32L451Cx-1": {
-   "Timers Advanced  control": "1 ",
-   "Timers General  purpose": "2  1 (32-bit)",
-   "Timers Basic": "2 ",
-   "Timers Low -power": "2 ",
-   "Timers SysTick timer": 1,
-   "Timers Watchdog  timers  (independent,  window)": 2,
-   "Comm.  interfaces SAI": 1,
-   "Comm.  interfaces CAN": 1,
-   "Comm.  interfaces SDMMC": "No",
-   "RTC": "Yes",
-   "Tamper pins": 2,
-   "Random generator": "Yes",
-   "Wakeup pins": 3,
-   "Capacitive sensing  Number of channels": 6144,
-   "12-bit DAC channels": 1,
-   "Internal voltage reference  buffer": "No",
-   "Analog comparator": 2,
-   "Operational amplifiers": 1,
-   "Operating voltage": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "Operating temperature": {
-    "min": -40,
-    "max": 85
-   },
-   "UFQFPN48": "Yes",
-   "Flash memory": 512,
-   "RAM": 160,
-   "Quad SPI": "Yes",
-   "SPI": 3,
-   "I2C": 4,
-   "UART": 5,
-   "Total GPIOS": 38,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 10
-    }
-   },
-   "CPU Frequency": 80
-  }
- },
- "stm32L452": {
+ "STM32L": {
   "STM32L452Vx": {
    "Timers Advanced  control": "1 ",
    "Timers General  purpose": "2  1 (32-bit)",

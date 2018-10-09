@@ -13,14 +13,19 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
 
     def __init__(self, controller: str, datasheet: DataSheet, config):
         self.adc_count_found = False
+        self.dac_count_found = False
         super().__init__(controller, datasheet, config)
 
     def extract_tables(self):  # OVERRIDE THIS FUNCTION FOR NEW CONTROLLER
         print('Extracting tables for', self.controller)
         datasheet = self.datasheet
         self.config_name = 'STM32F'
-
-        table_page = datasheet.table_root.childs[1].page
+        table_page = None
+        for table in datasheet.table_root.childs:
+            if 'features and peripheral' in table.name.lower():
+                table_page = table.page
+        if table_page is None:
+            table_page = datasheet.fallback_table.page
         page_num = datasheet.get_page_num(table_page)
         table_pt1 = self.extract_table(datasheet, page_num)
         table_pt2 = self.extract_table(datasheet, page_num + 1)
@@ -33,7 +38,7 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
             self.features_tables.append(table_pt3[0])
 
     def post_init(self):
-        self.mc_family = self.controller[:9]  # STM32L451
+        self.mc_family = self.controller[:6].upper()  # STM32L451
 
     def handle_feature(self, name, value):
         value = remove_parentheses(value)
@@ -64,23 +69,46 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
 
         if 'DAC' in name and 'channels' in name:
             dac_type = re.findall('(\d+)-bit\s?\w*\sDAC\s?\w*', name)[0]
-            count, channels = value.split('\n')
-            if count.lower() == 'yes':
+            if value.lower() == 'yes' and not self.dac_count_found:
                 count = 1
+                self.dac_count_found = True
+                return [('DAC', {'{}-bit'.format(dac_type): {'count': int(count)}})]
+
+            elif self.dac_count_found and is_numeric(value):
+                return [('DAC', {'{}-bit'.format(dac_type): {'channels': int(value)}})]
             else:
-                if is_numeric(count):
-                    count = int(count)
+                count, channels = value.split('\n')
+                if count.lower() == 'yes':
+                    count = 1
                 else:
-                    count = 0
+                    if is_numeric(count):
+                        count = int(count)
+                    else:
+                        count = 0
             return [('DAC', {'{}-bit'.format(dac_type): {'count': int(count), 'channels': int(channels)}})]
         if 'Operating voltage' in name:
-            value = remove_units(value, 'v')
+            if 'v' in value.lower():
+                value = remove_units(value, 'v')
+            if 'v' in value.lower():
+                value = remove_units(value, 'v')
             values = value.split('to')
             values = list(map(float, values))
             return [('Operating voltage', {'min': values[0], 'max': values[1]})]
 
         if 'SPI' in name:
-            value = remove_parentheses(value)
+            if 'Quad-SPI' in name:
+                if value == '-' or value == '-':
+                    spis = 0
+                else:
+                    if is_numeric(value):
+                        spis = int(value)
+                    else:
+                        spis = 0
+                return [('SPI', spis), ('Quad SPI',1 )]
+            if '(' not in name:
+                value = remove_parentheses(value)
+            else:
+                value = value.replace('(','',1).replace(')','',1)
             if 'I2S' in name and '/' in name:
                 spis, i2ss = list(map(int, value.split('/')))
                 return [('SPI', spis), ('I2S', i2ss)]
@@ -96,9 +124,9 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
         if 'Operating temperature' in name:
             # -40 to 85 °C / -40 to 125 °C
             if 'Ambient temperatures' in value:
-                lo, hi = re.findall(r'([+-–]?\d+)\sto\s([-+–]?\d+)\s', value, re.IGNORECASE)[0]
-                lo = lo.replace('–', '-')
-                hi = hi.replace('–', '-')
+                lo, hi = re.findall(r'([+-–]?\s?\d+)\sto\s([-+–]?\s?\d+)\s', value, re.IGNORECASE)[0]
+                lo = lo.replace('–', '-').replace(' ','')
+                hi = hi.replace('–', '-').replace(' ','')
                 return [('Operating temperature', {'min': int(lo), 'max': int(hi)})]
             else:
                 return [(None, None)]
@@ -135,6 +163,7 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                 for col_id in range(features_cell_span, len(table.get_row(0))):
                     features = table.get_col(col_id)
                     self.adc_count_found = False
+                    self.dac_count_found = False
                     for n, feature in enumerate(features):
 
                         if n == 0:
@@ -147,6 +176,9 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                                 mcu_counter[current_stm_name] += 1
                             else:
                                 current_stm_name = name
+                            current_stm_name = current_stm_name.replace(' ','').replace(' ','')
+                            if self.mc_family.upper() not in current_stm_name.upper():
+                                break
                             if not mcu_counter.get(current_stm_name, False):
                                 mcu_counter[current_stm_name] = 1
                             if not controller_features.get(name, False):
@@ -154,14 +186,18 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                             continue
                         feature_name = controller_features_names[feature_offset + n - 1]
                         feature_value = feature.text
-                        for n, v in self.handle_feature(feature_name, feature_value):
-                            if n and v:
-                                _, v = convert_type(n, v)
-                                if controller_features[name].get(n, False):
-                                    v = self.merge_features(controller_features[name].get(n), v)
-                                    controller_features[name][n] = v
-                                else:
-                                    controller_features[name][n] = v
+                        try:
+                            for n, v in self.handle_feature(feature_name, feature_value):
+                                if n and v:
+                                    _, v = convert_type(n, v)
+                                    if controller_features[name].get(n, False):
+                                        v = self.merge_features(controller_features[name].get(n), v)
+                                        controller_features[name][n] = v
+                                    else:
+                                        controller_features[name][n] = v
+                        except Exception as ex:
+                            sys.stderr.write("FEATURE ERROR {}".format(ex))
+                            traceback.print_exc()
                 feature_offset = len(controller_features_names)
             except Exception as ex:
                 sys.stderr.write("ERROR {}".format(ex))
@@ -184,10 +220,10 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32F\stm32f777vi.pdf")
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32F\stm32f423ch.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
-    feature_extractor = STM32FFeatureListExtractor('stm32f777vi', datasheet, config)
+    feature_extractor = STM32FFeatureListExtractor('stm32f423ch', datasheet, config)
     feature_extractor.process()
     feature_extractor.unify_names()
     pprint(feature_extractor.features)

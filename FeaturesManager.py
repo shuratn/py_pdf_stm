@@ -45,6 +45,7 @@ class FeatureManager:
     def parse(self):
         self.datasheet_manager.get_or_download()
         for mc in self.datasheets:
+            print('WORKING ON',mc)
             extractor = self.get_extractor(mc)
             datasheet = self.datasheet_manager[mc]
             if datasheet:

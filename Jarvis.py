@@ -189,6 +189,7 @@ def parse_all():
                 for ds in folder.iterdir():
                     if ds.is_file():
                         to_parse.append(ds.stem)
+        print(to_parse)
         FeatureManager(to_parse).parse()
     else:
         print('NO DATASHEETS FOUND')
@@ -267,7 +268,7 @@ if __name__ == '__main__':
                         print('\t', mcu_name)
 
         elif sys.argv[1] == 'filter':
-            MCUHelper(sys.argv[1]).collect_matching().write_excel()
+            MCUHelper(sys.argv[2]).collect_matching().write_excel()
         else:
             print_usage()
     else:
