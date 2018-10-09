@@ -291,7 +291,7 @@ def print_usage():
     print('\tre-unify - tries to re-unify everything')
     print('\tparse - re-parses all datasheets')
     print('\tdump_unknown - dumps all unknown features to file')
-    print('\tlist [MCU NAME or *] - dumps all known controller\'s features, unknown won\'t be dumped')
+    print('\tdump_known [MCU NAME or *] - dumps all known controller\'s features, unknown won\'t be dumped')
 
 
 if __name__ == '__main__':
