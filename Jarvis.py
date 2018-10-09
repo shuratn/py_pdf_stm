@@ -322,7 +322,7 @@ if __name__ == '__main__':
             MCUHelper(sys.argv[2]).collect_matching().write_excel()
         elif sys.argv[1] == 'dump_unknown':
             dump_unknown()
-        elif sys.argv[1] == 'list':
+        elif sys.argv[1] == 'dump_known':
             list_known()
         else:
             print_usage()
