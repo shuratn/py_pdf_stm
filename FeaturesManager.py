@@ -6,8 +6,8 @@ from typing import List, Dict
 import json
 
 from DataSheetManager import DataSheetManager
-from FeatureExtractors.MKL_feature_extractor import MKLFeatureListExtractor
-from FeatureExtractors.MK_feature_extractor import MKFeatureListExtractor
+from FeatureExtractors.MK_E_feature_extractor import MKFeatureListExtractor
+from FeatureExtractors.KL_E_feature_extractor import KLFeatureListExtractor
 from FeatureExtractors.SMT32L_feature_extractor import STM32LFeatureListExtractor
 from FeatureExtractors.SMT32F_feature_extractor import STM32FFeatureListExtractor
 import xlsxwriter
@@ -17,7 +17,9 @@ class FeatureManager:
     EXTRACTORS = {
         'STM32L': STM32LFeatureListExtractor,
         'STM32F': STM32FFeatureListExtractor,
-        'MKL': MKLFeatureListExtractor,
+        # 'MKL': MKLFeatureListExtractor,
+        'KL': KLFeatureListExtractor,
+        # 'MK': MKFeatureListExtractor,
         'MK': MKFeatureListExtractor,
     }
 
@@ -48,7 +50,7 @@ class FeatureManager:
             print('WORKING ON',mc)
             extractor = self.get_extractor(mc)
             datasheet = self.datasheet_manager[mc]
-            if datasheet:
+            if datasheet and extractor:
                 extractor_obj = extractor(mc, datasheet, self.config)
                 extractor_obj.process()
                 extractor_obj.unify_names()
@@ -147,7 +149,8 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print('Usage: {} DATASHEET.pdj'.format(os.path.basename(sys.argv[0])))
         exit(0xDEADBEEF)
-    controllers = sys.argv[1:]
+    # controllers = sys.argv[1:]
+    controllers = ['KL17P64M48SF2','MKMxxZxxACxx5','STM32F030F4']
     feature_manager = FeatureManager(controllers)
     feature_manager.parse()
     feature_manager.write_excel_file()

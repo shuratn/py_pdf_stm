@@ -87,6 +87,9 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                         count = 0
             return [('DAC', {'{}-bit'.format(dac_type): {'count': int(count), 'channels': int(channels)}})]
         if 'Operating voltage' in name:
+            if re.match('.*\s([\d.]+)\s.*\s([\d.]+)\s',value):
+                lo,hi = re.findall('.*\s([\d.]+)\s.*\s([\d.]+)\s',value)[0]
+                return [('Operating voltage', {'min': float(lo), 'max': float(hi)})]
             if 'v' in value.lower():
                 value = remove_units(value, 'v')
             if 'v' in value.lower():

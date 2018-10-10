@@ -1,5 +1,6 @@
 import os
 import sys
+import traceback
 from pathlib import Path
 from typing import Dict, List, Set
 
@@ -29,6 +30,11 @@ class DataSheetNode:
         self.name = name
         self.childs = []  # type: List[DataSheetNode]
         self.parent = None  # type: DataSheetNode
+        self._page = None #type: PageObject
+
+    @property
+    def page(self):
+        return self._page
 
     def __repr__(self):
         return '<{} {}-"{}">'.format(self.__class__.__name__, join(self.path, '.'), self.name)
@@ -247,13 +253,18 @@ class DataSheet:
             if entry['/Type'] == '/XYZ':
                 name = entry['/Title']
                 if 'Table' in name:
-                    table_id = int(name.split('.')[0].split(' ')[-1])
-                    table = DataSheetTableNode(name, [0, table_id], table_id, entry)
-                    self.table_root.append(table)
-                    if top_level_node:
-                        table.path = top_level_node.path + [table_id]
-                        top_level_node.append(table)
-                    self.tables[table_id] = {'name': name, 'data': entry}
+                    try:
+                        table_id = int(name.split('.')[0].split(' ')[-1])
+                        table = DataSheetTableNode(name, [0, table_id], table_id, entry)
+                        self.table_root.append(table)
+                        if top_level_node:
+                            table.path = top_level_node.path + [table_id]
+                            top_level_node.append(table)
+                        self.tables[table_id] = {'name': name, 'data': entry}
+                    except Exception as ex:
+                        sys.stderr.write("ERROR {}".format(ex))
+                        traceback.print_exc()
+                        pass
                 else:
                     tmp = name.split(' ')  # type: List[str]
 
@@ -264,17 +275,20 @@ class DataSheet:
                             continue
 
                         node = DataSheetNode(join(tmp[1:]), order)
+                        node._page = entry.page.getObject()
                         node.parent = self.table_of_content
                         parent = node.get_node_by_path(order[:-1])
                         parent.append(node)
                     else:
                         if tmp[0].isnumeric():
                             node = DataSheetNode(join(tmp[1:]), [int(tmp[0])])
+                            node._page = entry.page.getObject()
                             self.table_of_content.append(node)
                             # pos = self.recursive_create_toc([int(tmp[0])])
                             # pos['name'] = ' '.join(tmp[1:])
                         else:
                             node = DataSheetNode(name, [1])
+                            node._page = entry.page.getObject()
                             self.table_of_content.append(node)
                     top_level_node = node
 

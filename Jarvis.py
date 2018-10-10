@@ -23,6 +23,7 @@ class MCUHelper:
         # feature_manager.parse()
         self.mcu_features = self.feature_manager.mcs_features
 
+
     def match(self, required_value, feature_value, cmp_type, ):
         mismatch = False
         if cmp_type == '>':
@@ -76,7 +77,7 @@ class MCUHelper:
                 matched = True
                 for req_name, req_value in self.required_feature.items():
                     req_feature, cmp_type = self.get_cmp_type(req_name)
-                    feature_value = mcu_features.get(req_feature, None)
+                    feature_value = mcu_features.get(req_feature.upper(), None)
                     if feature_value:
                         try:
                             if is_dict(req_value) and is_dict(feature_value):

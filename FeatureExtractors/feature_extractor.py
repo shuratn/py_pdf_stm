@@ -212,8 +212,8 @@ class FeatureListExtractor:  # This class is adapted to STM
                     if self.config_name in self.config['unify']:
                         unify_list = self.config['unify'][self.config_name]
                         known = True
-                        if feature_name not in unify_list:
-                            if feature_name not in list(unify_list.values()):
+                        if feature_name.upper() not in [name.upper() for name in unify_list]:
+                            if feature_name.upper() not in [name.upper() for name in unify_list.values()]:
                                 known = False
                                 if feature_name not in unknown_names:
                                     unknown_names.append(feature_name)
@@ -221,7 +221,13 @@ class FeatureListExtractor:  # This class is adapted to STM
                             new_name = unify_list.get(feature_name, feature_name)  # in case name is already unified
                             values = mc_features.pop(feature_name)
                             new_name, values = convert_type(new_name, values)
-                            mc_features[new_name] = values
+                            mc_features[new_name.upper()] = values
+                        else:
+                            new_name = feature_name  # in case name is already unified
+                            values = mc_features.pop(feature_name)
+                            new_name, values = convert_type(new_name, values)
+                            mc_features[new_name.upper()] = values
+
                     else:
                         unknown_names.append(feature_name)
 

@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 from typing import List
 
@@ -6,48 +7,53 @@ import requests
 from tqdm import tqdm
 
 from DataSheetParsers.DataSheet import DataSheet
-from DataSheetParsers.MK_DataSheet import MK_DataSheet
-from DataSheetParsers.MKL_DataSheet import MKL_DataSheet
+from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
 
 
 class DataSheetManager:
     STM32L_DATASHEET_URL = 'https://www.st.com/resource/en/datasheet/{}re.pdf'
     STM32F_DATASHEET_URL = 'https://www.st.com/resource/en/datasheet/{}.pdf'
-    MKL_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISLMCUSELGD.pdf'  # KL17P64M48SF6
-    MK_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISKMCUSELGD.pdf'  # MK11DN512AVMC5
+    # MKL_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISLMCUSELGD.pdf'  # KL17P64M48SF6
+    # MK_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISKMCUSELGD.pdf'  # MK11DN512AVMC5
+    MKM_DATASHEET_URL = 'https://www.nxp.com/docs/en/data-sheet/{}.pdf'  # MKM
     # KL_DATASHEET_URL = 'https://www.nxp.com/docs/en/data-sheet/{}.pdf' #KL17P64M48SF6
     DATASHEET_URLS = {
         'STM32L': (STM32L_DATASHEET_URL, DataSheet),
         'STM32F': (STM32F_DATASHEET_URL, DataSheet),
-        'MKL': (MKL_DATASHEET_URL, MKL_DataSheet),
-        'MK': (MK_DATASHEET_URL, MK_DataSheet),
+        # 'MKL': (MKL_DATASHEET_URL, MKL_DataSheet),
+        'KL': (MKM_DATASHEET_URL, MK_DataSheet),  #TODO: replace it with it own
+        # 'MK': (MK_DATASHEET_URL, MK_DataSheet),
+        'MK': (MKM_DATASHEET_URL, MK_DataSheet),
     }
 
     def __init__(self, datasheets: List[str]):
         self.datasheets = datasheets
         self.datasheets_datasheets = {}
 
-    def get_datasheet_loader(self,mc:str):
-        for loader in sorted(self.DATASHEET_URLS,key=lambda l:len(l),reverse=True):
+    def get_datasheet_loader(self, mc: str):
+        for loader in sorted(self.DATASHEET_URLS, key=lambda l: len(l), reverse=True):
             if loader.upper() in mc.upper():
-                return loader,self.DATASHEET_URLS[loader]
-        return None,None
+                return loader, self.DATASHEET_URLS[loader]
+        return None, (None,None)
 
     def get_or_download(self):
         for controller in self.datasheets:
-            known_controller, (url, datasheet_loader) =  self.get_datasheet_loader(controller)
+            known_controller, (url, datasheet_loader) = self.get_datasheet_loader(controller)
             if known_controller.upper() in controller.upper():
-                if known_controller == 'MKL' or known_controller == 'MK':
-                    path = Path('./') / 'Datasheets' / known_controller / "{}.pdf".format(known_controller)
-                else:
-                    path = Path('./') / 'Datasheets' / known_controller / "{}.pdf".format(
-                        controller)
+                # if known_controller == 'MKL' or (known_controller == 'MK' and known_controller!='MKM'):
+                #     path = Path('./') / 'Datasheets' / known_controller / "{}.pdf".format(known_controller)
+                # else:
+                path = Path('./') / 'Datasheets' / known_controller / "{}.pdf".format(controller)
                 path = path.absolute()
                 if not path.parent.exists():
                     path.parent.mkdir(exist_ok=True)
                 if path.exists():
                     datasheet = datasheet_loader(str(path))
                 else:
+                    if self.get_datasheet_loader(controller)[0] == 'MK':
+                        print('CAN\'T DOWNLOAD NXP DATASHEETS AUTOMATICALLY', file=sys.stderr)
+                        print('PLEASE ADD {} DATASHEET MANUALLY!'.format(controller), file=sys.stderr)
+                        continue
                     print(controller, ' is unknown , trying to download datasheet')
                     r = requests.get(url.format(controller), stream=True)
                     if r.status_code == 200:
@@ -70,6 +76,6 @@ class DataSheetManager:
 
 
 if __name__ == '__main__':
-    manager = DataSheetManager(['stm32f437ig'])
+    manager = DataSheetManager(['MKM14Z128ACHH5'])
     manager.get_or_download()
     print(manager.datasheets_datasheets)
