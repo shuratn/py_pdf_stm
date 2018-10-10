@@ -35,6 +35,8 @@ class MKFeatureListExtractor(FeatureListExtractor):
                         re.IGNORECASE)
     analog_cmp_re = re.compile('(?P<count>(\d+)?).*analog.comparator.?\s',
                         re.IGNORECASE)
+    dac_re = re.compile('(?P<count>(\d+)?)\s.*DAC.*',
+                        re.IGNORECASE)
     timer_re = re.compile('(?P<count>\d+)?(?!\s?channel|.{1,2}-?bit).*Timer.*',
                         re.IGNORECASE)
 
@@ -43,6 +45,8 @@ class MKFeatureListExtractor(FeatureListExtractor):
     uart_re = re.compile('(?P<count>\d+)?.*UART.*',
                         re.IGNORECASE)
     dma_re = re.compile('(?P<channels>\d+)?.*DMA.*',
+                        re.IGNORECASE)
+    tsi_re = re.compile('(?P<count>(\d+)?)\s.*TSI.*',
                         re.IGNORECASE)
 
     package_re = re.compile(
@@ -126,6 +130,90 @@ class MKFeatureListExtractor(FeatureListExtractor):
     #         if t2:
     #             tables.extend(t2)
 
+    def extract_feature(self,line):
+        line = clean_line(line)
+        line = text2int(line.lower())
+        if self.voltage_re.findall(line):
+            lo, hi = self.voltage_re.findall(line)[0]
+            self.create_new_or_merge('operating voltage', {'lo': float(lo), 'hi': float(hi)}, True)
+        if self.dma_re.findall(line):
+            channels = self.dma_re.findall(line)[0]
+            self.create_new_or_merge('DMA', {'channels': int(channels), 'count': 1}, True)
+        elif self.temperature_re.findall(line):
+            lo, hi = self.temperature_re.findall(line)[0]
+            lo, hi = map(lambda s: s.replace(' ', ''), (lo, hi))
+            self.create_new_or_merge('operating temperature', {'lo': float(lo), 'hi': float(hi)})
+        elif self.ram_re.findall(line):
+            ram, unit = self.ram_re.findall(line)[0]
+            ram = int(ram)
+            if unit.upper() == 'MB':
+                ram *= 1024
+            self.create_new_or_merge('SRAM', int(ram))
+        elif self.analog_cmp_re.findall(line):
+            count = self.analog_cmp_re.findall(line)[0]
+            if any(count):
+                count = int(count[0])
+            else:
+                count = 1
+            self.create_new_or_merge('analog comparator', count)
+        elif self.dac_re.findall(line):
+            count = self.dac_re.findall(line)[0]
+            if any(count):
+                count = int(count[0])
+            else:
+                count = 1
+            self.create_new_or_merge('DAC', count)
+        elif self.timer_re.findall(line):
+            count = self.timer_re.findall(line)[0]
+            if any(count):
+                count = int(count[0])
+            else:
+                count = 1
+            self.create_new_or_merge('timer', count)
+        elif self.tsi_re.findall(line):
+            count = self.tsi_re.findall(line)[0]
+            if any(count):
+                count = int(count[0])
+            else:
+                count = 1
+            self.create_new_or_merge('tsi', count)
+        elif self.adc_bits_re.findall(line):
+            bits = self.adc_bits_re.findall(line)[0]
+            count = self.adc_count_re.findall(line)
+            if any(count):
+                count = int(count[0])
+            else:
+                count = 1
+            channels = self.adc_channels_re.findall(line)
+            if any(channels):
+                channels = int(channels[0])
+            else:
+                channels = 0
+            if channels:
+                self.create_new_or_merge('ADC', {
+                    '{}-bit'.format(bits): {'count': count, 'channels': channels}})
+            else:
+                self.create_new_or_merge('ADC', {'{}-bit'.format(bits): {'count': count}})
+        if 'SPI' in line.upper():
+            if self.spi_re.findall(line):
+                count = self.spi_re.findall(line)[0]
+                self.create_new_or_merge('SPI', int(count))
+            else:
+                self.create_new_or_merge('SPI', 1)
+        if 'UART' in line.upper():
+            if self.uart_re.findall(line):
+                count = self.uart_re.findall(line)[0]
+                self.create_new_or_merge('uart', int(count))
+            else:
+                self.create_new_or_merge('uart', 1)
+        if 'I2C' in line.upper():
+            if self.i2c_re.findall(line):
+                count = self.i2c_re.findall(line)[0]
+                self.create_new_or_merge('I2C', int(count))
+            else:
+                self.create_new_or_merge('I2C', 1)
+        if 'LCD' in line:
+            self.create_new_or_merge('LCD', 1)
     def extract_features(self):
         controller_features = {}
         pages = [self.datasheet.pdf_file.getPage(0), self.datasheet.pdf_file.getPage(1)]
@@ -141,76 +229,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
                     block = block.replace('\n', ' ')
                     lines = block.split('°' if '°' in block else '•')
                     for line in lines:
-                        line = clean_line(line)
-                        line = text2int(line.lower())
-                        if self.voltage_re.findall(line):
-                            lo, hi = self.voltage_re.findall(line)[0]
-                            self.create_new_or_merge('operating voltage', {'lo': float(lo), 'hi': float(hi)}, True)
-                        if self.dma_re.findall(line):
-                            channels = self.dma_re.findall(line)[0]
-                            self.create_new_or_merge('DMA', {'channels': int(channels), 'count': 1}, True)
-                        elif self.temperature_re.findall(line):
-                            lo, hi = self.temperature_re.findall(line)[0]
-                            lo, hi = map(lambda s: s.replace(' ', ''), (lo, hi))
-                            self.create_new_or_merge('operating temperature', {'lo': float(lo), 'hi': float(hi)})
-                        elif self.ram_re.findall(line):
-                            ram, unit = self.ram_re.findall(line)[0]
-                            ram = int(ram)
-                            if unit.upper() == 'MB':
-                                ram *= 1024
-                            self.create_new_or_merge('SRAM', int(ram))
-                        elif self.analog_cmp_re.findall(line):
-                            count = self.analog_cmp_re.findall(line)[0]
-                            if count:
-                                count = int(count[0])
-                            else:
-                                count = 1
-                            self.create_new_or_merge('timer', count)
-                        elif self.timer_re.findall(line):
-                            count = self.timer_re.findall(line)[0]
-                            if count:
-                                count = int(count[0])
-                            else:
-                                count = 1
-                            self.create_new_or_merge('analog comparator', count)
-                        elif self.adc_bits_re.findall(line):
-                            bits = self.adc_bits_re.findall(line)[0]
-                            count = self.adc_count_re.findall(line)
-                            if not count:
-                                count = 1
-                            else:
-                                count = int(count[0])
-                            channels = self.adc_channels_re.findall(line)
-                            if not channels:
-                                channels = 0
-                            else:
-                                channels = int(channels[0])
-                            if channels:
-                                self.create_new_or_merge('ADC', {
-                                    '{}-bit'.format(bits): {'count': count, 'channels': channels}})
-                            else:
-                                self.create_new_or_merge('ADC', {'{}-bit'.format(bits): {'count': count}})
-                        if 'SPI' in line.upper():
-                            if self.spi_re.findall(line):
-                                count = self.spi_re.findall(line)[0]
-                                self.create_new_or_merge('SPI', int(count))
-                            else:
-                                self.create_new_or_merge('SPI', 1)
-                        if 'UART' in line.upper():
-                            if self.uart_re.findall(line):
-                                count = self.uart_re.findall(line)[0]
-                                self.create_new_or_merge('uart', int(count))
-                            else:
-                                self.create_new_or_merge('uart', 1)
-                        if 'I2C' in line.upper():
-                            if self.i2c_re.findall(line):
-                                count = self.i2c_re.findall(line)[0]
-                                self.create_new_or_merge('I2C', int(count))
-                            else:
-                                self.create_new_or_merge('I2C', 1)
-                        if 'LCD' in line:
-                            self.create_new_or_merge('LCD',1)
-
+                        self.extract_feature(line)
                         # print(line, '\n')
                     # print('=' * 20)
                     continue

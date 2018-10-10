@@ -54,7 +54,10 @@ class FeatureManager:
                 extractor_obj = extractor(mc, datasheet, self.config)
                 extractor_obj.process()
                 extractor_obj.unify_names()
-                self.mcs_features[extractor_obj.mc_family] = extractor_obj.features
+                if self.mcs_features.get(extractor_obj.mc_family,False):
+                    self.mcs_features[extractor_obj.mc_family].update(extractor_obj.features)
+                else:
+                    self.mcs_features[extractor_obj.mc_family] = extractor_obj.features
                 pass  # handle feature extraction
             else:
                 raise Exception('Can\' find {} in database'.format(mc))
@@ -150,7 +153,7 @@ if __name__ == '__main__':
         print('Usage: {} DATASHEET.pdj'.format(os.path.basename(sys.argv[0])))
         exit(0xDEADBEEF)
     # controllers = sys.argv[1:]
-    controllers = ['KL17P64M48SF2','MKMxxZxxACxx5','STM32F030F4']
+    controllers = ['KL17P64M48SF2','MKMxxZxxACxx5','KL16P64M48SF4']
     feature_manager = FeatureManager(controllers)
     feature_manager.parse()
     feature_manager.write_excel_file()
