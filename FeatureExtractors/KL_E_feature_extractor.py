@@ -45,7 +45,8 @@ class KLFeatureListExtractor(MKFeatureListExtractor):
             else:
                 flash = int(flash)
             features['flash'] = flash
-            features['CPU Frequency'] = flash
+            features['CPU Frequency'] = self.freqs[cpu_frq][0]
+            features['operating temperature'] = {'lo': self.temperatures[temp][0], 'hi': self.temperatures[temp][1]}
 
     # def extract_fields(self):
     #     fields = self.datasheet.table_of_content.get_node_by_name('Fields')
@@ -147,8 +148,8 @@ class KLFeatureListExtractor(MKFeatureListExtractor):
                         if 'LCD' in line:
                             self.create_new_or_merge('LCD', 1)
 
-                        print(line, '\n')
-                    print('=' * 20)
+                    #     print(line, '\n')
+                    # print('=' * 20)
                     continue
                 # print(block)
                 # print('=' * 20)

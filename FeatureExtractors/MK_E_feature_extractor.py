@@ -91,7 +91,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
                 flash = int(flash)
             features['flash'] = flash
             features['CPU Frequency'] = self.freqs[cpu_frq][0]
-            features['operating temperature'] = {'lo':self.temperatures[cpu_frq][0],'hi':self.temperatures[cpu_frq][1]}
+            features['operating temperature'] = {'lo':self.temperatures[temp][0],'hi':self.temperatures[temp][1]}
 
     def extract_fields(self):
         fields = self.datasheet.table_of_content.get_node_by_name('Fields')
@@ -99,6 +99,8 @@ class MKFeatureListExtractor(FeatureListExtractor):
         if fields:
             text += self.datasheet.pdf_file.getPage(self.datasheet.get_page_num(fields.page)).extractText()
             text += self.datasheet.pdf_file.getPage(self.datasheet.get_page_num(fields.page) + 1).extractText()
+        text = text.replace('°','-')
+        text = text.replace('…','-')
         if self.package_re.findall(text):
             for package_info in self.package_re.findall(text):
                 short_name, pin_count, full_name = package_info
@@ -134,9 +136,9 @@ class MKFeatureListExtractor(FeatureListExtractor):
                     mcus = [m[0] for m in self.mcu_names.findall(block)]
                     # print(mcus)
                     continue
-                if '°' in block:
+                if '°' in block or '•' in block:
                     block = block.replace('\n', ' ')
-                    lines = block.split('°')
+                    lines = block.split('°' if '°' in block else '•')
                     for line in lines:
                         line = clean_line(line)
                         line = text2int(line.lower())

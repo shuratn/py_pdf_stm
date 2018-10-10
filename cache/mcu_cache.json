@@ -17,7 +17,11 @@
    "LQFP": 1,
    "PIN COUNT": 64,
    "FLASH": 64,
-   "CPU FREQUENCY": 64
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
   },
   "MKL17Z32VLH4": {
    "DMA": {
@@ -36,7 +40,11 @@
    "LQFP": 1,
    "PIN COUNT": 64,
    "FLASH": 32,
-   "CPU FREQUENCY": 32
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
   },
   "MKL17Z64VDA4": {
    "DMA": {
@@ -55,7 +63,11 @@
    "XFBGA": 1,
    "PIN COUNT": 36,
    "FLASH": 64,
-   "CPU FREQUENCY": 64
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
   },
   "MKL17Z32VDA4": {
    "DMA": {
@@ -74,7 +86,11 @@
    "XFBGA": 1,
    "PIN COUNT": 36,
    "FLASH": 32,
-   "CPU FREQUENCY": 32
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
   },
   "MKL17Z64VFM4": {
    "DMA": {
@@ -93,7 +109,11 @@
    "QFN": 1,
    "PIN COUNT": 32,
    "FLASH": 64,
-   "CPU FREQUENCY": 64
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
   },
   "MKL17Z32VFM4": {
    "DMA": {
@@ -112,7 +132,11 @@
    "QFN": 1,
    "PIN COUNT": 32,
    "FLASH": 32,
-   "CPU FREQUENCY": 32
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
   },
   "MKL17Z64VMP4": {
    "DMA": {
@@ -131,7 +155,11 @@
    "MAPBGA": 1,
    "PIN COUNT": 64,
    "FLASH": 64,
-   "CPU FREQUENCY": 64
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
   },
   "MKL17Z32VMP4": {
    "DMA": {
@@ -150,7 +178,11 @@
    "MAPBGA": 1,
    "PIN COUNT": 64,
    "FLASH": 32,
-   "CPU FREQUENCY": 32
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
   },
   "MKL17Z64VFT4": {
    "DMA": {
@@ -169,7 +201,11 @@
    "QFN": 1,
    "PIN COUNT": 48,
    "FLASH": 64,
-   "CPU FREQUENCY": 64
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
   },
   "MKL17Z32VFT4": {
    "DMA": {
@@ -188,7 +224,11 @@
    "QFN": 1,
    "PIN COUNT": 48,
    "FLASH": 32,
-   "CPU FREQUENCY": 32
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
   }
  },
  "MK": {
@@ -198,8 +238,8 @@
     "hi": 3.6
    },
    "OPERATING TEMPERATURE": {
-    "lo": -40.0,
-    "hi": 85.0
+    "lo": -40,
+    "hi": 85
    },
    "RAM": 16,
    "DMA": {
@@ -219,7 +259,7 @@
    "LGA": 1,
    "PIN COUNT": 44,
    "FLASH": 64,
-   "CPU FREQUENCY": 64
+   "CPU FREQUENCY": 50
   },
   "MKM14Z128ACHH5": {
    "OPERATING VOLTAGE": {
@@ -227,8 +267,8 @@
     "hi": 3.6
    },
    "OPERATING TEMPERATURE": {
-    "lo": -40.0,
-    "hi": 85.0
+    "lo": -40,
+    "hi": 85
    },
    "RAM": 16,
    "DMA": {
@@ -248,7 +288,7 @@
    "LGA": 1,
    "PIN COUNT": 44,
    "FLASH": 128,
-   "CPU FREQUENCY": 128
+   "CPU FREQUENCY": 50
   },
   "MKM33Z64ACLH5": {
    "OPERATING VOLTAGE": {
@@ -256,8 +296,8 @@
     "hi": 3.6
    },
    "OPERATING TEMPERATURE": {
-    "lo": -40.0,
-    "hi": 85.0
+    "lo": -40,
+    "hi": 85
    },
    "RAM": 16,
    "DMA": {
@@ -277,7 +317,7 @@
    "LQFP": 1,
    "PIN COUNT": 64,
    "FLASH": 64,
-   "CPU FREQUENCY": 64
+   "CPU FREQUENCY": 50
   },
   "MKM33Z128ACLH5": {
    "OPERATING VOLTAGE": {
@@ -285,8 +325,8 @@
     "hi": 3.6
    },
    "OPERATING TEMPERATURE": {
-    "lo": -40.0,
-    "hi": 85.0
+    "lo": -40,
+    "hi": 85
    },
    "RAM": 16,
    "DMA": {
@@ -306,7 +346,7 @@
    "LQFP": 1,
    "PIN COUNT": 64,
    "FLASH": 128,
-   "CPU FREQUENCY": 128
+   "CPU FREQUENCY": 50
   },
   "MKM33Z64ACLL5": {
    "OPERATING VOLTAGE": {
@@ -314,8 +354,8 @@
     "hi": 3.6
    },
    "OPERATING TEMPERATURE": {
-    "lo": -40.0,
-    "hi": 85.0
+    "lo": -40,
+    "hi": 85
    },
    "RAM": 16,
    "DMA": {
@@ -335,7 +375,7 @@
    "LQFP": 1,
    "PIN COUNT": 100,
    "FLASH": 64,
-   "CPU FREQUENCY": 64
+   "CPU FREQUENCY": 50
   },
   "MKM33Z128ACLL5": {
    "OPERATING VOLTAGE": {
@@ -343,8 +383,8 @@
     "hi": 3.6
    },
    "OPERATING TEMPERATURE": {
-    "lo": -40.0,
-    "hi": 85.0
+    "lo": -40,
+    "hi": 85
    },
    "RAM": 16,
    "DMA": {
@@ -364,7 +404,7 @@
    "LQFP": 1,
    "PIN COUNT": 100,
    "FLASH": 128,
-   "CPU FREQUENCY": 128
+   "CPU FREQUENCY": 50
   },
   "MKM34Z128ACLL5": {
    "OPERATING VOLTAGE": {
@@ -372,8 +412,8 @@
     "hi": 3.6
    },
    "OPERATING TEMPERATURE": {
-    "lo": -40.0,
-    "hi": 85.0
+    "lo": -40,
+    "hi": 85
    },
    "RAM": 16,
    "DMA": {
@@ -393,7 +433,7 @@
    "LQFP": 1,
    "PIN COUNT": 100,
    "FLASH": 128,
-   "CPU FREQUENCY": 128
+   "CPU FREQUENCY": 50
   }
  },
  "STM32F": {
@@ -423,7 +463,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "No",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -478,7 +518,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "No",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -533,7 +573,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "No",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -588,7 +628,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "No",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -643,7 +683,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "Yes",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -698,7 +738,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "Yes",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -753,7 +793,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "Yes",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -808,7 +848,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "Yes",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -863,7 +903,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "Yes",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -918,7 +958,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "Yes",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -973,7 +1013,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "Yes",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -1028,7 +1068,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "Yes",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
@@ -1083,7 +1123,7 @@
    "COMMUNICATION  INTERFACES SDMMC2": "Yes",
    "CAMERA INTERFACE": "Yes",
    "MIPI-DSI HOST(4)": "Yes",
-   "LCD-TFT": "Yes",
+   "LCD": "Yes",
    "CHROM-ART ACCELERATOR\u2122 (DMA2D)": "Yes",
    "JPEG CODEC": "Yes",
    "CRYPTOGRAPHY": "Yes",
