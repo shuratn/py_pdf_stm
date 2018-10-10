@@ -18,4 +18,5 @@ if __name__ == '__main__':
     # if len(sys.argv) < 1:
     #     print('Usage: {} DATASHEET.pdj DATASHEET2.pdf'.format(os.path.basename(sys.argv[0])))
     #     exit(0)
-    a = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MKMxxZxxACxx5.pdf")
+    a = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL16P64M48SF4.pdf")
+    pass

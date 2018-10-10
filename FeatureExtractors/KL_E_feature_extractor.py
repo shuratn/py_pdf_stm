@@ -62,15 +62,20 @@ class KLFeatureListExtractor(MKFeatureListExtractor):
     def extract_features(self):
         controller_features = {}
         pages = [self.datasheet.pdf_file.getPage(0), self.datasheet.pdf_file.getPage(1)]
-        or_page = self.datasheet.get_page_num(
-            self.datasheet.table_of_content.get_node_by_name('Ordering information').page)
-        ordering_tables = self.extract_table(self.datasheet, or_page)
         mcus = []
+        ordering_info = self.datasheet.table_of_content.get_node_by_name('Ordering information')
+        if ordering_info:
+            or_page = self.datasheet.get_page_num(ordering_info.page)
+            ordering_tables = self.extract_table(self.datasheet, or_page)
+        else:
+            ordering_tables = self.extract_table(self.datasheet, 1)
         for table in ordering_tables:
-            if 'Ordering information' in table.get_cell(0, 0).text:
+            if 'Ordering information'.lower() in table.get_cell(0, 0).text.lower():
                 mcus = list(map(lambda cell: cell.clean_text, table.get_col(0)[3:]))
             elif 'Product' in table.get_cell(0, 0).text:
                 mcus = list(map(lambda cell: cell.clean_text, table.get_col(0)[2:]))
+
+
         for page in pages:
             text = page.extractText()
             for block in text.split("€"):
