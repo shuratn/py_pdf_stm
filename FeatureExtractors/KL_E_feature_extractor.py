@@ -165,10 +165,10 @@ class KLFeatureListExtractor(MKFeatureListExtractor):
 
 
 if __name__ == '__main__':
-    datasheet = MK_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF2.pdf")
+    datasheet = MK_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL16P64M48SF4.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
-    feature_extractor = KLFeatureListExtractor('MKM', datasheet, config)
+    feature_extractor = KLFeatureListExtractor('KL16P64M48SF4', datasheet, config)
     feature_extractor.process()
     feature_extractor.unify_names()
     pprint(feature_extractor.features)

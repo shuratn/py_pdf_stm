@@ -100,6 +100,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
             text += self.datasheet.pdf_file.getPage(self.datasheet.get_page_num(fields.page)).extractText()
             text += self.datasheet.pdf_file.getPage(self.datasheet.get_page_num(fields.page) + 1).extractText()
         text = text.replace('°','-')
+        text = text.replace('–','-')
         text = text.replace('…','-')
         if self.package_re.findall(text):
             for package_info in self.package_re.findall(text):
