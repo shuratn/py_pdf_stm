@@ -262,6 +262,8 @@ def dump_unknown():
 def list_known():
     dump_mcu_name = "UNKNOWN"
     dump_all = False
+    if len(sys.argv)<2:
+        print_usage()
     if sys.argv[2] == '*':
         dump_all = True
     else:
@@ -269,11 +271,11 @@ def list_known():
     feature_manager = FeatureManager([])
     config = feature_manager.config
     unify = config['unify']
-    all_mcus = list(feature_manager.mcs_features.copy().values())
+    all_mcus = copy.deepcopy(list(feature_manager.mcs_features.values()))
     to_dump = []
     for mcus in all_mcus:
         for mcu, features in mcus.items():
-            unifier = set(unify[feature_manager.get_config_name(mcu)].values())
+            unifier = set(map(lambda s:s.upper(),unify[feature_manager.get_config_name(mcu)].values()))
             if dump_mcu_name in mcu.upper() or dump_all:
 
                 feature_names = set(features.keys())
