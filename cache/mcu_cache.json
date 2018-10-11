@@ -1,7 +1,6 @@
 {
  "KL": {
   "MKL16Z256VLH4": {
-   "RAM": 256,
    "DMA": {
     "channels": 4,
     "count": 1
@@ -32,7 +31,6 @@
    "CPU FREQUENCY": 48
   },
   "MKL16Z256VMP4": {
-   "RAM": 256,
    "DMA": {
     "channels": 4,
     "count": 1
@@ -72,10 +70,6 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "LQFP": 1,
    "PIN COUNT": 64,
    "FLASH": 64,
@@ -95,10 +89,6 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "LQFP": 1,
    "PIN COUNT": 64,
    "FLASH": 32,
@@ -118,10 +108,6 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "XFBGA": 1,
    "PIN COUNT": 36,
    "FLASH": 64,
@@ -141,10 +127,6 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "XFBGA": 1,
    "PIN COUNT": 36,
    "FLASH": 32,
@@ -164,10 +146,6 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "QFN": 1,
    "PIN COUNT": 32,
    "FLASH": 64,
@@ -187,10 +165,6 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "QFN": 1,
    "PIN COUNT": 32,
    "FLASH": 32,
@@ -210,10 +184,6 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "MAPBGA": 1,
    "PIN COUNT": 64,
    "FLASH": 64,
@@ -233,10 +203,6 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "MAPBGA": 1,
    "PIN COUNT": 64,
    "FLASH": 32,
@@ -256,10 +222,6 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "QFN": 1,
    "PIN COUNT": 48,
    "FLASH": 64,
@@ -279,10 +241,6 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "QFN": 1,
    "PIN COUNT": 48,
    "FLASH": 32,
@@ -291,207 +249,171 @@
     "lo": -40,
     "hi": 105
    }
+  },
+  "MKL17Z128VFM4": {
+   "QFN": 1,
+   "PIN COUNT": 32,
+   "FLASH": 128,
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKL17Z256VFM4": {
+   "QFN": 1,
+   "PIN COUNT": 32,
+   "FLASH": 256,
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKL17Z128VFT4": {
+   "QFN": 1,
+   "PIN COUNT": 48,
+   "FLASH": 128,
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKL17Z256VFT4": {
+   "QFN": 1,
+   "PIN COUNT": 48,
+   "FLASH": 256,
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKL17Z128VLH4": {
+   "LQFP": 1,
+   "PIN COUNT": 64,
+   "FLASH": 128,
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKL17Z256VLH4": {
+   "LQFP": 1,
+   "PIN COUNT": 64,
+   "FLASH": 256,
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKL17Z128VMP4": {
+   "MAPBGA": 1,
+   "PIN COUNT": 64,
+   "FLASH": 128,
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKL17Z256VMP4": {
+   "MAPBGA": 1,
+   "PIN COUNT": 64,
+   "FLASH": 256,
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKL17Z256CAL4R": {
+   "WLCSP": 1,
+   "PIN COUNT": 36,
+   "FLASH": 256,
+   "CPU FREQUENCY": 48,
+   "OPERATING TEMPERATURE": {
+    "lo": -40,
+    "hi": 85
+   }
   }
  },
  "MK": {
   "MKM14Z64ACHH5": {
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 85
    },
    "RAM": 16,
-   "DMA": {
-    "channels": 4,
-    "count": 1
-   },
-   "ADC": {
-    "16-bit": {
-     "count": 1
-    }
-   },
-   "ANALOG COMPARATOR": 2,
-   "TIMER": 4,
-   "SPI": 2,
-   "I2C": 2,
-   "UART": 2,
    "LGA": 1,
    "PIN COUNT": 44,
    "FLASH": 64,
    "CPU FREQUENCY": 50
   },
   "MKM14Z128ACHH5": {
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 85
    },
    "RAM": 16,
-   "DMA": {
-    "channels": 4,
-    "count": 1
-   },
-   "ADC": {
-    "16-bit": {
-     "count": 1
-    }
-   },
-   "ANALOG COMPARATOR": 2,
-   "TIMER": 4,
-   "SPI": 2,
-   "I2C": 2,
-   "UART": 2,
    "LGA": 1,
    "PIN COUNT": 44,
    "FLASH": 128,
    "CPU FREQUENCY": 50
   },
   "MKM33Z64ACLH5": {
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 85
    },
    "RAM": 16,
-   "DMA": {
-    "channels": 4,
-    "count": 1
-   },
-   "ADC": {
-    "16-bit": {
-     "count": 1
-    }
-   },
-   "ANALOG COMPARATOR": 2,
-   "TIMER": 4,
-   "SPI": 2,
-   "I2C": 2,
-   "UART": 2,
    "LQFP": 1,
    "PIN COUNT": 64,
    "FLASH": 64,
    "CPU FREQUENCY": 50
   },
   "MKM33Z128ACLH5": {
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 85
    },
    "RAM": 16,
-   "DMA": {
-    "channels": 4,
-    "count": 1
-   },
-   "ADC": {
-    "16-bit": {
-     "count": 1
-    }
-   },
-   "ANALOG COMPARATOR": 2,
-   "TIMER": 4,
-   "SPI": 2,
-   "I2C": 2,
-   "UART": 2,
    "LQFP": 1,
    "PIN COUNT": 64,
    "FLASH": 128,
    "CPU FREQUENCY": 50
   },
   "MKM33Z64ACLL5": {
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 85
    },
    "RAM": 16,
-   "DMA": {
-    "channels": 4,
-    "count": 1
-   },
-   "ADC": {
-    "16-bit": {
-     "count": 1
-    }
-   },
-   "ANALOG COMPARATOR": 2,
-   "TIMER": 4,
-   "SPI": 2,
-   "I2C": 2,
-   "UART": 2,
    "LQFP": 1,
    "PIN COUNT": 100,
    "FLASH": 64,
    "CPU FREQUENCY": 50
   },
   "MKM33Z128ACLL5": {
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 85
    },
    "RAM": 16,
-   "DMA": {
-    "channels": 4,
-    "count": 1
-   },
-   "ADC": {
-    "16-bit": {
-     "count": 1
-    }
-   },
-   "ANALOG COMPARATOR": 2,
-   "TIMER": 4,
-   "SPI": 2,
-   "I2C": 2,
-   "UART": 2,
    "LQFP": 1,
    "PIN COUNT": 100,
    "FLASH": 128,
    "CPU FREQUENCY": 50
   },
   "MKM34Z128ACLL5": {
-   "OPERATING VOLTAGE": {
-    "lo": 1.71,
-    "hi": 3.6
-   },
    "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 85
    },
    "RAM": 16,
-   "DMA": {
-    "channels": 4,
-    "count": 1
-   },
-   "ADC": {
-    "16-bit": {
-     "count": 1
-    }
-   },
-   "ANALOG COMPARATOR": 2,
-   "TIMER": 4,
-   "SPI": 2,
-   "I2C": 2,
-   "UART": 2,
    "LQFP": 1,
    "PIN COUNT": 100,
    "FLASH": 128,
@@ -4299,6 +4221,468 @@
     "max": 85
    },
    "UFQFPN48": "Yes"
+  }
+ },
+ "KE": {
+  "MKE15Z256VLL7": {
+   "timer": 1,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   },
+   "LQFP": 1,
+   "pin count": "100",
+   "flash": 256,
+   "CPU Frequency": 72
+  },
+  "MKE15Z256VLH7": {
+   "timer": 1,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   },
+   "LQFP": 1,
+   "pin count": "64",
+   "flash": 256,
+   "CPU Frequency": 72
+  },
+  "MKE15Z128VLL7": {
+   "timer": 1,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   },
+   "LQFP": 1,
+   "pin count": "100",
+   "flash": 128,
+   "CPU Frequency": 72
+  },
+  "MKE15Z128VLH7": {
+   "timer": 1,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   },
+   "LQFP": 1,
+   "pin count": "64",
+   "flash": 128,
+   "CPU Frequency": 72
+  },
+  "MKE14Z256VLL7": {
+   "timer": 1,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   },
+   "LQFP": 1,
+   "pin count": "100",
+   "flash": 256,
+   "CPU Frequency": 72
+  },
+  "MKE14Z256VLH7": {
+   "timer": 1,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   },
+   "LQFP": 1,
+   "pin count": "64",
+   "flash": 256,
+   "CPU Frequency": 72
+  },
+  "MKE14Z128VLL7": {
+   "timer": 1,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   },
+   "LQFP": 1,
+   "pin count": "100",
+   "flash": 128,
+   "CPU Frequency": 72
+  },
+  "MKE14Z128VLH7": {
+   "timer": 1,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   },
+   "LQFP": 1,
+   "pin count": "64",
+   "flash": 128,
+   "CPU Frequency": 72
+  },
+  "MKV10Z32VLC7": {
+   "LQFP": 1,
+   "pin count": "32",
+   "flash": 32,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z32VFM7": {
+   "QFN": 1,
+   "pin count": "32",
+   "flash": 32,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z32VLF7": {
+   "LQFP": 1,
+   "pin count": "48",
+   "flash": 32,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z16VLC7": {
+   "LQFP": 1,
+   "pin count": "32",
+   "flash": 16,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z16VFM7": {
+   "QFN": 1,
+   "pin count": "32",
+   "flash": 16,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z16VLF7": {
+   "LQFP": 1,
+   "pin count": "48",
+   "flash": 16,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z128VLH7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "64",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z128VLF7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "48",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z128VLC7 2": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "32",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z128VFM7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "QFN": 1,
+   "pin count": "32",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z64VLH7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "64",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z64VLF7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "48",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z64VLC7 2": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "32",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z64VFM7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "QFN": 1,
+   "pin count": "32",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z128VLH7P": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "64",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z128VLF7P": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "48",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z128VLC7P 2": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "32",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV11Z128VFM7P": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "QFN": 1,
+   "pin count": "32",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z64VLH7P": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "64",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z64VLF7P": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "48",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z64VLC7P 2": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "32",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z64VFM7P": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "QFN": 1,
+   "pin count": "32",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z64VLH7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "64",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z64VLF7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "48",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z64VLC7 2": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "32",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z64VFM7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "QFN": 1,
+   "pin count": "32",
+   "flash": 64,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z128VLH7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "64",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z128VLF7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "48",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z128VLC7 2": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "LQFP": 1,
+   "pin count": "32",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
+  },
+  "MKV10Z128VFM7": {
+   "DAC": 1,
+   "analog comparator": 2,
+   "SPI": 1,
+   "QFN": 1,
+   "pin count": "32",
+   "flash": 128,
+   "CPU Frequency": 75,
+   "operating temperature": {
+    "lo": -40,
+    "hi": 105
+   }
   }
  }
 }
