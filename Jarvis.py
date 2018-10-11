@@ -14,7 +14,7 @@ from Utils import *
 
 class MCUHelper:
 
-    def __init__(self, feature_list: str):
+    def __init__(self, feature_list: str) -> None:
         self.matching = {}  # type: Dict[str,Any]
         with open(feature_list) as fp:
             self.required_feature = json.load(fp)  # type: Dict[str,Any]
@@ -63,11 +63,17 @@ class MCUHelper:
                         if ret:
                             match = True
             return match
-        if is_int(req_value) and is_int(feature_value):
+        elif is_int(req_value) and is_int(feature_value):
             return self.match(req_value, feature_value, cmp_type)
-        if is_str(req_value) or is_str(feature_value):
+        elif is_str(req_value) and is_str(feature_value):
             print('STRINGS ARE NOT SUPPORTED YET')
             return None
+        elif is_list(feature_value) and is_list(req_value):
+            feature = set(feature_value)
+            req = set(req_value)
+            return any(feature.intersection(req))
+        elif is_list(feature_value) and (is_str(req_value) or is_int(req_value)):
+            return req_value in feature_value
 
     def collect_matching(self):
         self.print_user_req()
@@ -80,10 +86,9 @@ class MCUHelper:
                     feature_value = mcu_features.get(req_feature.upper(), None)
                     if feature_value:
                         try:
-                            if is_dict(req_value) and is_dict(feature_value):
-                                matched &= self.compare(req_name, req_value, req_name, feature_value)
-                            else:
-                                matched &= self.match(req_value, feature_value, cmp_type)
+                            matched &= self.compare(req_name, req_value, req_name, feature_value)
+                            # else:
+                            #     matched &= self.match(req_value, feature_value, cmp_type)
 
                         except Exception as ex:
                             matched = False

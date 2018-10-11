@@ -6,7 +6,9 @@
     "lo": -40,
     "hi": 105
    },
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP100"
+   ],
    "PIN COUNT": 100,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 72
@@ -17,7 +19,9 @@
     "lo": -40,
     "hi": 105
    },
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 72
@@ -28,7 +32,9 @@
     "lo": -40,
     "hi": 105
    },
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP100"
+   ],
    "PIN COUNT": 100,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 72
@@ -39,7 +45,9 @@
     "lo": -40,
     "hi": 105
    },
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 72
@@ -50,7 +58,9 @@
     "lo": -40,
     "hi": 105
    },
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP100"
+   ],
    "PIN COUNT": 100,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 72
@@ -61,7 +71,9 @@
     "lo": -40,
     "hi": 105
    },
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 72
@@ -72,7 +84,9 @@
     "lo": -40,
     "hi": 105
    },
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP100"
+   ],
    "PIN COUNT": 100,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 72
@@ -83,13 +97,17 @@
     "lo": -40,
     "hi": 105
    },
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 72
   },
   "MKV10Z32VLC7": {
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 32,
    "CPU FREQUENCY": 75,
@@ -99,7 +117,9 @@
    }
   },
   "MKV10Z32VFM7": {
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 32,
    "CPU FREQUENCY": 75,
@@ -109,7 +129,9 @@
    }
   },
   "MKV10Z32VLF7": {
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 32,
    "CPU FREQUENCY": 75,
@@ -119,7 +141,9 @@
    }
   },
   "MKV10Z16VLC7": {
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 16,
    "CPU FREQUENCY": 75,
@@ -129,7 +153,9 @@
    }
   },
   "MKV10Z16VFM7": {
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 16,
    "CPU FREQUENCY": 75,
@@ -139,7 +165,9 @@
    }
   },
   "MKV10Z16VLF7": {
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 16,
    "CPU FREQUENCY": 75,
@@ -152,7 +180,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -165,7 +195,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -178,7 +210,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -191,7 +225,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -204,7 +240,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -217,7 +255,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -230,7 +270,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -243,7 +285,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -256,7 +300,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -269,7 +315,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -282,7 +330,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -295,7 +345,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -308,7 +360,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -321,7 +375,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -334,7 +390,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -347,7 +405,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -360,7 +420,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -373,7 +435,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -386,7 +450,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -399,7 +465,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 75,
@@ -412,7 +480,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -425,7 +495,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -438,7 +510,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -451,7 +525,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 2,
    "SPI": 1,
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 75,
@@ -487,7 +563,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48
@@ -517,7 +595,9 @@
    "DAC": 1,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "MAPBGA": 1,
+   "PACKAGE": [
+    "MAPBGA64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48
@@ -532,7 +612,9 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 48,
@@ -551,7 +633,9 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 32,
    "CPU FREQUENCY": 48,
@@ -570,7 +654,9 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "XFBGA": 1,
+   "PACKAGE": [
+    "XFBGA36"
+   ],
    "PIN COUNT": 36,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 48,
@@ -589,7 +675,9 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "XFBGA": 1,
+   "PACKAGE": [
+    "XFBGA36"
+   ],
    "PIN COUNT": 36,
    "FLASH MEMORY": 32,
    "CPU FREQUENCY": 48,
@@ -608,7 +696,9 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 48,
@@ -627,7 +717,9 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 32,
    "CPU FREQUENCY": 48,
@@ -646,7 +738,9 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "MAPBGA": 1,
+   "PACKAGE": [
+    "MAPBGA64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 48,
@@ -665,7 +759,9 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "MAPBGA": 1,
+   "PACKAGE": [
+    "MAPBGA64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 32,
    "CPU FREQUENCY": 48,
@@ -684,7 +780,9 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 48,
@@ -703,7 +801,9 @@
    "SPI": 3,
    "ANALOG COMPARATOR": 1,
    "TIMER": 5,
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 32,
    "CPU FREQUENCY": 48,
@@ -713,7 +813,9 @@
    }
   },
   "MKL17Z128VFM4": {
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 48,
@@ -723,7 +825,9 @@
    }
   },
   "MKL17Z256VFM4": {
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN32"
+   ],
    "PIN COUNT": 32,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48,
@@ -733,7 +837,9 @@
    }
   },
   "MKL17Z128VFT4": {
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 48,
@@ -743,7 +849,9 @@
    }
   },
   "MKL17Z256VFT4": {
-   "QFN": 1,
+   "PACKAGE": [
+    "QFN48"
+   ],
    "PIN COUNT": 48,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48,
@@ -753,7 +861,9 @@
    }
   },
   "MKL17Z128VLH4": {
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 48,
@@ -763,7 +873,9 @@
    }
   },
   "MKL17Z256VLH4": {
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48,
@@ -773,7 +885,9 @@
    }
   },
   "MKL17Z128VMP4": {
-   "MAPBGA": 1,
+   "PACKAGE": [
+    "MAPBGA64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 48,
@@ -783,7 +897,9 @@
    }
   },
   "MKL17Z256VMP4": {
-   "MAPBGA": 1,
+   "PACKAGE": [
+    "MAPBGA64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48,
@@ -793,7 +909,9 @@
    }
   },
   "MKL17Z256CAL4R": {
-   "WLCSP": 1,
+   "PACKAGE": [
+    "WLCSP36"
+   ],
    "PIN COUNT": 36,
    "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48,
@@ -810,7 +928,9 @@
     "hi": 85
    },
    "RAM": 16,
-   "LGA": 1,
+   "PACKAGE": [
+    "LGA44"
+   ],
    "PIN COUNT": 44,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 50
@@ -821,7 +941,9 @@
     "hi": 85
    },
    "RAM": 16,
-   "LGA": 1,
+   "PACKAGE": [
+    "LGA44"
+   ],
    "PIN COUNT": 44,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 50
@@ -832,7 +954,9 @@
     "hi": 85
    },
    "RAM": 16,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 50
@@ -843,7 +967,9 @@
     "hi": 85
    },
    "RAM": 16,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP64"
+   ],
    "PIN COUNT": 64,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 50
@@ -854,7 +980,9 @@
     "hi": 85
    },
    "RAM": 16,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP100"
+   ],
    "PIN COUNT": 100,
    "FLASH MEMORY": 64,
    "CPU FREQUENCY": 50
@@ -865,7 +993,9 @@
     "hi": 85
    },
    "RAM": 16,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP100"
+   ],
    "PIN COUNT": 100,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 50
@@ -876,7 +1006,9 @@
     "hi": 85
    },
    "RAM": 16,
-   "LQFP": 1,
+   "PACKAGE": [
+    "LQFP100"
+   ],
    "PIN COUNT": 100,
    "FLASH MEMORY": 128,
    "CPU FREQUENCY": 50
@@ -886,9 +1018,7 @@
   "STM32F030F4": {
    "FLASH MEMORY": 16,
    "RAM": 4,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": 4,
-   "TIMERS BASIC": "-",
+   "TIMER": null,
    "SPI": 1,
    "I2C": 1,
    "ADC": {
@@ -902,14 +1032,14 @@
     "min": 2.4,
     "max": 3.6
    },
-   "TSSOP20": "Yes"
+   "PACKAGE": [
+    "TSSOP20"
+   ]
   },
   "STM32F030K6": {
    "FLASH MEMORY": 32,
    "RAM": 4,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": 4,
-   "TIMERS BASIC": "-",
+   "TIMER": null,
    "SPI": 1,
    "I2C": 1,
    "ADC": {
@@ -923,14 +1053,14 @@
     "min": 2.4,
     "max": 3.6
    },
-   "LQFP32": "Yes"
+   "PACKAGE": [
+    "LQFP32"
+   ]
   },
   "STM32F030C6": {
    "FLASH MEMORY": 32,
    "RAM": 4,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": 4,
-   "TIMERS BASIC": "-",
+   "TIMER": null,
    "SPI": 1,
    "I2C": 1,
    "ADC": {
@@ -944,14 +1074,14 @@
     "min": 2.4,
     "max": 3.6
    },
-   "LQFP48": "Yes"
+   "PACKAGE": [
+    "LQFP48"
+   ]
   },
   "STM32F030C8": {
    "FLASH MEMORY": 64,
    "RAM": 8,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": 5,
-   "TIMERS BASIC": 1,
+   "TIMER": 7,
    "SPI": 2,
    "I2C": 2,
    "ADC": {
@@ -965,14 +1095,14 @@
     "min": 2.4,
     "max": 3.6
    },
-   "LQFP48": "Yes"
+   "PACKAGE": [
+    "LQFP48"
+   ]
   },
   "STM32F030CC": {
    "FLASH MEMORY": 256,
    "RAM": 32,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": 5,
-   "TIMERS BASIC": 2,
+   "TIMER": 8,
    "SPI": 2,
    "I2C": 2,
    "ADC": {
@@ -986,14 +1116,14 @@
     "min": 2.4,
     "max": 3.6
    },
-   "LQFP48": "Yes"
+   "PACKAGE": [
+    "LQFP48"
+   ]
   },
   "STM32F030R8": {
    "FLASH MEMORY": 64,
    "RAM": 8,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": 5,
-   "TIMERS BASIC": 1,
+   "TIMER": 7,
    "SPI": 2,
    "I2C": 2,
    "ADC": {
@@ -1007,14 +1137,14 @@
     "min": 2.4,
     "max": 3.6
    },
-   "LQFP64": "Yes"
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32F030RC": {
    "FLASH MEMORY": 256,
    "RAM": 32,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": 5,
-   "TIMERS BASIC": 2,
+   "TIMER": 8,
    "SPI": 2,
    "I2C": 2,
    "ADC": {
@@ -1028,13 +1158,14 @@
     "min": 2.4,
     "max": 3.6
    },
-   "LQFP64": "Yes"
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32F038Fx": {
    "FLASH MEMORY": 32,
    "RAM": 4,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": "4  1",
+   "TIMER": null,
    "I2C": 1,
    "ADC": {
     "12-bit": {
@@ -1047,13 +1178,14 @@
     "min": 1.8,
     "max": 3.6
    },
-   "TSSOP20": "Yes"
+   "PACKAGE": [
+    "TSSOP20"
+   ]
   },
   "STM32F038Ex": {
    "FLASH MEMORY": 32,
    "RAM": 4,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": "4  1",
+   "TIMER": null,
    "I2C": 1,
    "ADC": {
     "12-bit": {
@@ -1066,13 +1198,14 @@
     "min": 1.8,
     "max": 3.6
    },
-   "WLCSP25": "Yes"
+   "PACKAGE": [
+    "WLCSP25"
+   ]
   },
   "STM32F038Gx": {
    "FLASH MEMORY": 32,
    "RAM": 4,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": "4  1",
+   "TIMER": null,
    "I2C": 1,
    "ADC": {
     "12-bit": {
@@ -1085,13 +1218,14 @@
     "min": 1.8,
     "max": 3.6
    },
-   "UFQFPN28": "Yes"
+   "PACKAGE": [
+    "UFQFPN28"
+   ]
   },
   "STM32F038Kx": {
    "FLASH MEMORY": 32,
    "RAM": 4,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": "4  1",
+   "TIMER": null,
    "I2C": 1,
    "ADC": {
     "12-bit": {
@@ -1104,13 +1238,14 @@
     "min": 1.8,
     "max": 3.6
    },
-   "UFQFPN32": "Yes"
+   "PACKAGE": [
+    "UFQFPN32"
+   ]
   },
   "STM32F038Cx": {
    "FLASH MEMORY": 32,
    "RAM": 4,
-   "TIMERS ADVANCED  CONTROL": 1,
-   "TIMERS GENERAL  PURPOSE": "4  1",
+   "TIMER": null,
    "I2C": 1,
    "ADC": {
     "12-bit": {
@@ -1123,49 +1258,69 @@
     "min": 1.8,
     "max": 3.6
    },
-   "LQFP48": "Yes"
+   "PACKAGE": [
+    "LQFP48"
+   ]
   },
   "STM32F205Rx": {
    "OPERATING TEMPERATURE": {
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP64"
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32F205Rx-1": {
    "OPERATING TEMPERATURE": {
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP64 WLCSP64 +2"
+   "PACKAGE": [
+    "LQFP64",
+    "WLCSP64",
+    "+2"
+   ]
   },
   "STM32F205Rx-2": {
    "OPERATING TEMPERATURE": {
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP6 4"
+   "PACKAGE": [
+    "LQFP6",
+    "4"
+   ]
   },
   "STM32F205Rx-3": {
    "OPERATING TEMPERATURE": {
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP64 WLCSP6 4+2"
+   "PACKAGE": [
+    "LQFP64",
+    "WLCSP6",
+    "4",
+    "+2"
+   ]
   },
   "STM32F205Vx": {
    "OPERATING TEMPERATURE": {
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100"
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32F205Zx": {
    "OPERATING TEMPERATURE": {
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP144"
+   "PACKAGE": [
+    "LQFP144"
+   ]
   },
   "STM32F207Vx": {
    "SPI": 3,
@@ -1199,7 +1354,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100"
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32F207Zx": {
    "SPI": 3,
@@ -1233,7 +1390,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP144"
+   "PACKAGE": [
+    "LQFP144"
+   ]
   },
   "STM32F207Ix": {
    "SPI": 3,
@@ -1267,7 +1426,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP176/ UFBGA176"
+   "PACKAGE": [
+    "LQFP176",
+    "/UFBGA176"
+   ]
   },
   "STM32F215Rx": {
    "FLASH MEMORY": 512,
@@ -1275,9 +1437,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "No",
    "ETHERNET(2)": "No",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1314,7 +1474,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP64"
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32F215Rx-1": {
    "FLASH MEMORY": 1024,
@@ -1322,9 +1484,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "No",
    "ETHERNET(2)": "No",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1361,7 +1521,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP64"
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32F215Vx": {
    "FLASH MEMORY": 512,
@@ -1369,9 +1531,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "Yes",
    "ETHERNET(2)": "No",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1408,7 +1568,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100"
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32F215Vx-1": {
    "FLASH MEMORY": 1024,
@@ -1416,9 +1578,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "Yes",
    "ETHERNET(2)": "No",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1455,7 +1615,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100"
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32F215Zx": {
    "FLASH MEMORY": 512,
@@ -1463,9 +1625,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "Yes",
    "ETHERNET(2)": "No",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1502,7 +1662,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP144"
+   "PACKAGE": [
+    "LQFP144"
+   ]
   },
   "STM32F215Zx-1": {
    "FLASH MEMORY": 1024,
@@ -1510,9 +1672,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "Yes",
    "ETHERNET(2)": "No",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1549,7 +1709,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP144"
+   "PACKAGE": [
+    "LQFP144"
+   ]
   },
   "STM32F217Vx": {
    "FLASH MEMORY": 512,
@@ -1557,9 +1719,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "Yes",
    "ETHERNET(2)": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1596,7 +1756,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100"
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32F217Vx-1": {
    "FLASH MEMORY": 1024,
@@ -1604,9 +1766,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "Yes",
    "ETHERNET(2)": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1643,7 +1803,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100"
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32F217Zx": {
    "FLASH MEMORY": 512,
@@ -1651,9 +1813,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "Yes",
    "ETHERNET(2)": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1690,7 +1850,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP144"
+   "PACKAGE": [
+    "LQFP144"
+   ]
   },
   "STM32F217Zx-1": {
    "FLASH MEMORY": 1024,
@@ -1698,9 +1860,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "Yes",
    "ETHERNET(2)": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1737,7 +1897,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP144"
+   "PACKAGE": [
+    "LQFP144"
+   ]
   },
   "STM32F217Ix": {
    "FLASH MEMORY": 512,
@@ -1745,9 +1907,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "Yes",
    "ETHERNET(2)": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1784,7 +1944,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA176 LQFP176"
+   "PACKAGE": [
+    "UFBGA176",
+    ",LQFP176"
+   ]
   },
   "STM32F217Ix-1": {
    "FLASH MEMORY": 1024,
@@ -1792,9 +1955,7 @@
    "SRAM IN YTES BACKUP": 4,
    "FSMC MEMORY CONTROLLER": "Yes",
    "ETHERNET(2)": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS IWDG": "Yes",
    "TIMERS WWDG": "Yes",
    "RTC": "Yes",
@@ -1831,7 +1992,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA176 LQFP176"
+   "PACKAGE": [
+    "UFBGA176",
+    ",LQFP176"
+   ]
   },
   "STM32F401xB": {
    "FLASH MEMORY": 128,
@@ -1859,7 +2023,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP49 UFQFPN48"
+   "PACKAGE": [
+    "WLCSP49",
+    "UFQFPN48"
+   ]
   },
   "STM32F401xB-1": {
    "FLASH MEMORY": 128,
@@ -1887,7 +2054,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP64"
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32F401xB-2": {
    "FLASH MEMORY": 128,
@@ -1915,7 +2084,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA100 LQFP100"
+   "PACKAGE": [
+    "UFBGA100",
+    "LQFP100"
+   ]
   },
   "STM32F401xC": {
    "FLASH MEMORY": 256,
@@ -1943,7 +2115,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP49 UFQFPN48"
+   "PACKAGE": [
+    "WLCSP49",
+    "UFQFPN48"
+   ]
   },
   "STM32F401xC-1": {
    "FLASH MEMORY": 256,
@@ -1971,7 +2146,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP64"
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32F401xC-2": {
    "FLASH MEMORY": 256,
@@ -1999,7 +2176,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA100 LQFP100"
+   "PACKAGE": [
+    "UFBGA100",
+    "LQFP100"
+   ]
   },
   "STM32F413xG": {
    "FLASH MEMORY": 1024,
@@ -2009,7 +2189,7 @@
    "FSMC LCD PARALLEL  INTERFACE DATA BUS SIZE": "-",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCED- CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "TIMERS LOW-POWER  TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "SPI": 5,
@@ -2044,7 +2224,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFQFPN 48"
+   "PACKAGE": [
+    "UFQFPN48"
+   ]
   },
   "STM32F413xG-1": {
    "FLASH MEMORY": 1024,
@@ -2055,7 +2237,7 @@
    "FSMC LCD PARALLEL  INTERFACE DATA BUS SIZE": 8,
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCED- CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "TIMERS LOW-POWER  TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "I2S": 5,
@@ -2089,7 +2271,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP 64"
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32F413xG-2": {
    "FLASH MEMORY": 1024,
@@ -2100,7 +2284,7 @@
    "FSMC LCD PARALLEL  INTERFACE DATA BUS SIZE": 16,
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCED- CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "TIMERS LOW-POWER  TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "I2S": 5,
@@ -2134,7 +2318,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP 81"
+   "PACKAGE": [
+    "WLCSP81"
+   ]
   },
   "STM32F413xG-3": {
    "FLASH MEMORY": 1024,
@@ -2145,7 +2331,7 @@
    "FSMC LCD PARALLEL  INTERFACE DATA BUS SIZE": 16,
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCED- CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "TIMERS LOW-POWER  TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "I2S": 5,
@@ -2179,7 +2365,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA/ LQFP100"
+   "PACKAGE": [
+    "UFBGA/LQFP100"
+   ]
   },
   "STM32F413xG-4": {
    "FLASH MEMORY": 1024,
@@ -2190,7 +2378,7 @@
    "FSMC LCD PARALLEL  INTERFACE DATA BUS SIZE": 16,
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCED- CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "TIMERS LOW-POWER  TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "I2S": 5,
@@ -2224,7 +2412,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA/ LQFP144"
+   "PACKAGE": [
+    "UFBGA/LQFP144"
+   ]
   },
   "STM32F413xH": {
    "FLASH MEMORY": 1536,
@@ -2234,7 +2424,7 @@
    "FSMC LCD PARALLEL  INTERFACE DATA BUS SIZE": "-",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCED- CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "TIMERS LOW-POWER  TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "SPI": 5,
@@ -2269,7 +2459,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFQFPN 48"
+   "PACKAGE": [
+    "UFQFPN48"
+   ]
   },
   "STM32F413xH-1": {
    "FLASH MEMORY": 1536,
@@ -2280,7 +2472,7 @@
    "FSMC LCD PARALLEL  INTERFACE DATA BUS SIZE": 8,
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCED- CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "TIMERS LOW-POWER  TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "I2S": 5,
@@ -2314,7 +2506,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP64"
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32F413xH-2": {
    "FLASH MEMORY": 1536,
@@ -2325,7 +2519,7 @@
    "FSMC LCD PARALLEL  INTERFACE DATA BUS SIZE": 16,
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCED- CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "TIMERS LOW-POWER  TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "I2S": 5,
@@ -2359,7 +2553,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP 81"
+   "PACKAGE": [
+    "WLCSP81"
+   ]
   },
   "STM32F413xH-3": {
    "FLASH MEMORY": 1536,
@@ -2370,7 +2566,7 @@
    "FSMC LCD PARALLEL  INTERFACE DATA BUS SIZE": 16,
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCED- CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "TIMERS LOW-POWER  TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "I2S": 5,
@@ -2404,7 +2600,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA/ LQFP100"
+   "PACKAGE": [
+    "UFBGA/LQFP100"
+   ]
   },
   "STM32F413xH-4": {
    "FLASH MEMORY": 1536,
@@ -2415,7 +2613,7 @@
    "FSMC LCD PARALLEL  INTERFACE DATA BUS SIZE": 16,
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCED- CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "TIMERS LOW-POWER  TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "I2S": 5,
@@ -2449,7 +2647,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA/ LQFP144"
+   "PACKAGE": [
+    "UFBGA/LQFP144"
+   ]
   },
   "STM32F423xH": {
    "FLASH MEMORY": 1536,
@@ -2457,9 +2657,7 @@
    "FSMC MEMORY CONTROLLER": "-",
    "FSMC LCD PARALLEL INTERFACE   DATA BUS SIZE": "-",
    "QUAD SPI": 1,
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "AES": 1,
@@ -2495,7 +2693,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFQFPN48"
+   "PACKAGE": [
+    "UFQFPN48"
+   ]
   },
   "STM32F423xH-1": {
    "FLASH MEMORY": 1536,
@@ -2504,9 +2704,7 @@
    "FSMC LCD PARALLEL INTERFACE   DATA BUS SIZE": 8,
    "SPI": 6,
    "QUAD SPI": 1,
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "AES": 1,
@@ -2541,7 +2739,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP64"
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32F423xH-2": {
    "FLASH MEMORY": 1536,
@@ -2550,9 +2750,7 @@
    "FSMC LCD PARALLEL INTERFACE   DATA BUS SIZE": 16,
    "SPI": 6,
    "QUAD SPI": 1,
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "AES": 1,
@@ -2587,7 +2785,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP81"
+   "PACKAGE": [
+    "WLCSP81"
+   ]
   },
   "STM32F423xH-3": {
    "FLASH MEMORY": 1536,
@@ -2596,9 +2796,7 @@
    "FSMC LCD PARALLEL INTERFACE   DATA BUS SIZE": 16,
    "SPI": 6,
    "QUAD SPI": 1,
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "AES": 1,
@@ -2633,7 +2831,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA100 LQFP100"
+   "PACKAGE": [
+    "UFBGA100",
+    "LQFP100"
+   ]
   },
   "STM32F423xH-4": {
    "FLASH MEMORY": 1536,
@@ -2642,9 +2843,7 @@
    "FSMC LCD PARALLEL INTERFACE   DATA BUS SIZE": 16,
    "SPI": 6,
    "QUAD SPI": 1,
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER TIMER": 1,
    "RANDOM NUER GENERATOR": 1048576,
    "AES": 1,
@@ -2679,7 +2878,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA144 LQFP144"
+   "PACKAGE": [
+    "UFBGA144",
+    "LQFP144"
+   ]
   },
   "STM32F437Vx": {
    "FLASH MEMORY": 1024,
@@ -2689,7 +2891,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 4,
    "I2S": 2,
@@ -2726,7 +2928,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100"
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32F437Vx-1": {
    "FLASH MEMORY": 2048,
@@ -2736,7 +2940,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 4,
    "I2S": 2,
@@ -2773,7 +2977,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100"
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32F439Vx": {
    "FLASH MEMORY": 1024,
@@ -2783,7 +2989,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 4,
    "I2S": 2,
@@ -2820,7 +3026,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100"
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32F439Vx-1": {
    "FLASH MEMORY": 2048,
@@ -2830,7 +3038,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 4,
    "I2S": 2,
@@ -2867,7 +3075,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100"
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32F437Zx": {
    "FLASH MEMORY": 1024,
@@ -2877,7 +3087,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -2914,7 +3124,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP143 LQFP144"
+   "PACKAGE": [
+    "WLCSP143",
+    "LQFP144"
+   ]
   },
   "STM32F437Zx-1": {
    "FLASH MEMORY": 2048,
@@ -2924,7 +3137,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -2961,7 +3174,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP143 LQFP144"
+   "PACKAGE": [
+    "WLCSP143",
+    "LQFP144"
+   ]
   },
   "STM32F437AI": {
    "FLASH MEMORY": 2048,
@@ -2971,7 +3187,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3008,7 +3224,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA169"
+   "PACKAGE": [
+    "UFBGA169"
+   ]
   },
   "STM32F439AI": {
    "FLASH MEMORY": 2048,
@@ -3018,7 +3236,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3055,7 +3273,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA169"
+   "PACKAGE": [
+    "UFBGA169"
+   ]
   },
   "STM32F439Zx": {
    "FLASH MEMORY": 1024,
@@ -3065,7 +3285,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3102,7 +3322,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP143 LQFP144"
+   "PACKAGE": [
+    "WLCSP143",
+    "LQFP144"
+   ]
   },
   "STM32F439Zx-1": {
    "FLASH MEMORY": 2048,
@@ -3112,7 +3335,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3149,7 +3372,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP143 LQFP144"
+   "PACKAGE": [
+    "WLCSP143",
+    "LQFP144"
+   ]
   },
   "STM32F437Ix": {
    "FLASH MEMORY": 1024,
@@ -3159,7 +3385,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3196,7 +3422,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA176 LQFP176"
+   "PACKAGE": [
+    "UFBGA176",
+    "LQFP176"
+   ]
   },
   "STM32F437Ix-1": {
    "FLASH MEMORY": 2048,
@@ -3206,7 +3435,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3243,7 +3472,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA176 LQFP176"
+   "PACKAGE": [
+    "UFBGA176",
+    "LQFP176"
+   ]
   },
   "STM32F439Ix": {
    "FLASH MEMORY": 1024,
@@ -3253,7 +3485,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3290,7 +3522,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA176 LQFP176"
+   "PACKAGE": [
+    "UFBGA176",
+    "LQFP176"
+   ]
   },
   "STM32F439Ix-1": {
    "FLASH MEMORY": 2048,
@@ -3300,7 +3535,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3337,7 +3572,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA176 LQFP176"
+   "PACKAGE": [
+    "UFBGA176",
+    "LQFP176"
+   ]
   },
   "STM32F439Bx": {
    "FLASH MEMORY": 1024,
@@ -3347,7 +3585,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3384,7 +3622,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP208"
+   "PACKAGE": [
+    "LQFP208"
+   ]
   },
   "STM32F439Bx-1": {
    "FLASH MEMORY": 2048,
@@ -3394,7 +3634,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3431,7 +3671,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP208"
+   "PACKAGE": [
+    "LQFP208"
+   ]
   },
   "STM32F439Nx": {
    "FLASH MEMORY": 1024,
@@ -3441,7 +3683,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3478,7 +3720,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "TFBGA216"
+   "PACKAGE": [
+    "TFBGA216"
+   ]
   },
   "STM32F439Nx-1": {
    "FLASH MEMORY": 2048,
@@ -3488,7 +3732,7 @@
    "ETHERNET": "Yes",
    "TIMERS GENERAL- PURPOSE": 10,
    "TIMERS ADVANCE D-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 2,
    "RANDOM NUER  GENERATOR": "Yes",
    "SPI": 6,
    "I2S": 2,
@@ -3525,7 +3769,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "TFBGA216"
+   "PACKAGE": [
+    "TFBGA216"
+   ]
   },
   "STM32F77xVx": {
    "FLASH MEMORY": 1024,
@@ -3535,9 +3781,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 4,
@@ -3580,7 +3824,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100 TFBGA100"
+   "PACKAGE": [
+    "LQFP100",
+    "TFBGA100"
+   ]
   },
   "STM32F77xVx-1": {
    "FLASH MEMORY": 2048,
@@ -3590,9 +3837,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 4,
@@ -3635,7 +3880,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP100 TFBGA100"
+   "PACKAGE": [
+    "LQFP100",
+    "TFBGA100"
+   ]
   },
   "STM32F77xZx": {
    "FLASH MEMORY": 1024,
@@ -3645,9 +3893,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -3690,7 +3936,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP144"
+   "PACKAGE": [
+    "LQFP144"
+   ]
   },
   "STM32F77xZx-1": {
    "FLASH MEMORY": 2048,
@@ -3700,9 +3948,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -3745,7 +3991,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP144"
+   "PACKAGE": [
+    "LQFP144"
+   ]
   },
   "STM32F779Ax": {
    "FLASH MEMORY": 1024,
@@ -3755,9 +4003,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "No",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -3800,7 +4046,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP180"
+   "PACKAGE": [
+    "WLCSP180"
+   ]
   },
   "STM32F779Ax-1": {
    "FLASH MEMORY": 2048,
@@ -3810,9 +4058,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "No",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -3855,7 +4101,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP180"
+   "PACKAGE": [
+    "WLCSP180"
+   ]
   },
   "STM32F778Ax": {
    "FLASH MEMORY": 2048,
@@ -3865,9 +4113,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "No",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -3910,7 +4156,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "WLCSP180"
+   "PACKAGE": [
+    "WLCSP180"
+   ]
   },
   "STM32F77xIx": {
    "FLASH MEMORY": 1024,
@@ -3920,9 +4168,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -3965,7 +4211,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA176  LQFP176"
+   "PACKAGE": [
+    "UFBGA176",
+    "LQFP176"
+   ]
   },
   "STM32F77xIx-1": {
    "FLASH MEMORY": 2048,
@@ -3975,9 +4224,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -4020,7 +4267,10 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "UFBGA176  LQFP176"
+   "PACKAGE": [
+    "UFBGA176",
+    "LQFP176"
+   ]
   },
   "STM32F77xBx": {
    "FLASH MEMORY": 1024,
@@ -4030,9 +4280,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -4075,7 +4323,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP208"
+   "PACKAGE": [
+    "LQFP208"
+   ]
   },
   "STM32F77xBx-1": {
    "FLASH MEMORY": 2048,
@@ -4085,9 +4335,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -4130,7 +4378,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "LQFP208"
+   "PACKAGE": [
+    "LQFP208"
+   ]
   },
   "STM32F77xNx": {
    "FLASH MEMORY": 1024,
@@ -4140,9 +4390,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -4185,7 +4433,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "TFBGA216"
+   "PACKAGE": [
+    "TFBGA216"
+   ]
   },
   "STM32F77xNx-1": {
    "FLASH MEMORY": 2048,
@@ -4195,9 +4445,7 @@
    "FMC MEMORY CONTROLLER": "Yes",
    "QUAD SPI": 1,
    "ETHERNET": "Yes",
-   "TIMERS GENERAL-PURPOSE": 10,
-   "TIMERS ADVANCED-CONTROL": 2,
-   "TIMERS BASIC": 2,
+   "TIMER": 14,
    "TIMERS LOW-POWER": 1,
    "RANDOM NUER GENERATOR": "Yes",
    "SPI": 6,
@@ -4240,7 +4488,9 @@
     "min": -40,
     "max": 85
    },
-   "PACKAGE": "TFBGA216"
+   "PACKAGE": [
+    "TFBGA216"
+   ]
   }
  },
  "STM32L": {
@@ -4264,27 +4514,20 @@
    "RTC": "Yes",
    "TAMPER PINS": 3,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 83,
-   "WAKEUP PINS": 5,
+   "GPIOS WAKEUP PINS": "83 5",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 22020096,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL  AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
    "OPERATING  TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
-   "LQFP100": "Yes",
-   "UFBGA100": "Yes"
+   "PACKAGE": [
+    "LQFP100",
+    "UFBGA100"
+   ]
   },
   "STM32L431Rx": {
    "FLASH MEMORY": 128,
@@ -4306,28 +4549,21 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 52,
-   "WAKEUP PINS": 4,
+   "GPIOS WAKEUP PINS": "52 4",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL  AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
    "OPERATING  TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
-   "WLCSP64": "Yes",
-   "LQFP64": "Yes",
-   "UFBGA64": "Yes"
+   "PACKAGE": [
+    "WLCSP64",
+    "LQFP64",
+    "UFBGA64"
+   ]
   },
   "STM32L431Rx-1": {
    "FLASH MEMORY": 256,
@@ -4349,28 +4585,21 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 52,
-   "WAKEUP PINS": 4,
+   "GPIOS WAKEUP PINS": "52 4",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL  AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
    "OPERATING  TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
-   "WLCSP64": "Yes",
-   "LQFP64": "Yes",
-   "UFBGA64": "Yes"
+   "PACKAGE": [
+    "WLCSP64",
+    "LQFP64",
+    "UFBGA64"
+   ]
   },
   "STM32L431Cx": {
    "FLASH MEMORY": 128,
@@ -4392,28 +4621,21 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 38,
-   "WAKEUP PINS": 3,
+   "GPIOS WAKEUP PINS": "38 or 39 3",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 6291456,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 10
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 10",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL  AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
    "OPERATING  TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
-   "WLCSP49": "Yes",
-   "LQFP48": "Yes",
-   "UFQFPN48": "Yes"
+   "PACKAGE": [
+    "WLCSP49",
+    "LQFP48",
+    "UFQFPN48"
+   ]
   },
   "STM32L431Cx-1": {
    "FLASH MEMORY": 256,
@@ -4435,28 +4657,21 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 38,
-   "WAKEUP PINS": 3,
+   "GPIOS WAKEUP PINS": "38 or 39 3",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 6291456,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 10
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 10",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL  AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
    "OPERATING  TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
-   "WLCSP49": "Yes",
-   "LQFP48": "Yes",
-   "UFQFPN48": "Yes"
+   "PACKAGE": [
+    "WLCSP49",
+    "LQFP48",
+    "UFQFPN48"
+   ]
   },
   "STM32L431Kx": {
    "FLASH MEMORY": 128,
@@ -4478,26 +4693,19 @@
    "RTC": "Yes",
    "TAMPER PINS": 1,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 26,
-   "WAKEUP PINS": 2,
+   "GPIOS WAKEUP PINS": "26 2",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 3145728,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 10
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 10",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL  AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
    "OPERATING  TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
-   "UFQFPN32": "Yes"
+   "PACKAGE": [
+    "UFQFPN32"
+   ]
   },
   "STM32L431Kx-1": {
    "FLASH MEMORY": 256,
@@ -4519,26 +4727,19 @@
    "RTC": "Yes",
    "TAMPER PINS": 1,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 26,
-   "WAKEUP PINS": 2,
+   "GPIOS WAKEUP PINS": "26 2",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 3145728,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 10
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 10",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL  AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
    "OPERATING  TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
-   "UFQFPN32": "Yes"
+   "PACKAGE": [
+    "UFQFPN32"
+   ]
   },
   "STM32L451Vx": {
    "FLASH MEMORY": 256,
@@ -4558,30 +4759,20 @@
    "RTC": "Yes",
    "TAMPER PINS": 3,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 83,
-   "WAKEUP PINS": 5,
+   "GPIOS WAKEUP PINS": "83 5",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 22020096,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "LQFP100": "Yes",
-   "UFBGA100": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP100",
+    "UFBGA100"
+   ]
   },
   "STM32L451Vx-1": {
    "FLASH MEMORY": 512,
@@ -4601,30 +4792,20 @@
    "RTC": "Yes",
    "TAMPER PINS": 3,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 83,
-   "WAKEUP PINS": 5,
+   "GPIOS WAKEUP PINS": "83 5",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 22020096,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "LQFP100": "Yes",
-   "UFBGA100": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP100",
+    "UFBGA100"
+   ]
   },
   "STM32L451Rx": {
    "FLASH MEMORY": 256,
@@ -4644,31 +4825,21 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 52,
-   "WAKEUP PINS": 4,
+   "GPIOS WAKEUP PINS": "52 4",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "WLCSP64": "Yes",
-   "LQFP64": "Yes",
-   "UFBGA64": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "WLCSP64",
+    "LQFP64",
+    "UFBGA64"
+   ]
   },
   "STM32L451Rx-1": {
    "FLASH MEMORY": 512,
@@ -4688,31 +4859,21 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 52,
-   "WAKEUP PINS": 4,
+   "GPIOS WAKEUP PINS": "52 4",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "WLCSP64": "Yes",
-   "LQFP64": "Yes",
-   "UFBGA64": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "WLCSP64",
+    "LQFP64",
+    "UFBGA64"
+   ]
   },
   "STM32L451Cx": {
    "FLASH MEMORY": 256,
@@ -4732,29 +4893,19 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 38,
-   "WAKEUP PINS": 3,
+   "GPIOS WAKEUP PINS": "38 3",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 6291456,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 10
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 10",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "UFQFPN48": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "UFQFPN48"
+   ]
   },
   "STM32L451Cx-1": {
    "FLASH MEMORY": 512,
@@ -4774,29 +4925,19 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 38,
-   "WAKEUP PINS": 3,
+   "GPIOS WAKEUP PINS": "38 3",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 6291456,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 10
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 10",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "UFQFPN48": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "UFQFPN48"
+   ]
   },
   "STM32L452Vx": {
    "FLASH MEMORY": 256,
@@ -4817,30 +4958,20 @@
    "RTC": "Yes",
    "TAMPER PINS": 3,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 83,
-   "WAKEUP PINS": 5,
+   "GPIOS(2) WAKEUP PINS": "83 5",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 22020096,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "LQFP100": "Yes",
-   "UFBGA100": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP100",
+    "UFBGA100"
+   ]
   },
   "STM32L452Vx-1": {
    "FLASH MEMORY": 512,
@@ -4861,30 +4992,20 @@
    "RTC": "Yes",
    "TAMPER PINS": 3,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 83,
-   "WAKEUP PINS": 5,
+   "GPIOS(2) WAKEUP PINS": "83 5",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 22020096,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "LQFP100": "Yes",
-   "UFBGA100": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP100",
+    "UFBGA100"
+   ]
   },
   "STM32L452Rx": {
    "FLASH MEMORY": 256,
@@ -4905,31 +5026,21 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 52,
-   "WAKEUP PINS": 4,
+   "GPIOS(2) WAKEUP PINS": "52 4",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "WLCSP64": "Yes",
-   "LQFP64": "Yes",
-   "UFBGA64": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "WLCSP64",
+    "LQFP64",
+    "UFBGA64"
+   ]
   },
   "STM32L452Rx-1": {
    "FLASH MEMORY": 512,
@@ -4950,31 +5061,21 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 52,
-   "WAKEUP PINS": 4,
+   "GPIOS(2) WAKEUP PINS": "52 4",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 16
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 16",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "WLCSP64": "Yes",
-   "LQFP64": "Yes",
-   "UFBGA64": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "WLCSP64",
+    "LQFP64",
+    "UFBGA64"
+   ]
   },
   "STM32L452Cx": {
    "FLASH MEMORY": 256,
@@ -4995,29 +5096,19 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 38,
-   "WAKEUP PINS": 3,
+   "GPIOS(2) WAKEUP PINS": "38 3",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 6291456,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 10
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 10",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "UFQFPN48": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "UFQFPN48"
+   ]
   },
   "STM32L452Cx-1": {
    "FLASH MEMORY": 512,
@@ -5038,29 +5129,19 @@
    "RTC": "Yes",
    "TAMPER PINS": 2,
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 38,
-   "WAKEUP PINS": 3,
+   "GPIOS(2) WAKEUP PINS": "38 3",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 6291456,
-   "ADC": {
-    "12-bit": {
-     "count": 1,
-     "channels": 10
-    }
-   },
+   "12-BIT ADC  NUER OF CHANNELS": "1 10",
    "12-BIT DAC CHANNELS": 1,
    "INTERNAL VOLTAGE REFERENCE  BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 1,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 1.71,
-    "max": 3.6
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 85
-   },
-   "UFQFPN48": "Yes"
+   "OPERATING VOLTAGE": "1.71 to 3.6 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "UFQFPN48"
+   ]
   },
   "STM32L476Zx": {
    "FLASH MEMORY": "512K B",
@@ -5086,30 +5167,21 @@
    "TAMPER PINS": 3,
    "LCD COM X SEG": "Yes 8x40 or  4x44",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 114,
-   "WAKEUP PINS": 5,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "114 5 14",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 25165824,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 24
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 24",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "LQFP144": "Yes",
-   "UFBGA144": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP144",
+    "UFBGA144"
+   ]
   },
   "STM32L476Zx-1": {
    "FLASH MEMORY": 1024,
@@ -5135,30 +5207,21 @@
    "TAMPER PINS": 3,
    "LCD COM X SEG": "Yes 8x40 or  4x44",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 114,
-   "WAKEUP PINS": 5,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "114 5 14",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 25165824,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 24
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 24",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "LQFP144": "Yes",
-   "UFBGA144": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP144",
+    "UFBGA144"
+   ]
   },
   "STM32L476Qx": {
    "FLASH MEMORY": "512K B",
@@ -5184,29 +5247,20 @@
    "TAMPER PINS": 3,
    "LCD COM X SEG": "Yes 8x40 or  4x44",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 109,
-   "WAKEUP PINS": 5,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "109 5 14",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 25165824,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 19
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 19",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "UFBGA132": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "UFBGA132"
+   ]
   },
   "STM32L476Qx-1": {
    "FLASH MEMORY": 1024,
@@ -5232,29 +5286,20 @@
    "TAMPER PINS": 3,
    "LCD COM X SEG": "Yes 8x40 or  4x44",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 109,
-   "WAKEUP PINS": 5,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "109 5 14",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 25165824,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 19
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 19",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "UFBGA132": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "UFBGA132"
+   ]
   },
   "STM32L476Vx": {
    "FLASH MEMORY": "256K B",
@@ -5280,29 +5325,20 @@
    "TAMPER PINS": 3,
    "LCD COM X SEG": "Yes 8x40 or 4x44",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 82,
-   "WAKEUP PINS": 5,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "82 5 0",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 22020096,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 16
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "LQFP100": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32L476Vx-1": {
    "FLASH MEMORY": "512K B",
@@ -5328,29 +5364,20 @@
    "TAMPER PINS": 3,
    "LCD COM X SEG": "Yes 8x40 or 4x44",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 82,
-   "WAKEUP PINS": 5,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "82 5 0",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 22020096,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 16
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "LQFP100": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32L476Vx-2": {
    "FLASH MEMORY": 1024,
@@ -5376,29 +5403,20 @@
    "TAMPER PINS": 3,
    "LCD COM X SEG": "Yes 8x40 or 4x44",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 82,
-   "WAKEUP PINS": 5,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "82 5 0",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 22020096,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 16
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "LQFP100": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP100"
+   ]
   },
   "STM32L476Mx": {
    "FLASH MEMORY": "512K B",
@@ -5424,29 +5442,20 @@
    "TAMPER PINS": 2,
    "LCD COM X SEG": "Yes 8x30 or  4x32",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 65,
-   "WAKEUP PINS": 4,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "65 4 6",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 16
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "WLCSP81": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "WLCSP81"
+   ]
   },
   "STM32L476Mx-1": {
    "FLASH MEMORY": 1024,
@@ -5472,29 +5481,20 @@
    "TAMPER PINS": 2,
    "LCD COM X SEG": "Yes 8x30 or  4x32",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 65,
-   "WAKEUP PINS": 4,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "65 4 6",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 16
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "WLCSP81": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "WLCSP81"
+   ]
   },
   "STM32L476Jx": {
    "FLASH MEMORY": "512K B",
@@ -5520,29 +5520,20 @@
    "TAMPER PINS": 2,
    "LCD COM X SEG": "Yes 8x28 or  4x32",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 57,
-   "WAKEUP PINS": 4,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "57 4 6",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 16
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "WLCSP72": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "WLCSP72"
+   ]
   },
   "STM32L476Jx-1": {
    "FLASH MEMORY": 1024,
@@ -5568,29 +5559,20 @@
    "TAMPER PINS": 2,
    "LCD COM X SEG": "Yes 8x28 or  4x32",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 57,
-   "WAKEUP PINS": 4,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "57 4 6",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 16
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "Yes",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "WLCSP72": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "WLCSP72"
+   ]
   },
   "STM32L476Rx": {
    "FLASH MEMORY": "256K B",
@@ -5616,29 +5598,20 @@
    "TAMPER PINS": 2,
    "LCD COM X SEG": "Yes 8x28 or 4x32",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 51,
-   "WAKEUP PINS": 4,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "51 4 0",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 16
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "LQFP64": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32L476Rx-1": {
    "FLASH MEMORY": "512K B",
@@ -5664,29 +5637,20 @@
    "TAMPER PINS": 2,
    "LCD COM X SEG": "Yes 8x28 or 4x32",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 51,
-   "WAKEUP PINS": 4,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "51 4 0",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 16
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "LQFP64": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP64"
+   ]
   },
   "STM32L476Rx-2": {
    "FLASH MEMORY": 1024,
@@ -5712,29 +5676,20 @@
    "TAMPER PINS": 2,
    "LCD COM X SEG": "Yes 8x28 or 4x32",
    "RANDOM GENERATOR": "Yes",
-   "TOTAL GPIOS": 51,
-   "WAKEUP PINS": 4,
+   "GPIOS(2) WAKEUP PINS NB OF I/OS DOWN TO  1.08 V": "51 4 0",
    "CAPACITIVE SENSING  NUER OF CHANNELS": 12582912,
-   "ADC": {
-    "12-bit": {
-     "count": 3,
-     "channels": 16
-    }
-   },
+   "12-BIT ADCS  NUER OF CHANNELS": "3 16",
    "12-BIT DAC CHANNELS": 2,
    "INTERNAL VOLTAGE  REFERENCE BUFFER": "No",
    "ANALOG COMPARATOR": 2,
    "OPERATIONAL AMPLIFIERS": 2,
    "CPU FREQUENCY": 80,
-   "OPERATING VOLTAGE": {
-    "min": 2.76,
-    "max": 4.92
-   },
-   "OPERATING TEMPERATURE": {
-    "min": -40,
-    "max": 105
-   },
-   "LQFP64": "Yes"
+   "OPERATING VOLTAGE (V ) DD": "1.71 to 3.6 V",
+   "OPERATING VOLTAGE  (V ) DD12": "1.05 to 1.32 V",
+   "OPERATING TEMPERATURE": "Ambient operating temperature: -40 to 85 \u00b0C / -40 to 105 \u00b0C / -40 to 125 \u00b0C Junction temperature: -40 to 105 \u00b0C / -40 to 125 \u00b0C / -40 to 130 \u00b0C",
+   "PACKAGE": [
+    "LQFP64"
+   ]
   }
  }
 }

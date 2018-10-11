@@ -87,7 +87,9 @@ class MKFeatureListExtractor(FeatureListExtractor):
             # print(mcus_fields)
             qa_status, m_fam, s_fam, _, key_attr, flash, si_rev, temp, package, cpu_frq, pack_type = mcus_fields
             pin_count, package = self.packages[package]
-            features[package] = 1
+            if not features.get('PACKAGE',False):
+                features['PACKAGE'] = []
+            features['PACKAGE'].append(package + pin_count)
             features['pin count'] = pin_count
             if 'M' in flash:
                 flash = flash.split('M')[0]

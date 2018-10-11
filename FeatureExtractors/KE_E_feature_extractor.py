@@ -33,7 +33,9 @@ class KEFeatureListExtractor(MKFeatureListExtractor):
             mcus_fields = self.mcu_fields.match(mcu)
             qa_status, m_fam, s_fam_, key_attr, flash, _, temp, package, cpu_frq, pack_type = mcus_fields.groups()
             pin_count, package = self.packages[package]
-            features[package] = 1
+            if not features.get('PACKAGE',False):
+                features['PACKAGE'] = []
+                features['PACKAGE'].append(package + pin_count)
             features['pin count'] = pin_count
             if 'M' in flash:
                 flash = flash.split('M')[0]

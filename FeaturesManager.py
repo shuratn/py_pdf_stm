@@ -159,7 +159,7 @@ if __name__ == '__main__':
         print('Usage: {} DATASHEET.pdj'.format(os.path.basename(sys.argv[0])))
         exit(0xDEADBEEF)
     # controllers = sys.argv[1:]
-    controllers = ['stm32L476']
+    controllers = ['STM32F437ig']
     feature_manager = FeatureManager(controllers)
     feature_manager.parse()
     feature_manager.write_excel_file()

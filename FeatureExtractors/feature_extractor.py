@@ -207,8 +207,8 @@ class FeatureListExtractor:  # This class is adapted to STM
                 feature_name = feature_name.upper()
                 if features_value:
                     if self.config_name in self.config['unify']:
-                        unify_list = self.config['unify'][self.config_name] #type: Dict[str,str]
-                        unify_list = {k.upper():v.upper() for k,v in unify_list.items()}
+                        unify_list = self.config['unify'][self.config_name]  # type: Dict[str,str]
+                        unify_list = {k.upper(): v.upper() for k, v in unify_list.items()}
                         known = True
                         if feature_name not in unify_list:
                             if feature_name not in unify_list.values():
@@ -216,17 +216,17 @@ class FeatureListExtractor:  # This class is adapted to STM
                                 if feature_name not in unknown_names:
                                     unknown_names[mc].append(feature_name)
                         if known:
-                            new_name = unify_list.get(feature_name, feature_name).upper()  # in case name is already unified
+                            new_name = unify_list.get(feature_name,
+                                                      feature_name).upper()  # in case name is already unified
                             values = mc_features.pop(feature_name)
                             new_name, values = convert_type(new_name, values)
                             new_name = new_name.upper()
                             if new_name in mc_features:
                                 mc_features[new_name] = self.merge_features(mc_features[new_name],
-                                                                                    values)
+                                                                            values)
                             else:
                                 mc_features[new_name] = values
                         else:
-                            # print('UNKNOWN FEATURE {} ON {}'.format(feature_name,mc))
                             new_name = feature_name  # in case name is already unified
                             values = mc_features.pop(feature_name)
                             new_name, values = convert_type(new_name, values)
@@ -236,17 +236,19 @@ class FeatureListExtractor:  # This class is adapted to STM
                         unknown_names[mc].append(feature_name)
 
             self.features[mc] = mc_features
-        for mc,features in unknown_names.items():
+        for mc, features in unknown_names.items():
             unknown_names = list(set(features))
-            print('List of unknown features for', mc)
-            print('Add correction if name is mangled')
-            print('Or add unify for this feature')
-            for unknown_feature in unknown_names:
-                print('\t', unknown_feature)
-            print('=' * 20)
+            if unknown_names:
+                print('List of unknown features for', mc)
+                print('Add correction if name is mangled')
+                print('Or add unify for this feature')
+                for unknown_feature in unknown_names:
+                    print('\t', unknown_feature)
+                print('=' * 20)
+                print()
 
-    def merge_features(self, old, new):
-
+    @staticmethod
+    def merge_features(old, new):
         return merge(old, new)
 
 

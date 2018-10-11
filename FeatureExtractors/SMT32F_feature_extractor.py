@@ -11,7 +11,7 @@ from FeatureExtractors.feature_extractor import FeatureListExtractor, remove_uni
 
 class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
 
-    def __init__(self, controller: str, datasheet: DataSheet, config):
+    def __init__(self, controller: str, datasheet: DataSheet, config) -> None:
         self.adc_count_found = False
         self.dac_count_found = False
         super().__init__(controller, datasheet, config)

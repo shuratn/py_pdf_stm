@@ -34,6 +34,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
         value = remove_parentheses(value)
         if name in self.config['corrections']:
             name = self.config['corrections'][name]
+        name = name.upper()
         if 'USART' in name or 'LPUART' in name or 'LPUART' in name:
             values = sum(map(int, value.split('\n')))
             return [('UART', values)]
@@ -54,9 +55,10 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
             values = list(map(float, values))
             return [('Operating voltage', {'min': values[0], 'max': values[1]})]
 
-        if 'Packages' in name:
+        if 'PACKAGE' in name:
             values = re.split('(\D+\s?\d{1,3})', value)
-            return [(fucking_replace(name, '\n ', ''), 'Yes') for name in values]
+            values = [fucking_replace(name, '\n ', '').strip() for name in values]
+            return [('PACKAGE',[value for value in values if value])]
 
         if 'Operating temperature' in name:
             # -40 to 85 °C / -40 to 125 °C
