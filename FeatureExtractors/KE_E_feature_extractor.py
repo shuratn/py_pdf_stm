@@ -71,7 +71,6 @@ class KEFeatureListExtractor(MKFeatureListExtractor):
             elif 'Product' in table.get_cell(0, 0).text:
                 mcus = list(map(lambda cell: cell.clean_text, table.get_col(0)[2:]))
         mcus = [mcu.strip().replace('\n','').replace(' ','') for mcu in mcus]
-        print(mcus)
         for page in pages:
             text = page.extractText()
             for block in text.split("€"):

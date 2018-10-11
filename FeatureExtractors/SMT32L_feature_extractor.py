@@ -35,7 +35,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
         if name in self.config['corrections']:
             name = self.config['corrections'][name]
         if 'USART' in name or 'LPUART' in name or 'LPUART' in name:
-            values = sum(map(int,value.split('\n')))
+            values = sum(map(int, value.split('\n')))
             return [('UART', values)]
         if 'GPIOs' in name and 'Wakeup' in name:
             values = value.split('\n')
@@ -45,7 +45,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
                 values[0] = values[0][:values[0].index('(')]
             return [('GPIOs', int(values[0])), ('Wakeup pins', int(values[1]))]
         if 'ADC' in name and 'Number' in name:
-            adc_type = re.findall('(\d+)-bit\s?\w*\sADC\s?\w*',name)[0]
+            adc_type = re.findall('(\d+)-bit\s?\w*\sADC\s?\w*', name)[0]
             values = value.split('\n')
             return [('ADC', {'{}-bit'.format(adc_type): {'count': int(values[0]), 'channels': int(values[1])}})]
         if 'Operating voltage' in name:
@@ -55,13 +55,13 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
             return [('Operating voltage', {'min': values[0], 'max': values[1]})]
 
         if 'Packages' in name:
-            values = value.split('\n')
-            return [(name,'Yes') for name in values]
+            values = re.split('(\D+\s?\d{1,3})', value)
+            return [(fucking_replace(name, '\n ', ''), 'Yes') for name in values]
 
         if 'Operating temperature' in name:
             # -40 to 85 °C / -40 to 125 °C
             value = value.split('\n')[1]
-            lo,hi = re.findall(r'(-?\d+)\sto\s(-?\d+)\s', value,re.IGNORECASE)[0]
+            lo, hi = re.findall(r'(-?\d+)\sto\s(-?\d+)\s', value, re.IGNORECASE)[0]
             return [('Operating temperature', {'min': int(lo), 'max': int(hi)})]
 
         # if 'timer' in name.lower():
@@ -70,7 +70,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
         try:
             return super().handle_feature(name, value)
         except:
-            return [(name,value)]
+            return [(name, value)]
 
     def extract_features(self):
         controller_features_names = []
@@ -87,7 +87,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
                         if row_id == 0:
                             continue
                         features = set(list(row.values())[:features_cell_span])
-                        features = sorted(features,key = lambda cell:cell.center.x)
+                        features = sorted(features, key=lambda cell: cell.center.x)
                         texts = list(map(lambda cell: cell.clean_text, features))
                         controller_features_names.append(' '.join(texts))
                 else:
@@ -102,7 +102,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
                     for n, feature in enumerate(features):
                         if n == 0:
                             name = table.get_cell(col_id, 0).clean_text
-                            name = name.replace(' ','').strip()
+                            name = name.replace(' ', '').strip()
 
                             if name == current_stm_name:
 
@@ -145,6 +145,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
 
         self.features = controller_features
         return controller_features
+
 
 if __name__ == '__main__':
     datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32L\STM32L451.pdf")

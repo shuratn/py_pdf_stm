@@ -67,6 +67,9 @@ class FeatureManager:
                 raise Exception('Can\' find {} in database'.format(mc))
         self.save()
 
+
+
+
     def get_config_name(self, mc):
         for extractor_name in sorted(self.EXTRACTORS, key=lambda l: len(l), reverse=True):
             if extractor_name.upper() in mc.upper():
@@ -98,7 +101,6 @@ class FeatureManager:
                     same_features = set(features.keys())
                     continue
                 same_features.intersection_update(set(features.keys()))
-        print(same_features)
         self.same_features = list(same_features)
 
     def write_excel_file(self):

@@ -5206,8 +5206,7 @@
     "min": -40,
     "max": 105
    },
-   "UFBGA": "Yes",
-   "132": "Yes"
+   "UFBGA132": "Yes"
   },
   "STM32L476Qx-1": {
    "FLASH MEMORY": 1024,
@@ -5255,8 +5254,7 @@
     "min": -40,
     "max": 105
    },
-   "UFBGA": "Yes",
-   "132": "Yes"
+   "UFBGA132": "Yes"
   },
   "STM32L476Vx": {
    "FLASH MEMORY": "256K B",

@@ -58,7 +58,13 @@
       "I2S": "I2S",
       "Quad-SPI memory interface ": "Quad SPI",
       "SPI": "SPI",
-      "OPERATING VOLTAGE": "OPERATING VOLTAGE"
+      "OPERATING VOLTAGE": "OPERATING VOLTAGE",
+      "OPERATING TEMPERATURE": "OPERATING TEMPERATURE",
+      "TIMERS ADVANCED  CONTROL": "Timer",
+      "TIMERS ADVANCED-CONTROL": "Timer",
+      "TIMERS GENERAL  PURPOSE": "Timer",
+      "TIMERS GENERAL-PURPOSE": "Timer",
+      "TIMERS BASIC": "Timer"
     },
     "MK": {
       "Flash (KB)": "Flash memory",

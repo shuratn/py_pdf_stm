@@ -73,9 +73,7 @@ def convert_type(name: str, value):
 class FeatureListExtractor:  # This class is adapted to STM
 
     def fix_name(self, name):
-        # print('Fixing name',name)
         name = "".join([part[::-1] for part in name[::1][::-1].split('\n')])
-        # print('Fixed',name)
         return self.config['corrections'].get(name, name)
 
     def __init__(self, controller: str, datasheet: DataSheet, config) -> None:
@@ -200,9 +198,9 @@ class FeatureListExtractor:  # This class is adapted to STM
         return controller_features
 
     def unify_names(self):
-        unknown_names = []
+        unknown_names = {}
         for mc, features in self.features.items():
-            # print(mc)
+            unknown_names[mc] = []
             mc_features = self.features[mc].copy()
             mc_features = {k.upper(): v for k, v in mc_features.items()}
             for feature_name, features_value in features.items():
@@ -216,7 +214,7 @@ class FeatureListExtractor:  # This class is adapted to STM
                             if feature_name not in unify_list.values():
                                 known = False
                                 if feature_name not in unknown_names:
-                                    unknown_names.append(feature_name)
+                                    unknown_names[mc].append(feature_name)
                         if known:
                             new_name = unify_list.get(feature_name, feature_name).upper()  # in case name is already unified
                             values = mc_features.pop(feature_name)
@@ -228,22 +226,24 @@ class FeatureListExtractor:  # This class is adapted to STM
                             else:
                                 mc_features[new_name] = values
                         else:
+                            # print('UNKNOWN FEATURE {} ON {}'.format(feature_name,mc))
                             new_name = feature_name  # in case name is already unified
                             values = mc_features.pop(feature_name)
                             new_name, values = convert_type(new_name, values)
                             mc_features[new_name.upper()] = values
 
                     else:
-                        unknown_names.append(feature_name)
+                        unknown_names[mc].append(feature_name)
 
             self.features[mc] = mc_features
-        unknown_names = list(set(unknown_names))
-        print('List of unknown features for', self.mc_family)
-        print('Add correction if name is mangled')
-        print('Or add unify for this feature')
-        for unknown_feature in unknown_names:
-            print('\t', unknown_feature)
-        print('=' * 20)
+        for mc,features in unknown_names.items():
+            unknown_names = list(set(features))
+            print('List of unknown features for', mc)
+            print('Add correction if name is mangled')
+            print('Or add unify for this feature')
+            for unknown_feature in unknown_names:
+                print('\t', unknown_feature)
+            print('=' * 20)
 
     def merge_features(self, old, new):
 
@@ -251,7 +251,7 @@ class FeatureListExtractor:  # This class is adapted to STM
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32\stm32L451.pdf")
-    feature_extractor = FeatureListExtractor('stm32L476', datasheet, )
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32L\STM32L476.pdf")
+    feature_extractor = FeatureListExtractor('STM32L476', datasheet, {})
     feature_extractor.process()
     pprint(feature_extractor.features)

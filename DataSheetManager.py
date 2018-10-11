@@ -88,6 +88,6 @@ class DataSheetManager:
 
 
 if __name__ == '__main__':
-    manager = DataSheetManager(['stm32l431kb','STM32L431CB'])
+    manager = DataSheetManager(['stm32L476'])
     manager.get_or_download()
     print(manager.datasheets_datasheets)
