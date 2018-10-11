@@ -8,6 +8,8 @@ import json
 from DataSheetManager import DataSheetManager
 from FeatureExtractors.MK_E_feature_extractor import MKFeatureListExtractor
 from FeatureExtractors.KL_E_feature_extractor import KLFeatureListExtractor
+from FeatureExtractors.KV_E_feature_extractor import KVFeatureListExtractor
+from FeatureExtractors.KE_E_feature_extractor import KEFeatureListExtractor
 from FeatureExtractors.SMT32L_feature_extractor import STM32LFeatureListExtractor
 from FeatureExtractors.SMT32F_feature_extractor import STM32FFeatureListExtractor
 import xlsxwriter
@@ -19,13 +21,14 @@ class FeatureManager:
         'STM32F': STM32FFeatureListExtractor,
         # 'MKL': MKLFeatureListExtractor,
         'KL': KLFeatureListExtractor,
-        # 'MK': MKFeatureListExtractor,
+        'KE': KEFeatureListExtractor,
+        'KV': KVFeatureListExtractor,
         'MK': MKFeatureListExtractor,
     }
 
     cache_path = Path(r'./cache/mcu_cache.json').absolute()
 
-    def __init__(self, datasheets: List[str]):
+    def __init__(self, datasheets: List[str]) -> None:
         with open('config.json', 'r') as fp:
             if not fp.read():
                 self.config = {'corrections': {}, 'unify': {}}

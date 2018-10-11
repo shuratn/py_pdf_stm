@@ -10,7 +10,7 @@ from tqdm import tqdm
 from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
 
 
-class KV_DataSheet(MK_DataSheet):
+class KE_DataSheet(MK_DataSheet):
     FAMILY_NAME = re.compile(r'KV(\d+)', re.IGNORECASE | re.MULTILINE)
 
 

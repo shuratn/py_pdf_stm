@@ -8,6 +8,9 @@ from tqdm import tqdm
 
 from DataSheetParsers.DataSheet import DataSheet
 from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
+from DataSheetParsers.KE_E_DataSheet import KE_DataSheet
+from DataSheetParsers.KV_E_DataSheet import KV_DataSheet
+from DataSheetParsers.KL_E_DataSheet import KL_DataSheet
 
 
 class DataSheetManager:
@@ -20,13 +23,13 @@ class DataSheetManager:
     DATASHEET_URLS = {
         'STM32L': (STM32L_DATASHEET_URL, DataSheet),
         'STM32F': (STM32F_DATASHEET_URL, DataSheet),
-        # 'MKL': (MKL_DATASHEET_URL, MKL_DataSheet),
-        'KL': (MKM_DATASHEET_URL, MK_DataSheet),  #TODO: replace it with it own
-        # 'MK': (MK_DATASHEET_URL, MK_DataSheet),
+        'KL': (MKM_DATASHEET_URL, KL_DataSheet),
+        'KE': (MKM_DATASHEET_URL, KE_DataSheet),
+        'KV': (MKM_DATASHEET_URL, KV_DataSheet),
         'MK': (MKM_DATASHEET_URL, MK_DataSheet),
     }
 
-    def __init__(self, datasheets: List[str]):
+    def __init__(self, datasheets: List[str]) ->None:
         self.datasheets = datasheets
         self.datasheets_datasheets = {}
 

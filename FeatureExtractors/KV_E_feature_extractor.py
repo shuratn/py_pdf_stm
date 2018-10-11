@@ -16,7 +16,7 @@ from FeatureExtractors.feature_extractor import convert_type
 from Utils import is_str, text2int, clean_line
 
 
-class KEFeatureListExtractor(MKFeatureListExtractor):
+class KVFeatureListExtractor(MKFeatureListExtractor):
     mcu_fields = re.compile(
         '(?P<q_status>[MP])(?P<s_fam>K)(?P<m_fam>V\d{2})(?P<key_attr>Z)(?P<flash>[\dM]{2,3})(?P<temp_range>V)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d{1,3})(?P<pack_type>[R]?)',
         re.IGNORECASE)
