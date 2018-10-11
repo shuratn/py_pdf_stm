@@ -13,6 +13,8 @@ from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
 class KE_DataSheet(MK_DataSheet):
     FAMILY_NAME = re.compile(r'KV(\d+)', re.IGNORECASE | re.MULTILINE)
 
+    def collect_tables(self):
+        pass
 
 if __name__ == '__main__':
     # if len(sys.argv) < 1:

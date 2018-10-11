@@ -12,7 +12,7 @@ from FeatureExtractors.feature_extractor import FeatureListExtractor
 from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
 from TableExtractor import TableExtractor
 from FeatureExtractors.feature_extractor import convert_type
-from Utils import is_str, text2int, clean_line
+from Utils import is_str, text2int, clean_line, fucking_split, fucking_replace
 
 
 class MKFeatureListExtractor(FeatureListExtractor):
@@ -54,7 +54,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
         '^.?\s?(?P<package_short>[\d\w]+)\s=\s(?P<pin_count>\d+)\s(?P<package_full>[\d\w]+)\s\(.*\)',
         re.IGNORECASE | re.MULTILINE)
     mcu_fields = re.compile(
-        '(?P<q_status>[MP])(?P<m_fam>[K])(?P<s_fam>M1|M3)(?P<adc>[\d])(?P<key_attr>Z)(?P<flash>[\dM]+)(?P<si_rev>[ZA]?)(?P<temp_range>C)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d?)(?P<pack_type>[R]?)',
+        '(?P<q_status>[MP])(?P<m_fam>[K])(?P<s_fam>M1|M3)(?P<adc>[\d])(?P<key_attr>Z)(?P<flash>[\dM]+)(?P<si_rev>[ZA]?)(?P<temp_range>\w)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d?)(?P<pack_type>[R]?)',
         re.IGNORECASE)
     freq_re = re.compile('^.?\s?(?P<key>[\d\w]+)\s=\s(?P<freq>[\d]+)\s(?P<units>[MHGz]{3})',
                          re.IGNORECASE | re.MULTILINE)
@@ -104,10 +104,8 @@ class MKFeatureListExtractor(FeatureListExtractor):
         if fields:
             text += self.datasheet.pdf_file.getPage(self.datasheet.get_page_num(fields.page)).extractText()
             text += self.datasheet.pdf_file.getPage(self.datasheet.get_page_num(fields.page) + 1).extractText()
-        text = text.replace('°', '-')
-        text = text.replace('–', '-')
-        text = text.replace('…', '-')
-        text = text.replace('‡', '-')
+        text = fucking_replace(text,'°–…‡†', '-')
+
         if self.package_re.findall(text):
             for package_info in self.package_re.findall(text):
                 short_name, pin_count, full_name = package_info
@@ -230,11 +228,9 @@ class MKFeatureListExtractor(FeatureListExtractor):
                     continue
                 if '°' in block or '•' in block:
                     block = block.replace('\n', ' ')
-                    lines = block.split('°' if '°' in block else '•')
+                    lines = fucking_split(block, '†‡°•')
                     for line in lines:
                         self.extract_feature(line)
-                        # print(line, '\n')
-                    # print('=' * 20)
                     continue
                 # print(block)
                 # print('=' * 20)

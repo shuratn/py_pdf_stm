@@ -190,7 +190,6 @@ def parse_all():
                 for ds in folder.iterdir():
                     if ds.is_file():
                         to_parse.append(ds.stem)
-        print(to_parse)
         FeatureManager(to_parse).parse()
     else:
         print('NO DATASHEETS FOUND')

@@ -40,7 +40,7 @@ class DataSheetManager:
         return None, (None,None)
 
     def get_or_download(self):
-        for controller in self.datasheets:
+        for controller in tqdm(self.datasheets):
             known_controller, (url, datasheet_loader) = self.get_datasheet_loader(controller)
             if known_controller.upper() in controller.upper():
                 # if known_controller == 'MKL' or (known_controller == 'MK' and known_controller!='MKM'):

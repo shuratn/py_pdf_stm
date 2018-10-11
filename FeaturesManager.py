@@ -2,9 +2,8 @@ import copy
 import os
 import sys
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Any
 import json
-
 from DataSheetManager import DataSheetManager
 from FeatureExtractors.MK_E_feature_extractor import MKFeatureListExtractor
 from FeatureExtractors.KL_E_feature_extractor import KLFeatureListExtractor
@@ -19,7 +18,6 @@ class FeatureManager:
     EXTRACTORS = {
         'STM32L': STM32LFeatureListExtractor,
         'STM32F': STM32FFeatureListExtractor,
-        # 'MKL': MKLFeatureListExtractor,
         'KL': KLFeatureListExtractor,
         'KE': KEFeatureListExtractor,
         'KV': KVFeatureListExtractor,
@@ -29,6 +27,7 @@ class FeatureManager:
     cache_path = Path(r'./cache/mcu_cache.json').absolute()
 
     def __init__(self, datasheets: List[str]) -> None:
+        self.config = {}  # type: Dict[str,Any]
         with open('config.json', 'r') as fp:
             if not fp.read():
                 self.config = {'corrections': {}, 'unify': {}}
@@ -36,11 +35,10 @@ class FeatureManager:
                 fp.seek(0)
                 self.config = json.load(fp)
         self.datasheets = datasheets
-        self.mcs_features = {}
-        self.same_features = []
+        self.mcs_features = {}  # type: Dict[str,Any]
+        self.same_features = []  # type: List[Any]
         self.load_cache()
         self.datasheet_manager = DataSheetManager(datasheets)
-        
 
     def get_extractor(self, mc: str):
         for extractor_name in sorted(self.EXTRACTORS, key=lambda l: len(l), reverse=True):
@@ -50,14 +48,14 @@ class FeatureManager:
     def parse(self):
         self.datasheet_manager.get_or_download()
         for mc in self.datasheets:
-            print('WORKING ON',mc)
+            print('WORKING ON', mc)
             extractor = self.get_extractor(mc)
             datasheet = self.datasheet_manager[mc]
             if datasheet and extractor:
                 extractor_obj = extractor(mc, datasheet, self.config)
                 extractor_obj.process()
                 extractor_obj.unify_names()
-                if self.mcs_features.get(extractor_obj.mc_family,False):
+                if self.mcs_features.get(extractor_obj.mc_family, False):
                     self.mcs_features[extractor_obj.mc_family].update(extractor_obj.features)
                 else:
                     self.mcs_features[extractor_obj.mc_family] = extractor_obj.features
@@ -66,7 +64,7 @@ class FeatureManager:
                 raise Exception('Can\' find {} in database'.format(mc))
         self.save()
 
-    def get_config_name(self,mc):
+    def get_config_name(self, mc):
         for extractor_name in sorted(self.EXTRACTORS, key=lambda l: len(l), reverse=True):
             if extractor_name.upper() in mc.upper():
                 return extractor_name
@@ -87,7 +85,7 @@ class FeatureManager:
                 old = json.load(fp)  # type: Dict
             old.update(self.mcs_features)
         with self.cache_path.open('w') as fp:
-            json.dump(self.mcs_features, fp,indent=1)
+            json.dump(self.mcs_features, fp, indent=1)
 
     def collect_same_features(self):
         same_features = set()
@@ -156,7 +154,7 @@ if __name__ == '__main__':
         print('Usage: {} DATASHEET.pdj'.format(os.path.basename(sys.argv[0])))
         exit(0xDEADBEEF)
     # controllers = sys.argv[1:]
-    controllers = ['KL17P64M48SF2','MKMxxZxxACxx5','KL16P64M48SF4']
+    controllers = ['KL17P64M48SF2', 'MKMxxZxxACxx5', 'KL16P64M48SF4']
     feature_manager = FeatureManager(controllers)
     feature_manager.parse()
     feature_manager.write_excel_file()

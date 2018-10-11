@@ -10,7 +10,8 @@ from tqdm import tqdm
 
 class MK_DataSheet(DataSheet):
     FAMILY_NAME = re.compile(r'MK(\d+)', re.IGNORECASE | re.MULTILINE)
-
+    def collect_tables(self):
+        pass
 
 if __name__ == '__main__':
     # if len(sys.argv) < 1:

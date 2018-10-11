@@ -13,12 +13,12 @@ from FeatureExtractors.feature_extractor import FeatureListExtractor
 from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
 from TableExtractor import TableExtractor
 from FeatureExtractors.feature_extractor import convert_type
-from Utils import is_str, text2int, clean_line
+from Utils import is_str, text2int, clean_line, fucking_split
 
 
 class KEFeatureListExtractor(MKFeatureListExtractor):
     mcu_fields = re.compile(
-        '(?P<q_status>[MP])(?P<s_fam>K)(?P<m_fam>E\d{2})(?P<key_attr>[\d\w])(?P<flash>[\dM]{2,3})(?P<si_rev>\d?)(?P<temp_range>V)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d{1,2})(?P<pack_type>[R]?)',
+        '(?P<q_status>[MP])(?P<s_fam>K)(?P<m_fam>E\d{2})(?P<key_attr>[\d\w])(?P<flash>[\dM]{2,3})(?P<si_rev>A?)(?P<temp_range>\w)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d{1,2})(?P<pack_type>[R]?)',
         re.IGNORECASE)
 
     def __init__(self, controller: str, datasheet: DataSheet, config) -> None:
@@ -30,7 +30,6 @@ class KEFeatureListExtractor(MKFeatureListExtractor):
 
     def parse_code_name(self):  # UNIQUE FUNCTION FOR EVERY MCU FAMILY
         for mcu, features in self.features.items():
-            print(mcu)
             mcus_fields = self.mcu_fields.match(mcu)
             qa_status, m_fam, s_fam_, key_attr, flash, _, temp, package, cpu_frq, pack_type = mcus_fields.groups()
             pin_count, package = self.packages[package]
@@ -78,7 +77,7 @@ class KEFeatureListExtractor(MKFeatureListExtractor):
             for block in text.split("€"):
                 if '‡' in block:
                     block = block.replace('\n', ' ')
-                    lines = block.split('‡')
+                    lines = fucking_split(block, '†‡°•')
                     for line in lines:
                         self.extract_feature(line)
 

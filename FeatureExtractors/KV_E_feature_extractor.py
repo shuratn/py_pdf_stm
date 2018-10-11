@@ -13,12 +13,12 @@ from FeatureExtractors.feature_extractor import FeatureListExtractor
 from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
 from TableExtractor import TableExtractor
 from FeatureExtractors.feature_extractor import convert_type
-from Utils import is_str, text2int, clean_line
+from Utils import is_str, text2int, clean_line, fucking_split
 
 
 class KVFeatureListExtractor(MKFeatureListExtractor):
     mcu_fields = re.compile(
-        '(?P<q_status>[MP])(?P<s_fam>K)(?P<m_fam>V\d{2})(?P<key_attr>Z)(?P<flash>[\dM]{2,3})(?P<temp_range>V)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d{1,3})(?P<pack_type>[R]?)',
+        '(?P<q_status>[MP])(?P<s_fam>K)(?P<m_fam>V\d{2})(?P<key_attr>Z)(?P<flash>[\dM]{2,3})(?P<temp_range>\w)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d{1,3})(?P<pack_type>[R]?)',
         re.IGNORECASE)
 
     def __init__(self, controller: str, datasheet: DataSheet, config) -> None:
@@ -74,15 +74,13 @@ class KVFeatureListExtractor(MKFeatureListExtractor):
         for page in pages:
             text = page.extractText()
             for block in text.split("€"):
-                if '°' in block or '•' in block:
-                    block = block.replace('\n', ' ')
-                    lines = block.split('†')
-                    for line in lines:
-                        self.extract_feature(line)
-
-                    #     print(line, '\n')
-                    # print('=' * 20)
-                    continue
+                block = block.replace('\n', ' ')
+                lines = fucking_split(block,'†‡°•')
+                for line in lines:
+                    self.extract_feature(line)
+                #     print(line, '\n')
+                # print('=' * 20)
+                continue
                 # print(block)
                 # print('=' * 20)
 
@@ -97,10 +95,10 @@ class KVFeatureListExtractor(MKFeatureListExtractor):
 
 
 if __name__ == '__main__':
-    datasheet = MK_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\KV\KV10P48M75.pdf")
+    datasheet = MK_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\KV\KV11P64M75.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
-    feature_extractor = KEFeatureListExtractor('KV10P48M75', datasheet, config)
+    feature_extractor = KVFeatureListExtractor('KV11P64M75', datasheet, config)
     feature_extractor.process()
     feature_extractor.unify_names()
     pprint(feature_extractor.features)

@@ -20,11 +20,13 @@ def is_str(val):
 def is_float(val):
     return isinstance(val, float)
 
-def clean_line(line:str):
-    line = line.replace('–','-')
-    line = line.replace('-','-')
-    line = line.replace('×','x')
+
+def clean_line(line: str):
+    line = line.replace('–', '-')
+    line = line.replace('-', '-')
+    line = line.replace('×', 'x')
     return line
+
 
 def merge(source, dest):
     if is_int(source) and is_int(dest):
@@ -135,3 +137,21 @@ def text2int(textnum, numwords={}):
         curstring += repr(result + current)
     curstring = curstring.replace('- ', '-')
     return curstring
+
+
+def rec_split(block, char):
+    return block.split(char)
+
+
+def fucking_split(block, chars):
+    array = [block]
+    for char in chars:
+        for _ in range(len(array)):
+            block = array.pop()
+            array = rec_split(block, char)
+    return array
+
+def fucking_replace(string, chars,rep):
+    for char in chars:
+        string = string.replace(char,rep)
+    return string

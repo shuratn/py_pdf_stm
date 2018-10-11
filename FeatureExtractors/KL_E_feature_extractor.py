@@ -13,12 +13,12 @@ from FeatureExtractors.feature_extractor import FeatureListExtractor
 from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
 from TableExtractor import TableExtractor
 from FeatureExtractors.feature_extractor import convert_type
-from Utils import is_str, text2int, clean_line
+from Utils import is_str, text2int, clean_line, fucking_split
 
 
 class KLFeatureListExtractor(MKFeatureListExtractor):
     mcu_fields = re.compile(
-        '(?P<q_status>[MP])(?P<s_fam>K)(?P<m_fam>L\d{2})(?P<key_attr>Z)(?P<flash>[\dM]+)(?P<si_rev>[A]?)(?P<temp_range>V)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d+)(?P<pack_type>[R]?)',
+        '(?P<q_status>[MP])(?P<s_fam>K)(?P<m_fam>L\d{2})(?P<key_attr>Z)(?P<flash>[\dM]+)(?P<si_rev>[A]?)(?P<temp_range>\w)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d+)(?P<pack_type>[R]?)',
         re.IGNORECASE)
 
     def __init__(self, controller: str, datasheet: DataSheet, config) -> None:
@@ -76,9 +76,8 @@ class KLFeatureListExtractor(MKFeatureListExtractor):
         for page in pages:
             text = page.extractText()
             for block in text.split("€"):
-                if '°' in block or '•' in block:
                     block = block.replace('\n', ' ')
-                    lines = block.split('°' if '°' in block else '•')
+                    lines = fucking_split(block, '†‡°•')
                     for line in lines:
                         self.extract_feature(line)
 
