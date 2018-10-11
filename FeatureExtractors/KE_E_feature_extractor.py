@@ -16,24 +16,23 @@ from FeatureExtractors.feature_extractor import convert_type
 from Utils import is_str, text2int, clean_line
 
 
-class KLFeatureListExtractor(MKFeatureListExtractor):
+class KEFeatureListExtractor(MKFeatureListExtractor):
     mcu_fields = re.compile(
-        '(?P<q_status>[MP])(?P<s_fam>K)(?P<m_fam>L\d{2})(?P<key_attr>Z)(?P<flash>[\dM]+)(?P<si_rev>[A]?)(?P<temp_range>V)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d+)(?P<pack_type>[R]?)',
+        '(?P<q_status>[MP])(?P<s_fam>K)(?P<m_fam>E\d{2})(?P<key_attr>[\d\w])(?P<flash>[\dM]{2,3})(?P<si_rev>\d?)(?P<temp_range>V)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d{1,2})(?P<pack_type>[R]?)',
         re.IGNORECASE)
 
     def __init__(self, controller: str, datasheet: DataSheet, config) -> None:
-        self.common_features = {}  # type: Dict[str,Any]
-        self.packages = {}  # type: Dict[str,Any]
         super().__init__(controller, datasheet, config)
 
     def post_init(self):
-        self.config_name = 'KL'
-        self.mc_family = 'KL'
+        self.config_name = 'KE'
+        self.mc_family = 'KE'
 
     def parse_code_name(self):  # UNIQUE FUNCTION FOR EVERY MCU FAMILY
         for mcu, features in self.features.items():
+            print(mcu)
             mcus_fields = self.mcu_fields.match(mcu)
-            qa_status, m_fam, s_fam_, key_attr, flash, si_rev, temp, package, cpu_frq, pack_type = mcus_fields.groups()
+            qa_status, m_fam, s_fam_, key_attr, flash, _, temp, package, cpu_frq, pack_type = mcus_fields.groups()
             pin_count, package = self.packages[package]
             features[package] = 1
             features['pin count'] = pin_count
@@ -72,13 +71,14 @@ class KLFeatureListExtractor(MKFeatureListExtractor):
                 mcus = list(map(lambda cell: cell.clean_text, table.get_col(0)[3:]))
             elif 'Product' in table.get_cell(0, 0).text:
                 mcus = list(map(lambda cell: cell.clean_text, table.get_col(0)[2:]))
-
+        mcus = [mcu.strip().replace('\n','').replace(' ','') for mcu in mcus]
+        print(mcus)
         for page in pages:
             text = page.extractText()
             for block in text.split("€"):
-                if '°' in block or '•' in block:
+                if '‡' in block:
                     block = block.replace('\n', ' ')
-                    lines = block.split('°' if '°' in block else '•')
+                    lines = block.split('‡')
                     for line in lines:
                         self.extract_feature(line)
 
@@ -99,10 +99,10 @@ class KLFeatureListExtractor(MKFeatureListExtractor):
 
 
 if __name__ == '__main__':
-    datasheet = MK_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\KL\KL17P64M48SF2.pdf")
+    datasheet = MK_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\KE\KE1xZP100M72SF0.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
-    feature_extractor = KLFeatureListExtractor('KL17P64M48SF2', datasheet, config)
+    feature_extractor = KEFeatureListExtractor('KE1xZP100M72SF0', datasheet, config)
     feature_extractor.process()
     feature_extractor.unify_names()
     pprint(feature_extractor.features)

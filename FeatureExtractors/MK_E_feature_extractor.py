@@ -3,6 +3,7 @@ import re
 import sys
 import traceback
 from pprint import pprint
+from typing import Dict, Any
 
 from PyPDF3.pdf import PageObject
 
@@ -34,16 +35,16 @@ class MKFeatureListExtractor(FeatureListExtractor):
     spi_re = re.compile('(?P<count>[\d]+)-?x?.*SPI.*',
                         re.IGNORECASE)
     analog_cmp_re = re.compile('(?P<count>(\d+)?).*analog.comparator.?\s',
-                        re.IGNORECASE)
+                               re.IGNORECASE)
     dac_re = re.compile('(?P<count>(\d+)?)\s.*DAC.*',
                         re.IGNORECASE)
     timer_re = re.compile('(?P<count>\d+)?(?!\s?channel|.{1,2}-?bit).*Timer.*',
-                        re.IGNORECASE)
+                          re.IGNORECASE)
 
     i2c_re = re.compile('(?P<count>[\d]+)-?x?.*I2C.*',
                         re.IGNORECASE)
     uart_re = re.compile('(?P<count>\d+)?.*UART.*',
-                        re.IGNORECASE)
+                         re.IGNORECASE)
     dma_re = re.compile('(?P<channels>\d+)?.*DMA.*',
                         re.IGNORECASE)
     tsi_re = re.compile('(?P<count>(\d+)?)\s.*TSI.*',
@@ -56,17 +57,17 @@ class MKFeatureListExtractor(FeatureListExtractor):
         '(?P<q_status>[MP])(?P<m_fam>[K])(?P<s_fam>M1|M3)(?P<adc>[\d])(?P<key_attr>Z)(?P<flash>[\dM]+)(?P<si_rev>[ZA]?)(?P<temp_range>C)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d?)(?P<pack_type>[R]?)',
         re.IGNORECASE)
     freq_re = re.compile('^.?\s?(?P<key>[\d\w]+)\s=\s(?P<freq>[\d]+)\s(?P<units>[MHGz]{3})',
-                            re.IGNORECASE | re.MULTILINE)
+                         re.IGNORECASE | re.MULTILINE)
     temp_re = re.compile('^.?\s?(?P<key>[\d\w]+)\s=\s(?P<lo>[-–+\d]+)\sto\s(?P<hi>[-–+\d]+)',
-                            re.IGNORECASE | re.MULTILINE)
+                         re.IGNORECASE | re.MULTILINE)
 
     mcu_names = re.compile('([MP][K](M1|M3)[\d]Z[\dM]+[ZA]?C[a-zA-Z]+\d?[R]?)', re.IGNORECASE)
 
-    def __init__(self, controller: str, datasheet: DataSheet, config):
-        self.common_features = {}
-        self.packages = {}
-        self.freqs = {}
-        self.temperatures = {}
+    def __init__(self, controller: str, datasheet: DataSheet, config) -> None:
+        self.common_features = {}  # type: Dict[str,Any]
+        self.packages = {}  # type: Dict[str,Any]
+        self.freqs = {}  # type: Dict[str,Any]
+        self.temperatures = {}  # type: Dict[str,Any]
         super().__init__(controller, datasheet, config)
 
     def post_init(self):
@@ -95,7 +96,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
                 flash = int(flash)
             features['flash'] = flash
             features['CPU Frequency'] = self.freqs[cpu_frq][0]
-            features['operating temperature'] = {'lo':self.temperatures[temp][0],'hi':self.temperatures[temp][1]}
+            features['operating temperature'] = {'lo': self.temperatures[temp][0], 'hi': self.temperatures[temp][1]}
 
     def extract_fields(self):
         fields = self.datasheet.table_of_content.get_node_by_name('Fields')
@@ -103,9 +104,10 @@ class MKFeatureListExtractor(FeatureListExtractor):
         if fields:
             text += self.datasheet.pdf_file.getPage(self.datasheet.get_page_num(fields.page)).extractText()
             text += self.datasheet.pdf_file.getPage(self.datasheet.get_page_num(fields.page) + 1).extractText()
-        text = text.replace('°','-')
-        text = text.replace('–','-')
-        text = text.replace('…','-')
+        text = text.replace('°', '-')
+        text = text.replace('–', '-')
+        text = text.replace('…', '-')
+        text = text.replace('‡', '-')
         if self.package_re.findall(text):
             for package_info in self.package_re.findall(text):
                 short_name, pin_count, full_name = package_info
@@ -117,7 +119,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
         if self.temp_re.findall(text):
             for freq in self.temp_re.findall(text):
                 key, lo, hi = freq
-                self.temperatures[key] = (int(lo),int(hi))
+                self.temperatures[key] = (int(lo), int(hi))
 
     # def extract_fields(self):
     #     fields = self.datasheet.table_of_content.get_node_by_name('Fields')
@@ -130,13 +132,13 @@ class MKFeatureListExtractor(FeatureListExtractor):
     #         if t2:
     #             tables.extend(t2)
 
-    def extract_feature(self,line):
+    def extract_feature(self, line):
         line = clean_line(line)
         line = text2int(line.lower())
         if self.voltage_re.findall(line):
             lo, hi = self.voltage_re.findall(line)[0]
             self.create_new_or_merge('operating voltage', {'lo': float(lo), 'hi': float(hi)}, True)
-        if self.dma_re.findall(line):
+        elif self.dma_re.findall(line):
             channels = self.dma_re.findall(line)[0]
             self.create_new_or_merge('DMA', {'channels': int(channels), 'count': 1}, True)
         elif self.temperature_re.findall(line):
@@ -214,6 +216,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
                 self.create_new_or_merge('I2C', 1)
         if 'LCD' in line:
             self.create_new_or_merge('LCD', 1)
+
     def extract_features(self):
         controller_features = {}
         pages = [self.datasheet.pdf_file.getPage(0), self.datasheet.pdf_file.getPage(1)]

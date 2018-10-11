@@ -15,16 +15,15 @@ from Utils import *
 class MCUHelper:
 
     def __init__(self, feature_list: str):
-        self.matching = {}
+        self.matching = {}  # type: Dict[str,Any]
         with open(feature_list) as fp:
             self.required_feature = json.load(fp)  # type: Dict[str,Any]
         controllers = sys.argv[2:]
         self.feature_manager = FeatureManager(controllers)
-        # feature_manager.parse()
         self.mcu_features = self.feature_manager.mcs_features
 
-
-    def match(self, required_value, feature_value, cmp_type, ):
+    @staticmethod
+    def match(required_value, feature_value, cmp_type, ):
         mismatch = False
         if cmp_type == '>':
             if not feature_value >= required_value:
@@ -40,7 +39,8 @@ class MCUHelper:
                 mismatch = True
         return not mismatch
 
-    def get_cmp_type(self, name):
+    @staticmethod
+    def get_cmp_type(name):
         if name[-1] in '<>=':
             feature_name = name[:-1]
             cmp_type = name[-1]
@@ -262,7 +262,7 @@ def dump_unknown():
 def list_known():
     dump_mcu_name = "UNKNOWN"
     dump_all = False
-    if len(sys.argv)<2:
+    if len(sys.argv) < 2:
         print_usage()
     if sys.argv[2] == '*':
         dump_all = True
@@ -275,14 +275,14 @@ def list_known():
     to_dump = []
     for mcus in all_mcus:
         for mcu, features in mcus.items():
-            unifier = set(map(lambda s:s.upper(),unify[feature_manager.get_config_name(mcu)].values()))
+            unifier = set(map(lambda s: s.upper(), unify[feature_manager.get_config_name(mcu)].values()))
             if dump_mcu_name in mcu.upper() or dump_all:
 
                 feature_names = set(features.keys())
                 unknown = feature_names.difference(unifier)
                 for unk in unknown:
                     features.pop(unk)
-                to_dump.append({mcu:features})
+                to_dump.append({mcu: features})
 
     with open('mcu_list.json', 'w') as fp:
         json.dump(to_dump, fp, indent=2)

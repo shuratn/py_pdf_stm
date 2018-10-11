@@ -17,7 +17,7 @@ def join(to_join, separator=' '):
 
 class DataSheetNode:
 
-    def __init__(self, name: str, path: List[int]):
+    def __init__(self, name: str, path: List[int]) -> None:
         """
         Constructor of DataSheetNode class.
 
@@ -178,7 +178,7 @@ class DataSheetNode:
 
 class DataSheetTableNode(DataSheetNode):
 
-    def __init__(self, name: str, path: List[int], table_number, page):
+    def __init__(self, name: str, path: List[int], table_number, page) ->None:
         super().__init__(name, path)
         self.path.append(table_number)
         self.table_number = table_number
