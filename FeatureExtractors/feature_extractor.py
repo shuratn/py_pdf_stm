@@ -204,26 +204,29 @@ class FeatureListExtractor:  # This class is adapted to STM
         for mc, features in self.features.items():
             # print(mc)
             mc_features = self.features[mc].copy()
-
+            mc_features = {k.upper(): v for k, v in mc_features.items()}
             for feature_name, features_value in features.items():
+                feature_name = feature_name.upper()
                 if features_value:
                     if self.config_name in self.config['unify']:
-                        unify_list = self.config['unify'][self.config_name]
+                        unify_list = self.config['unify'][self.config_name] #type: Dict[str,str]
+                        unify_list = {k.upper():v.upper() for k,v in unify_list.items()}
                         known = True
-                        if feature_name.upper() not in [name.upper() for name in unify_list]:
-                            if feature_name.upper() not in [name.upper() for name in unify_list.values()]:
+                        if feature_name not in unify_list:
+                            if feature_name not in unify_list.values():
                                 known = False
                                 if feature_name not in unknown_names:
                                     unknown_names.append(feature_name)
                         if known:
-                            new_name = unify_list.get(feature_name, feature_name)  # in case name is already unified
+                            new_name = unify_list.get(feature_name, feature_name).upper()  # in case name is already unified
                             values = mc_features.pop(feature_name)
                             new_name, values = convert_type(new_name, values)
+                            new_name = new_name.upper()
                             if new_name in mc_features:
-                                mc_features[new_name.upper()] = self.merge_features(mc_features[new_name.upper()],
+                                mc_features[new_name] = self.merge_features(mc_features[new_name],
                                                                                     values)
                             else:
-                                mc_features[new_name.upper()] = values
+                                mc_features[new_name] = values
                         else:
                             new_name = feature_name  # in case name is already unified
                             values = mc_features.pop(feature_name)

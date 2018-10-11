@@ -48,6 +48,9 @@ class FeatureManager:
     def parse(self):
         self.datasheet_manager.get_or_download()
         for mc in self.datasheets:
+            config = self.get_config_name(mc)
+            if not self.config['unify'].get(config,False):
+                self.config['unify'][config] = {}
             print('WORKING ON', mc)
             extractor = self.get_extractor(mc)
             datasheet = self.datasheet_manager[mc]

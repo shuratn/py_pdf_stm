@@ -57,7 +57,8 @@
       "ADC": "ADC",
       "I2S": "I2S",
       "Quad-SPI memory interface ": "Quad SPI",
-      "SPI": "SPI"
+      "SPI": "SPI",
+      "OPERATING VOLTAGE": "OPERATING VOLTAGE"
     },
     "MK": {
       "Flash (KB)": "Flash memory",

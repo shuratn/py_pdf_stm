@@ -1,461 +1,461 @@
 {
  "KE": {
   "MKE15Z256VLL7": {
-   "timer": 1,
-   "operating temperature": {
+   "TIMER": 1,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    },
    "LQFP": 1,
-   "pin count": "100",
-   "flash": 256,
-   "CPU Frequency": 72
+   "PIN COUNT": 100,
+   "FLASH MEMORY": 256,
+   "CPU FREQUENCY": 72
   },
   "MKE15Z256VLH7": {
-   "timer": 1,
-   "operating temperature": {
+   "TIMER": 1,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    },
    "LQFP": 1,
-   "pin count": "64",
-   "flash": 256,
-   "CPU Frequency": 72
+   "PIN COUNT": 64,
+   "FLASH MEMORY": 256,
+   "CPU FREQUENCY": 72
   },
   "MKE15Z128VLL7": {
-   "timer": 1,
-   "operating temperature": {
+   "TIMER": 1,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    },
    "LQFP": 1,
-   "pin count": "100",
-   "flash": 128,
-   "CPU Frequency": 72
+   "PIN COUNT": 100,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 72
   },
   "MKE15Z128VLH7": {
-   "timer": 1,
-   "operating temperature": {
+   "TIMER": 1,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    },
    "LQFP": 1,
-   "pin count": "64",
-   "flash": 128,
-   "CPU Frequency": 72
+   "PIN COUNT": 64,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 72
   },
   "MKE14Z256VLL7": {
-   "timer": 1,
-   "operating temperature": {
+   "TIMER": 1,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    },
    "LQFP": 1,
-   "pin count": "100",
-   "flash": 256,
-   "CPU Frequency": 72
+   "PIN COUNT": 100,
+   "FLASH MEMORY": 256,
+   "CPU FREQUENCY": 72
   },
   "MKE14Z256VLH7": {
-   "timer": 1,
-   "operating temperature": {
+   "TIMER": 1,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    },
    "LQFP": 1,
-   "pin count": "64",
-   "flash": 256,
-   "CPU Frequency": 72
+   "PIN COUNT": 64,
+   "FLASH MEMORY": 256,
+   "CPU FREQUENCY": 72
   },
   "MKE14Z128VLL7": {
-   "timer": 1,
-   "operating temperature": {
+   "TIMER": 1,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    },
    "LQFP": 1,
-   "pin count": "100",
-   "flash": 128,
-   "CPU Frequency": 72
+   "PIN COUNT": 100,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 72
   },
   "MKE14Z128VLH7": {
-   "timer": 1,
-   "operating temperature": {
+   "TIMER": 1,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    },
    "LQFP": 1,
-   "pin count": "64",
-   "flash": 128,
-   "CPU Frequency": 72
+   "PIN COUNT": 64,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 72
   },
   "MKV10Z32VLC7": {
    "LQFP": 1,
-   "pin count": "32",
-   "flash": 32,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 32,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z32VFM7": {
    "QFN": 1,
-   "pin count": "32",
-   "flash": 32,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 32,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z32VLF7": {
    "LQFP": 1,
-   "pin count": "48",
-   "flash": 32,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 48,
+   "FLASH MEMORY": 32,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z16VLC7": {
    "LQFP": 1,
-   "pin count": "32",
-   "flash": 16,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 16,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z16VFM7": {
    "QFN": 1,
-   "pin count": "32",
-   "flash": 16,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 16,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z16VLF7": {
    "LQFP": 1,
-   "pin count": "48",
-   "flash": 16,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 48,
+   "FLASH MEMORY": 16,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z128VLH7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "64",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 64,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z128VLF7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "48",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 48,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z128VLC7 2": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "32",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z128VFM7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "QFN": 1,
-   "pin count": "32",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z64VLH7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "64",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 64,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z64VLF7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "48",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 48,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z64VLC7 2": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "32",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z64VFM7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "QFN": 1,
-   "pin count": "32",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z128VLH7P": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "64",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 64,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z128VLF7P": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "48",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 48,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z128VLC7P 2": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "32",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV11Z128VFM7P": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "QFN": 1,
-   "pin count": "32",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z64VLH7P": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "64",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 64,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z64VLF7P": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "48",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 48,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z64VLC7P 2": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "32",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z64VFM7P": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "QFN": 1,
-   "pin count": "32",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z64VLH7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "64",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 64,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z64VLF7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "48",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 48,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z64VLC7 2": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "32",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z64VFM7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "QFN": 1,
-   "pin count": "32",
-   "flash": 64,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 64,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z128VLH7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "64",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 64,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z128VLF7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "48",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 48,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z128VLC7 2": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "LQFP": 1,
-   "pin count": "32",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
   },
   "MKV10Z128VFM7": {
    "DAC": 1,
-   "analog comparator": 2,
+   "ANALOG COMPARATOR": 2,
    "SPI": 1,
    "QFN": 1,
-   "pin count": "32",
-   "flash": 128,
-   "CPU Frequency": 75,
-   "operating temperature": {
+   "PIN COUNT": 32,
+   "FLASH MEMORY": 128,
+   "CPU FREQUENCY": 75,
+   "OPERATING TEMPERATURE": {
     "lo": -40,
     "hi": 105
    }
@@ -489,7 +489,7 @@
    "TIMER": 5,
    "LQFP": 1,
    "PIN COUNT": 64,
-   "FLASH": 256,
+   "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48
   },
   "MKL16Z256VMP4": {
@@ -519,7 +519,7 @@
    "TIMER": 5,
    "MAPBGA": 1,
    "PIN COUNT": 64,
-   "FLASH": 256,
+   "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48
   },
   "MKL17Z64VLH4": {
@@ -534,7 +534,7 @@
    "TIMER": 5,
    "LQFP": 1,
    "PIN COUNT": 64,
-   "FLASH": 64,
+   "FLASH MEMORY": 64,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -553,7 +553,7 @@
    "TIMER": 5,
    "LQFP": 1,
    "PIN COUNT": 64,
-   "FLASH": 32,
+   "FLASH MEMORY": 32,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -572,7 +572,7 @@
    "TIMER": 5,
    "XFBGA": 1,
    "PIN COUNT": 36,
-   "FLASH": 64,
+   "FLASH MEMORY": 64,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -591,7 +591,7 @@
    "TIMER": 5,
    "XFBGA": 1,
    "PIN COUNT": 36,
-   "FLASH": 32,
+   "FLASH MEMORY": 32,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -610,7 +610,7 @@
    "TIMER": 5,
    "QFN": 1,
    "PIN COUNT": 32,
-   "FLASH": 64,
+   "FLASH MEMORY": 64,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -629,7 +629,7 @@
    "TIMER": 5,
    "QFN": 1,
    "PIN COUNT": 32,
-   "FLASH": 32,
+   "FLASH MEMORY": 32,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -648,7 +648,7 @@
    "TIMER": 5,
    "MAPBGA": 1,
    "PIN COUNT": 64,
-   "FLASH": 64,
+   "FLASH MEMORY": 64,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -667,7 +667,7 @@
    "TIMER": 5,
    "MAPBGA": 1,
    "PIN COUNT": 64,
-   "FLASH": 32,
+   "FLASH MEMORY": 32,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -686,7 +686,7 @@
    "TIMER": 5,
    "QFN": 1,
    "PIN COUNT": 48,
-   "FLASH": 64,
+   "FLASH MEMORY": 64,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -705,7 +705,7 @@
    "TIMER": 5,
    "QFN": 1,
    "PIN COUNT": 48,
-   "FLASH": 32,
+   "FLASH MEMORY": 32,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -715,7 +715,7 @@
   "MKL17Z128VFM4": {
    "QFN": 1,
    "PIN COUNT": 32,
-   "FLASH": 128,
+   "FLASH MEMORY": 128,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -725,7 +725,7 @@
   "MKL17Z256VFM4": {
    "QFN": 1,
    "PIN COUNT": 32,
-   "FLASH": 256,
+   "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -735,7 +735,7 @@
   "MKL17Z128VFT4": {
    "QFN": 1,
    "PIN COUNT": 48,
-   "FLASH": 128,
+   "FLASH MEMORY": 128,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -745,7 +745,7 @@
   "MKL17Z256VFT4": {
    "QFN": 1,
    "PIN COUNT": 48,
-   "FLASH": 256,
+   "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -755,7 +755,7 @@
   "MKL17Z128VLH4": {
    "LQFP": 1,
    "PIN COUNT": 64,
-   "FLASH": 128,
+   "FLASH MEMORY": 128,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -765,7 +765,7 @@
   "MKL17Z256VLH4": {
    "LQFP": 1,
    "PIN COUNT": 64,
-   "FLASH": 256,
+   "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -775,7 +775,7 @@
   "MKL17Z128VMP4": {
    "MAPBGA": 1,
    "PIN COUNT": 64,
-   "FLASH": 128,
+   "FLASH MEMORY": 128,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -785,7 +785,7 @@
   "MKL17Z256VMP4": {
    "MAPBGA": 1,
    "PIN COUNT": 64,
-   "FLASH": 256,
+   "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -795,7 +795,7 @@
   "MKL17Z256CAL4R": {
    "WLCSP": 1,
    "PIN COUNT": 36,
-   "FLASH": 256,
+   "FLASH MEMORY": 256,
    "CPU FREQUENCY": 48,
    "OPERATING TEMPERATURE": {
     "lo": -40,
@@ -812,7 +812,7 @@
    "RAM": 16,
    "LGA": 1,
    "PIN COUNT": 44,
-   "FLASH": 64,
+   "FLASH MEMORY": 64,
    "CPU FREQUENCY": 50
   },
   "MKM14Z128ACHH5": {
@@ -823,7 +823,7 @@
    "RAM": 16,
    "LGA": 1,
    "PIN COUNT": 44,
-   "FLASH": 128,
+   "FLASH MEMORY": 128,
    "CPU FREQUENCY": 50
   },
   "MKM33Z64ACLH5": {
@@ -834,7 +834,7 @@
    "RAM": 16,
    "LQFP": 1,
    "PIN COUNT": 64,
-   "FLASH": 64,
+   "FLASH MEMORY": 64,
    "CPU FREQUENCY": 50
   },
   "MKM33Z128ACLH5": {
@@ -845,7 +845,7 @@
    "RAM": 16,
    "LQFP": 1,
    "PIN COUNT": 64,
-   "FLASH": 128,
+   "FLASH MEMORY": 128,
    "CPU FREQUENCY": 50
   },
   "MKM33Z64ACLL5": {
@@ -856,7 +856,7 @@
    "RAM": 16,
    "LQFP": 1,
    "PIN COUNT": 100,
-   "FLASH": 64,
+   "FLASH MEMORY": 64,
    "CPU FREQUENCY": 50
   },
   "MKM33Z128ACLL5": {
@@ -867,7 +867,7 @@
    "RAM": 16,
    "LQFP": 1,
    "PIN COUNT": 100,
-   "FLASH": 128,
+   "FLASH MEMORY": 128,
    "CPU FREQUENCY": 50
   },
   "MKM34Z128ACLL5": {
@@ -878,7 +878,7 @@
    "RAM": 16,
    "LQFP": 1,
    "PIN COUNT": 100,
-   "FLASH": 128,
+   "FLASH MEMORY": 128,
    "CPU FREQUENCY": 50
   }
  },
@@ -4546,7 +4546,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -4589,7 +4589,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -4632,7 +4632,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -4676,7 +4676,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -4720,7 +4720,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -4762,7 +4762,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -4804,7 +4804,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -4848,7 +4848,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -4892,7 +4892,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -4937,7 +4937,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -4982,7 +4982,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5025,7 +5025,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 1,
    "TIMERS GENERAL  PURPOSE": "2  1 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPENDENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5069,7 +5069,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5118,7 +5118,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5167,7 +5167,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5216,7 +5216,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5265,7 +5265,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5313,7 +5313,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5361,7 +5361,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5409,7 +5409,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5457,7 +5457,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5505,7 +5505,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5553,7 +5553,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5601,7 +5601,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5649,7 +5649,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
@@ -5697,7 +5697,7 @@
    "QUAD SPI": "Yes",
    "TIMERS ADVANCED  CONTROL": 2,
    "TIMERS GENERAL  PURPOSE": "5  2 (32-bit)",
-   "TIMER": 2,
+   "TIMER": 4,
    "TIMERS SYSTICK  TIMER": 1,
    "TIMERS WATCHDOG  TIMERS  (INDEPEN- DENT,  WINDOW)": 2,
    "SPI": 3,
