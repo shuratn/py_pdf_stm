@@ -5,15 +5,13 @@ from typing import List, Dict
 
 from DataSheetParsers.DataSheet import DataSheet
 from TableExtractor import TableExtractor, Table
-from Utils import *
-
-
-
+from Utils import is_numeric, is_dict, remove_units, replace_i, merge
 
 
 def convert_type(name: str, value):
     if type(value) == str:
         value = value.replace(',', '')
+        value = value.strip('\n ')
     if 'KB' in name.upper():
         name = remove_units(name, 'kb')
         if is_numeric(value):
@@ -49,7 +47,7 @@ def convert_type(name: str, value):
 
             else:
                 value += 'MB'
-                return name, value
+            return name, value
         if 'MHZ' in value.upper():
             value = replace_i(value, 'MHz', '')
             if is_numeric(value):
@@ -80,7 +78,7 @@ class FeatureListExtractor:  # This class is adapted to STM
         # print('Fixed',name)
         return self.config['corrections'].get(name, name)
 
-    def __init__(self, controller: str, datasheet: DataSheet, config):
+    def __init__(self, controller: str, datasheet: DataSheet, config) -> None:
         """
         Class for comparing multiple STM32 controllers
 
@@ -143,7 +141,7 @@ class FeatureListExtractor:  # This class is adapted to STM
                         if row_id == 0:
                             continue
                         features = set(list(row.values())[:features_cell_span])
-                        features = sorted(features,key = lambda cell:cell.center.x)
+                        features = sorted(features, key=lambda cell: cell.center.x)
                         texts = list(map(lambda cell: cell.clean_text, features))
                         controller_features_names.append(' '.join(texts))
                 else:
@@ -221,7 +219,11 @@ class FeatureListExtractor:  # This class is adapted to STM
                             new_name = unify_list.get(feature_name, feature_name)  # in case name is already unified
                             values = mc_features.pop(feature_name)
                             new_name, values = convert_type(new_name, values)
-                            mc_features[new_name.upper()] = values
+                            if new_name in mc_features:
+                                mc_features[new_name.upper()] = self.merge_features(mc_features[new_name.upper()],
+                                                                                    values)
+                            else:
+                                mc_features[new_name.upper()] = values
                         else:
                             new_name = feature_name  # in case name is already unified
                             values = mc_features.pop(feature_name)
@@ -243,12 +245,6 @@ class FeatureListExtractor:  # This class is adapted to STM
     def merge_features(self, old, new):
 
         return merge(old, new)
-
-
-
-
-
-
 
 
 if __name__ == '__main__':

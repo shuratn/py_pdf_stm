@@ -64,6 +64,9 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
             lo,hi = re.findall(r'(-?\d+)\sto\s(-?\d+)\s', value,re.IGNORECASE)[0]
             return [('Operating temperature', {'min': int(lo), 'max': int(hi)})]
 
+        # if 'timer' in name.lower():
+        #     print(value)
+
         try:
             return super().handle_feature(name, value)
         except:
@@ -99,6 +102,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
                     for n, feature in enumerate(features):
                         if n == 0:
                             name = table.get_cell(col_id, 0).clean_text
+                            name = name.replace(' ','').strip()
 
                             if name == current_stm_name:
 

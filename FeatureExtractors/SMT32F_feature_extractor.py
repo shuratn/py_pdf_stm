@@ -87,8 +87,8 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                         count = 0
             return [('DAC', {'{}-bit'.format(dac_type): {'count': int(count), 'channels': int(channels)}})]
         if 'Operating voltage' in name:
-            if re.match('.*\s([\d.]+)\s.*\s([\d.]+)\s',value):
-                lo,hi = re.findall('.*\s([\d.]+)\s.*\s([\d.]+)\s',value)[0]
+            if re.match('.*\s([\d.]+)\s.*\s([\d.]+)\s', value):
+                lo, hi = re.findall('.*\s([\d.]+)\s.*\s([\d.]+)\s', value)[0]
                 return [('Operating voltage', {'min': float(lo), 'max': float(hi)})]
             if 'v' in value.lower():
                 value = remove_units(value, 'v')
@@ -107,11 +107,11 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                         spis = int(value)
                     else:
                         spis = 0
-                return [('SPI', spis), ('Quad SPI',1 )]
+                return [('SPI', spis), ('Quad SPI', 1)]
             if '(' not in name:
                 value = remove_parentheses(value)
             else:
-                value = value.replace('(','',1).replace(')','',1)
+                value = value.replace('(', '', 1).replace(')', '', 1)
             if 'I2S' in name and '/' in name:
                 spis, i2ss = list(map(int, value.split('/')))
                 return [('SPI', spis), ('I2S', i2ss)]
@@ -128,8 +128,8 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
             # -40 to 85 °C / -40 to 125 °C
             if 'Ambient temperatures' in value:
                 lo, hi = re.findall(r'([+-–]?\s?\d+)\sto\s([-+–]?\s?\d+)\s', value, re.IGNORECASE)[0]
-                lo = lo.replace('–', '-').replace(' ','')
-                hi = hi.replace('–', '-').replace(' ','')
+                lo = lo.replace('–', '-').replace(' ', '')
+                hi = hi.replace('–', '-').replace(' ', '')
                 return [('Operating temperature', {'min': int(lo), 'max': int(hi)})]
             else:
                 return [(None, None)]
@@ -171,7 +171,7 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
 
                         if n == 0:
                             name = table.get_cell(col_id, 0).clean_text
-
+                            name = name.replace(' ', '').strip()
                             if name == current_stm_name:
 
                                 num = mcu_counter[current_stm_name]
@@ -179,7 +179,7 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                                 mcu_counter[current_stm_name] += 1
                             else:
                                 current_stm_name = name
-                            current_stm_name = current_stm_name.replace(' ','').replace(' ','')
+                            current_stm_name = current_stm_name.replace(' ', '').replace(' ', '')
                             if self.mc_family.upper() not in current_stm_name.upper():
                                 break
                             if not mcu_counter.get(current_stm_name, False):

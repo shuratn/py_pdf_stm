@@ -42,7 +42,7 @@ class DataSheetManager:
     def get_or_download(self):
         with tqdm(self.datasheets,desc="Parsing datasheet",) as bar:
             for controller in bar:
-                bar.set_description('')
+                bar.set_description('Parsing {}'.format(controller))
                 known_controller, (url, datasheet_loader) = self.get_datasheet_loader(controller)
                 if known_controller:
 
@@ -88,6 +88,6 @@ class DataSheetManager:
 
 
 if __name__ == '__main__':
-    manager = DataSheetManager(['stm32l431kb'])
+    manager = DataSheetManager(['stm32l431kb','STM32L431CB'])
     manager.get_or_download()
     print(manager.datasheets_datasheets)
