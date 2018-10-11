@@ -219,7 +219,7 @@ class DataSheet:
 
     def collect_tables(self):
         if len(self.tables) == 0:
-            print('NO TABLES WERE DETECTED IN OUTLINE! FALLING BACK TO PAGE SCANNING!')
+            # print('NO TABLES WERE DETECTED IN OUTLINE! FALLING BACK TO PAGE SCANNING!')
             start_page = 0
             end_page = 0
             for thing in self.raw_outline:
@@ -262,8 +262,6 @@ class DataSheet:
                             top_level_node.append(table)
                         self.tables[table_id] = {'name': name, 'data': entry}
                     except Exception as ex:
-                        sys.stderr.write("ERROR {}".format(ex))
-                        traceback.print_exc()
                         pass
                 else:
                     tmp = name.split(' ')  # type: List[str]
@@ -308,7 +306,7 @@ if __name__ == '__main__':
         print('Usage: {} DATASHEET.pdj DATASHEET2.pdf'.format(os.path.basename(sys.argv[0])))
         exit(0)
     # a = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32f\stm32f777vi.pdf")
-    a = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32f\stm32f423ch.pdf")
+    a = DataSheet('stm32l431kb')
     # b.table_of_content.print_tree()
     # a.table_of_content.print_tree()
     table = a.table_root.childs[1] if a.table_root.childs else a.fallback_table
