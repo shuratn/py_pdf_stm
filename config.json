@@ -154,6 +154,27 @@
       "DMA": "DMA",
       "analog comparator": "analog comparator",
       "timer": "timer"
+    },
+    "TI": {
+      "Flash": "Flash memory",
+      "SRAM": "RAM",
+      "CPU Frequency": "CPU Frequency",
+      "SPI": "SPI",
+      "Total GPIOs": "Total GPIOS",
+      "GPIOs": "Total GPIOS",
+      "UART": "UART",
+      "Quad SPI": "Quad SPI",
+      "I2C": "I2C",
+      "tsi": "tsi",
+      "Package": "Package",
+      "Pin Count": "Pin Count",
+      "DAC": "DAC",
+      "operating temperature": "OPERATING TEMPERATURE",
+      "operating voltage": "OPERATING VOLTAGE",
+      "ADC": "ADC",
+      "DMA": "DMA",
+      "analog comparator": "analog comparator",
+      "timer": "timer"
     }
   }
 }

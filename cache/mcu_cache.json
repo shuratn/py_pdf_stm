@@ -5691,5 +5691,259 @@
     "LQFP64"
    ]
   }
+ },
+ "TI": {
+  "MSP432P4111TPZ": {
+   "PIN COUNT": 100,
+   "PACKAGE": "LQFP100",
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "ANALOG COMPARATOR": 2,
+   "TIMER": 3,
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "I2C": 1,
+   "FLASH MEMORY": 32,
+   "RAM": 258,
+   "UART": 1,
+   "SPI": 2
+  },
+  "MSP432P411YTPZ": {
+   "PIN COUNT": 100,
+   "PACKAGE": "LQFP100",
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "ANALOG COMPARATOR": 2,
+   "TIMER": 3,
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "I2C": 1,
+   "FLASH MEMORY": 32,
+   "RAM": 258,
+   "UART": 1,
+   "SPI": 2
+  },
+  "MSP432P411VTPZ": {
+   "PIN COUNT": 100,
+   "PACKAGE": "LQFP100",
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "ANALOG COMPARATOR": 2,
+   "TIMER": 3,
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "I2C": 1,
+   "FLASH MEMORY": 32,
+   "RAM": 258,
+   "UART": 1,
+   "SPI": 2
+  },
+  "MSP432P4011TRGC": {
+   "PIN COUNT": 64,
+   "PACKAGE": "VQFN64",
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "ANALOG COMPARATOR": 2,
+   "TIMER": 3,
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "I2C": 1,
+   "FLASH MEMORY": 32,
+   "RAM": 258,
+   "UART": 1,
+   "SPI": 2
+  },
+  "MSP432P401YTRGC": {
+   "PIN COUNT": 64,
+   "PACKAGE": "VQFN64",
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "ANALOG COMPARATOR": 2,
+   "TIMER": 3,
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "I2C": 1,
+   "FLASH MEMORY": 32,
+   "RAM": 258,
+   "UART": 1,
+   "SPI": 2
+  },
+  "MSP432P401VTRGC": {
+   "PIN COUNT": 64,
+   "PACKAGE": "VQFN64",
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "ANALOG COMPARATOR": 2,
+   "TIMER": 3,
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "I2C": 1,
+   "FLASH MEMORY": 32,
+   "RAM": 258,
+   "UART": 1,
+   "SPI": 2
+  },
+  "CC1312R1F3RGZ": {
+   "PIN COUNT": 48,
+   "PACKAGE": "VQFN48",
+   "SPI": 2,
+   "RAM": 92,
+   "ANALOG COMPARATOR": 2,
+   "OPERATING VOLTAGE": {
+    "lo": 1.8,
+    "hi": 3.8
+   },
+   "I2C": 1,
+   "FLASH MEMORY": 256,
+   "TSI": 1,
+   "UART": 2,
+   "TOTAL GPIOS": 30,
+   "TIMER": 4,
+   "ADC": {
+    "12-bit": {
+     "count": 1,
+     "channels": 8
+    }
+   },
+   "CPU FREQUENCY": 48
+  },
+  "MSP432P4111PZ": {
+   "PIN COUNT": 100,
+   "PACKAGE": "LQFP100",
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "RAM": 258,
+   "ANALOG COMPARATOR": 4,
+   "SPI": 2,
+   "I2C": 1,
+   "UART": 1,
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "TIMER": 3,
+   "FLASH MEMORY": 32
+  },
+  "MSP432P411YPZ": {
+   "PIN COUNT": 100,
+   "PACKAGE": "LQFP100",
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "RAM": 258,
+   "ANALOG COMPARATOR": 4,
+   "SPI": 2,
+   "I2C": 1,
+   "UART": 1,
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "TIMER": 3,
+   "FLASH MEMORY": 32
+  },
+  "MSP432P411VPZ": {
+   "PIN COUNT": 100,
+   "PACKAGE": "LQFP100",
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "RAM": 258,
+   "ANALOG COMPARATOR": 4,
+   "SPI": 2,
+   "I2C": 1,
+   "UART": 1,
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "TIMER": 3,
+   "FLASH MEMORY": 32
+  },
+  "MSP432P4011RGC": {
+   "PIN COUNT": 64,
+   "PACKAGE": "VQFN64",
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "RAM": 258,
+   "ANALOG COMPARATOR": 4,
+   "SPI": 2,
+   "I2C": 1,
+   "UART": 1,
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "TIMER": 3,
+   "FLASH MEMORY": 32
+  },
+  "MSP432P401YRGC": {
+   "PIN COUNT": 64,
+   "PACKAGE": "VQFN64",
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "RAM": 258,
+   "ANALOG COMPARATOR": 4,
+   "SPI": 2,
+   "I2C": 1,
+   "UART": 1,
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "TIMER": 3,
+   "FLASH MEMORY": 32
+  },
+  "MSP432P401VRGC": {
+   "PIN COUNT": 64,
+   "PACKAGE": "VQFN64",
+   "DMA": {
+    "channels": 8,
+    "count": 1
+   },
+   "RAM": 258,
+   "ANALOG COMPARATOR": 4,
+   "SPI": 2,
+   "I2C": 1,
+   "UART": 1,
+   "OPERATING VOLTAGE": {
+    "lo": 1.62,
+    "hi": 3.7
+   },
+   "TIMER": 3,
+   "FLASH MEMORY": 32
+  }
  }
 }

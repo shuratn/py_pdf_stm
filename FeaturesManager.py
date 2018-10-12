@@ -13,6 +13,8 @@ from FeatureExtractors.SMT32L_feature_extractor import STM32LFeatureListExtracto
 from FeatureExtractors.SMT32F_feature_extractor import STM32FFeatureListExtractor
 import xlsxwriter
 
+from FeatureExtractors.TI_feature_extractor import TIFeatureListExtractor
+
 
 class FeatureManager:
     EXTRACTORS = {
@@ -22,6 +24,8 @@ class FeatureManager:
         'KE': KEFeatureListExtractor,
         'KV': KVFeatureListExtractor,
         'MK': MKFeatureListExtractor,
+        'MSP': TIFeatureListExtractor,
+        'CC': TIFeatureListExtractor,
     }
 
     cache_path = Path(r'./cache/mcu_cache.json').absolute()

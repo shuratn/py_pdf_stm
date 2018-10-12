@@ -1,6 +1,7 @@
 import os
 import sys
 import traceback
+import unicodedata
 from pathlib import Path
 from typing import Dict, List, Set
 
@@ -30,11 +31,12 @@ class DataSheetNode:
         self.name = name
         self.childs = []  # type: List[DataSheetNode]
         self.parent = None  # type: DataSheetNode
-        self._page = None #type: PageObject
+        self._page = None  # type: PageObject
+        self._page_plumber = None  # type: pdfplumber.pdf.Page
 
     @property
     def page(self):
-        return self._page
+        return self._page_plumber
 
     def __repr__(self):
         return '<{} {}-"{}">'.format(self.__class__.__name__, join(self.path, '.'), self.name)
@@ -178,7 +180,7 @@ class DataSheetNode:
 
 class DataSheetTableNode(DataSheetNode):
 
-    def __init__(self, name: str, path: List[int], table_number, page) ->None:
+    def __init__(self, name: str, path: List[int], table_number, page) -> None:
         super().__init__(name, path)
         self.path.append(table_number)
         self.table_number = table_number
@@ -207,6 +209,7 @@ class DataSheet:
     def __init__(self, datasheet_path):
         self.path = Path(datasheet_path)
         self.pdf_file = PyPDF3.PdfFileReader(self.path.open('rb'))
+        self.plumber = pdfplumber.load(self.path.open('rb'))
         self.raw_outline = []
         self.tables, self.figures = {}, {}  # type: Dict
         self.table_of_content = DataSheetNode('ROOT', [0])
@@ -228,13 +231,13 @@ class DataSheet:
                 if 'Functional' in thing['/Title']:
                     end_page = self.get_page_num(thing.page.getObject())
                     break
-            for page_num in range(start_page,end_page):
-                page = self.pdf_file.getPage(page_num) #type: PyPDF3.pdf.PageObject
+            for page_num in range(start_page, end_page):
+                page = self.pdf_file.getPage(page_num)  # type: PyPDF3.pdf.PageObject
                 text = page.extractText()
                 if 'features and peripheral' in text:
-
-                    table = DataSheetTableNode('Table 2. STM32F423xH features and peripheral counts', [0, 9999], 9999, page)
-                    self.fallback_table =table
+                    table = DataSheetTableNode('Table 2. STM32F423xH features and peripheral counts', [0, 9999], 9999,
+                                               page)
+                    self.fallback_table = table
                     break
         pass
 
@@ -252,6 +255,7 @@ class DataSheet:
         for entry in self.raw_outline:
             if entry['/Type'] == '/XYZ':
                 name = entry['/Title']
+                name = unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode('ascii')
                 if 'Table' in name:
                     try:
                         table_id = int(name.split('.')[0].split(' ')[-1])
@@ -274,6 +278,7 @@ class DataSheet:
 
                         node = DataSheetNode(join(tmp[1:]), order)
                         node._page = entry.page.getObject()
+                        node._page_plumber = self.plumber.pages[self.get_page_num(entry.page.getObject())]
                         node.parent = self.table_of_content
                         parent = node.get_node_by_path(order[:-1])
                         parent.append(node)
@@ -281,12 +286,14 @@ class DataSheet:
                         if tmp[0].isnumeric():
                             node = DataSheetNode(join(tmp[1:]), [int(tmp[0])])
                             node._page = entry.page.getObject()
+                            node._page_plumber = self.plumber.pages[self.get_page_num(entry.page.getObject())]
                             self.table_of_content.append(node)
                             # pos = self.recursive_create_toc([int(tmp[0])])
                             # pos['name'] = ' '.join(tmp[1:])
                         else:
                             node = DataSheetNode(name, [1])
                             node._page = entry.page.getObject()
+                            node._page_plumber = self.plumber.pages[self.get_page_num(entry.page.getObject())]
                             self.table_of_content.append(node)
                     top_level_node = node
 
@@ -306,7 +313,7 @@ if __name__ == '__main__':
         print('Usage: {} DATASHEET.pdj DATASHEET2.pdf'.format(os.path.basename(sys.argv[0])))
         exit(0)
     # a = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32f\stm32f777vi.pdf")
-    a = DataSheet('stm32l431kb')
+    a = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\CC\cc1312r.pdf")
     # b.table_of_content.print_tree()
     # a.table_of_content.print_tree()
     table = a.table_root.childs[1] if a.table_root.childs else a.fallback_table

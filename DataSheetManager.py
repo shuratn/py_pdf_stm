@@ -11,6 +11,7 @@ from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
 from DataSheetParsers.KE_E_DataSheet import KE_DataSheet
 from DataSheetParsers.KV_E_DataSheet import KV_DataSheet
 from DataSheetParsers.KL_E_DataSheet import KL_DataSheet
+from DataSheetParsers.TI_DataSheet import TI_DataSheet
 
 
 class DataSheetManager:
@@ -19,6 +20,7 @@ class DataSheetManager:
     # MKL_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISLMCUSELGD.pdf'  # KL17P64M48SF6
     # MK_DATASHEET_URL = 'https://www.nxp.com/docs/en/product-selector-guide/KINETISKMCUSELGD.pdf'  # MK11DN512AVMC5
     MKM_DATASHEET_URL = 'https://www.nxp.com/docs/en/data-sheet/{}.pdf'  # MKM
+    TI_DATASHEET_URL = 'http://www.ti.com/lit/ds/symlink/{}.pdf'  # MKM
     # KL_DATASHEET_URL = 'https://www.nxp.com/docs/en/data-sheet/{}.pdf' #KL17P64M48SF6
     DATASHEET_URLS = {
         'STM32L': (STM32L_DATASHEET_URL, DataSheet),
@@ -27,6 +29,8 @@ class DataSheetManager:
         'KE': (MKM_DATASHEET_URL, KE_DataSheet),
         'KV': (MKM_DATASHEET_URL, KV_DataSheet),
         'MK': (MKM_DATASHEET_URL, MK_DataSheet),
+        'MSP': (TI_DATASHEET_URL, TI_DataSheet),
+        'CC': (TI_DATASHEET_URL, TI_DataSheet),
     }
 
     def __init__(self, datasheets: List[str]) -> None:
@@ -88,6 +92,6 @@ class DataSheetManager:
 
 
 if __name__ == '__main__':
-    manager = DataSheetManager(['stm32L476'])
+    manager = DataSheetManager(['msp432p4011'])
     manager.get_or_download()
     print(manager.datasheets_datasheets)

@@ -2,6 +2,7 @@ import json
 import re
 import sys
 import traceback
+import unicodedata
 from pprint import pprint
 from typing import Dict, Any
 
@@ -12,7 +13,7 @@ from FeatureExtractors.feature_extractor import FeatureListExtractor
 from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
 from TableExtractor import TableExtractor
 from FeatureExtractors.feature_extractor import convert_type
-from Utils import is_str, text2int, clean_line, fucking_split, fucking_replace
+from Utils import is_str, text2int, clean_line, fucking_split, fucking_replace, latin1_to_ascii
 
 
 class MKFeatureListExtractor(FeatureListExtractor):
@@ -26,7 +27,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
 
     adc_count_re = re.compile('^(?P<count>\d+)x?\s', re.IGNORECASE)
 
-    adc_bits_re = re.compile('(?P<bits>\d+)-bit\s.*\sADC\s',
+    adc_bits_re = re.compile('(?P<bits>\d+)-bit.*(\s|\()ADCs?(\s|\))',
                              re.IGNORECASE)
 
     adc_channels_re = re.compile('(?P<channels>\d+)\schannels\s',
@@ -51,14 +52,14 @@ class MKFeatureListExtractor(FeatureListExtractor):
                         re.IGNORECASE)
 
     package_re = re.compile(
-        '^.?\s?(?P<package_short>[\d\w]+)\s=\s(?P<pin_count>\d+)\s(?P<package_full>[\d\w]+)\s\(.*\)',
+        '.?\s?(?P<package_short>[\d\w]+)\s=\s(?P<pin_count>\d+)\s(?P<package_full>[\d\w]+)\s\(.*\)',
         re.IGNORECASE | re.MULTILINE)
     mcu_fields = re.compile(
         '(?P<q_status>[MP])(?P<m_fam>[K])(?P<s_fam>M1|M3)(?P<adc>[\d])(?P<key_attr>Z)(?P<flash>[\dM]+)(?P<si_rev>[ZA]?)(?P<temp_range>\w)(?P<package>[a-zA-Z]+)(?P<cpu_frq>\d?)(?P<pack_type>[R]?)',
         re.IGNORECASE)
-    freq_re = re.compile('^.?\s?(?P<key>[\d\w]+)\s=\s(?P<freq>[\d]+)\s(?P<units>[MHGz]{3})',
+    freq_re = re.compile('.?\s?(?P<key>[\d\w]+)\s=\s(?P<freq>[\d]+)\s(?P<units>[MHGz]{3})',
                          re.IGNORECASE | re.MULTILINE)
-    temp_re = re.compile('^.?\s?(?P<key>[\d\w]+)\s=\s(?P<lo>[-–+\d]+)\sto\s(?P<hi>[-–+\d]+)',
+    temp_re = re.compile('.?\s?(?P<key>[\d\w]+)\s=\s(?P<lo>[-–+\d]+)\sto\s(?P<hi>[-–+\d]+)',
                          re.IGNORECASE | re.MULTILINE)
 
     mcu_names = re.compile('([MP][K](M1|M3)[\d]Z[\dM]+[ZA]?C[a-zA-Z]+\d?[R]?)', re.IGNORECASE)
@@ -104,10 +105,12 @@ class MKFeatureListExtractor(FeatureListExtractor):
         fields = self.datasheet.table_of_content.get_node_by_name('Fields')
         text = ''
         if fields:
-            text += self.datasheet.pdf_file.getPage(self.datasheet.get_page_num(fields.page)).extractText()
-            text += self.datasheet.pdf_file.getPage(self.datasheet.get_page_num(fields.page) + 1).extractText()
-        text = fucking_replace(text,'°–…‡†', '-')
 
+            text += self.datasheet.plumber.pages[self.datasheet.get_page_num(fields._page)].extract_text()
+
+            text += self.datasheet.plumber.pages[self.datasheet.get_page_num(fields._page)+1].extract_text()
+        text = fucking_replace(text,'°–…‡†', '-')
+        text = latin1_to_ascii(text)
         if self.package_re.findall(text):
             for package_info in self.package_re.findall(text):
                 short_name, pin_count, full_name = package_info
@@ -135,10 +138,11 @@ class MKFeatureListExtractor(FeatureListExtractor):
     def extract_feature(self, line):
         line = clean_line(line)
         line = text2int(line.lower())
+        line = line.replace('dual','2')
         if self.voltage_re.findall(line):
             lo, hi = self.voltage_re.findall(line)[0]
             self.create_new_or_merge('operating voltage', {'lo': float(lo), 'hi': float(hi)}, True)
-        elif self.dma_re.findall(line):
+        elif self.dma_re.findall(line) and 'channel' in line:
             channels = self.dma_re.findall(line)[0]
             self.create_new_or_merge('DMA', {'channels': int(channels), 'count': 1}, True)
         elif self.temperature_re.findall(line):
@@ -181,6 +185,8 @@ class MKFeatureListExtractor(FeatureListExtractor):
             self.create_new_or_merge('tsi', count)
         elif self.adc_bits_re.findall(line):
             bits = self.adc_bits_re.findall(line)[0]
+            if type(bits) is tuple:
+                bits = bits[0]
             count = self.adc_count_re.findall(line)
             if any(count):
                 count = int(count[0])
@@ -219,21 +225,19 @@ class MKFeatureListExtractor(FeatureListExtractor):
 
     def extract_features(self):
         controller_features = {}
-        pages = [self.datasheet.pdf_file.getPage(0), self.datasheet.pdf_file.getPage(1)]
+        pages = [self.datasheet.plumber.pages[0], self.datasheet.plumber.pages[1]]
         mcus = []
         for page in pages:
-            text = page.extractText()
-            for block in text.split("€"):
+            text = page.extract_text(y_tolerance=5)
+            for block in text.split("•"):
                 if 'Supports the following' in block:
                     mcus = [m[0] for m in self.mcu_names.findall(block)]
                     # print(mcus)
                     continue
-                if '°' in block or '•' in block:
-                    block = block.replace('\n', ' ')
-                    lines = fucking_split(block, '†‡°•')
-                    for line in lines:
-                        self.extract_feature(line)
-                    continue
+                block = block.replace('\n', ' ')
+                lines = fucking_split(block, '†‡•–')
+                for line in lines:
+                    self.extract_feature(line)
                 # print(block)
                 # print('=' * 20)
 

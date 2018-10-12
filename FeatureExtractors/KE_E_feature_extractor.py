@@ -1,7 +1,5 @@
 import json
 import re
-import sys
-import traceback
 from pprint import pprint
 from typing import Any, Dict
 
@@ -9,10 +7,7 @@ from PyPDF3.pdf import PageObject
 
 from DataSheetParsers.DataSheet import DataSheet
 from FeatureExtractors.MK_E_feature_extractor import MKFeatureListExtractor
-from FeatureExtractors.feature_extractor import FeatureListExtractor
 from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
-from TableExtractor import TableExtractor
-from FeatureExtractors.feature_extractor import convert_type
 from Utils import is_str, text2int, clean_line, fucking_split
 
 
@@ -59,11 +54,11 @@ class KEFeatureListExtractor(MKFeatureListExtractor):
 
     def extract_features(self):
         controller_features = {}
-        pages = [self.datasheet.pdf_file.getPage(0), self.datasheet.pdf_file.getPage(1)]
+        pages = [self.datasheet.plumber.pages[0], self.datasheet.plumber.pages[1]]
         mcus = []
         ordering_info = self.datasheet.table_of_content.get_node_by_name('Ordering information')
         if ordering_info:
-            or_page = self.datasheet.get_page_num(ordering_info.page)
+            or_page = self.datasheet.get_page_num(ordering_info._page)
             ordering_tables = self.extract_table(self.datasheet, or_page)
         else:
             ordering_tables = self.extract_table(self.datasheet, 1)
@@ -74,17 +69,16 @@ class KEFeatureListExtractor(MKFeatureListExtractor):
                 mcus = list(map(lambda cell: cell.clean_text, table.get_col(0)[2:]))
         mcus = [mcu.strip().replace('\n','').replace(' ','') for mcu in mcus]
         for page in pages:
-            text = page.extractText()
+            text = page.extract_text()
             for block in text.split("€"):
-                if '‡' in block:
-                    block = block.replace('\n', ' ')
-                    lines = fucking_split(block, '†‡°•')
-                    for line in lines:
-                        self.extract_feature(line)
+                block = block.replace('\n', ' ')
+                lines = fucking_split(block, '†‡°•')
+                for line in lines:
+                    self.extract_feature(line)
 
-                    #     print(line, '\n')
-                    # print('=' * 20)
-                    continue
+                #     print(line, '\n')
+                # print('=' * 20)
+                continue
                 # print(block)
                 # print('=' * 20)
 

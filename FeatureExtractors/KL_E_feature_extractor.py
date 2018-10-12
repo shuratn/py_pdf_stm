@@ -61,11 +61,11 @@ class KLFeatureListExtractor(MKFeatureListExtractor):
 
     def extract_features(self):
         controller_features = {}
-        pages = [self.datasheet.pdf_file.getPage(0), self.datasheet.pdf_file.getPage(1)]
+        pages = [self.datasheet.plumber.pages[0], self.datasheet.plumber.pages[0]]
         mcus = []
         ordering_info = self.datasheet.table_of_content.get_node_by_name('Ordering information')
         if ordering_info:
-            or_page = self.datasheet.get_page_num(ordering_info.page)
+            or_page = self.datasheet.get_page_num(ordering_info._page)
             ordering_tables = self.extract_table(self.datasheet, or_page)
         else:
             ordering_tables = self.extract_table(self.datasheet, 1)
@@ -76,10 +76,10 @@ class KLFeatureListExtractor(MKFeatureListExtractor):
                 mcus = list(map(lambda cell: cell.clean_text, table.get_col(0)[2:]))
 
         for page in pages:
-            text = page.extractText()
+            text = page.extract_text(y_tolerance=5)
             for block in text.split("€"):
                     block = block.replace('\n', ' ')
-                    lines = fucking_split(block, '†‡°•')
+                    lines = fucking_split(block, '†‡•')
                     for line in lines:
                         self.extract_feature(line)
 
