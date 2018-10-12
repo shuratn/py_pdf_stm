@@ -418,7 +418,7 @@ class Cell:
         return ''.join(map(itemgetter('text'),self.words))
 
     @property
-    def clean_text(self):
+    def clean_text(self) -> str:
         return self.text.replace('\n', ' ')
 
     def __hash__(self):

@@ -75,7 +75,7 @@ class DataSheetNode:
         ret_node: 'DataSheetNode' = None
         if not prev_node:
             prev_node = self.get_root_node()
-        if prev_node.name == name:
+        if name in prev_node.name:
             return prev_node
         else:
             for child in prev_node.childs:

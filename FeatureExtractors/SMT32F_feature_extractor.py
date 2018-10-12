@@ -3,6 +3,9 @@ import sys
 import traceback
 from pprint import pprint
 
+import pdfplumber
+from tqdm import tqdm
+
 from DataSheetParsers.DataSheet import DataSheet
 from FeatureExtractors.SMT32L_feature_extractor import STM32LFeatureListExtractor
 from Utils import *
@@ -221,12 +224,80 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
         self.features = controller_features
         return controller_features
 
+    def extract_pinout(self):
+        pin_pages = []
+        start = self.datasheet.table_of_content.get_node_by_name('Pinouts and pin description')
+        start_page = self.datasheet.get_page_num(start._page)
+        found = False
+        dropped = False
+        # print('Starting from',start_page)
+        for page in tqdm(self.datasheet.plumber.pages[start_page:], desc='Scaning pages',
+                         unit='pages'):  # type:pdfplumber.pdf.Page
+            page_text = page.extract_text(x_tolerance=2, y_tolerance=5)
+            if 'pin definitions' in page_text.lower():
+                found = True
+                pin_pages.append(page.page_number - 1)
+                continue
+            if found and not dropped:
+                dropped = True
+            if found and dropped:
+                break
+        tables = []
+        for page in pin_pages:
+            table = self.extract_table(self.datasheet, page)
+            tables.append(table[0])
+
+        root = tables.pop(0)
+        for cell in root.get_row(1):
+            cell.text = self.fix_name(cell.text)
+        for table in tables:
+            for row in list(table.global_map.values())[2:]:
+                root.global_map[len(root.global_map)] = row
+        # for row in root.global_map.values():
+        #     print(''.join([cell.text.replace(" \n", '').replace("\n", "").center(15, ' ') for cell in row.values()]))
+        pin_number_span = 0
+        first_pin_num_cell = root.get_cell(0, 0)
+        for cell in root.get_row(0):
+            if cell == first_pin_num_cell:
+                pin_number_span += 1
+        pin_name_col = pin_number_span
+        packages = [cell.text for cell in root.get_row(1)[:pin_number_span]]
+        pin_data = {}
+        for n, package in enumerate(packages):
+            pin_data[package] = {'pins': {}}
+            for row_id in range(len(root.global_map) - 2):
+                pin_id = root.get_cell(n, row_id + 2).clean_text
+                if pin_id != '-':
+                    pin_name = remove_parentheses(root.get_cell(pin_name_col, row_id + 2).clean_text.replace(' \n', ''))
+                    pin_type = root.get_cell(pin_name_col+1, row_id + 2).clean_text.replace(' \n', '')
+                    pin_funks = root.get_cell(pin_name_col + 3, row_id + 2) \
+                        .clean_text \
+                        .replace(' \n', '') \
+                        .replace(' ', '') \
+                        .split(',')
+                    pin_add_funks = root.get_cell(pin_name_col + 4, row_id + 2) \
+                        .clean_text \
+                        .replace(' \n', '') \
+                        .replace(' ', '') \
+                        .split(',')
+                    pin_funks += pin_add_funks
+                    pin_funks = [funk for funk in pin_funks if funk != '-']
+                    pin_data[package]['pins'][pin_id] = {'name': pin_name, 'functions': pin_funks + pin_add_funks,'type:':pin_type}
+        # pprint(pin_data)
+        # print(packages)
+        # print(pin_number_span)
+        return pin_data
+
 
 if __name__ == '__main__':
-    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32F\stm32f423ch.pdf")
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32L\stm32L476.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
-    feature_extractor = STM32FFeatureListExtractor('stm32f423ch', datasheet, config)
-    feature_extractor.process()
-    feature_extractor.unify_names()
-    pprint(feature_extractor.features)
+    feature_extractor = STM32FFeatureListExtractor('stm32L476', datasheet, config)
+    # feature_extractor.process()
+    # feature_extractor.unify_names()
+    pins = feature_extractor.extract_pinout()
+    with open('./../pins.json','w') as fp:
+        json.dump(pins,fp,indent=2)
+
+    # pprint(feature_extractor.features)
