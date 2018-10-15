@@ -172,7 +172,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
         for page in pin_pages:
             table = self.extract_table(self.datasheet, page)
             for t in table:
-                if 'Pin number'in t.get_cell(0,0).clean_text:
+                if 'pin number' in t.get_cell(0,0).clean_text.lower():
                     tables.append(t)
 
         root = tables.pop(0)
@@ -210,6 +210,8 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
                     pin_funks += pin_add_funks
                     pin_funks = [remove_all_fuckery(funk) for funk in pin_funks if funk != '-']  # removing all shit
                     pin_funks = remove_doubles([funk for funk in pin_funks if funk])  # cleaning after removing all shit
+                    if pin_name.startswith('P'):
+                        pin_funks.append('GPIO')
                     self.pin_data[package]['pins'][pin_id] = {'name': pin_name, 'functions': pin_funks,
                                                               'type': pin_type}
         # pprint(pin_data)
@@ -219,9 +221,12 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32L\STM32L451.pdf")
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32L\STM32L431CB.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
-    feature_extractor = STM32LFeatureListExtractor('stm32L476', datasheet, config)
-    feature_extractor.process()
+    feature_extractor = STM32LFeatureListExtractor('STM32L431CB', datasheet, config)
+    # feature_extractor.process()
+    feature_extractor.extract_pinout()
     pprint(feature_extractor.features)
+    with open('./../pins.json', 'w') as fp:
+        json.dump(feature_extractor.pin_data, fp, indent=2)

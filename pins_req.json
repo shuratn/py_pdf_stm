@@ -1,0 +1,101 @@
+{
+  "PACKAGE": "LQFP64",
+  "PINOUT": {
+    "RF-MEM": {
+      "TYPE": "SPI",
+      "PINS": [
+        "MISO",
+        "MOSI",
+        "SCLK"
+      ]
+    },
+    "OPTO": {
+      "TYPE": "UART",
+      "PINS": [
+        "RX",
+        "TX"
+      ]
+    },
+    "METER": {
+      "TYPE": "UART",
+      "PINS": [
+        "RX",
+        "TX"
+      ]
+    },
+    "RS485": {
+      "TYPE": "UART",
+      "PINS": [
+        "RX",
+        "TX"
+      ]
+    },
+    "RS485-DE": {
+      "TYPE": "GPIO",
+      "PINS": 1
+    },
+    "MEM": {
+      "TYPE": "I2C",
+      "PINS": [
+        "SCL",
+        "SDA"
+      ]
+    },
+
+    "MEM-CS": {
+      "TYPE": "GPIO",
+      "PINS": 1
+    },
+    "MAG": {
+      "TYPE": "GPIO",
+      "PINS": 1
+    },
+    "D_ELMAG": {
+      "TYPE": "GPIO",
+      "PINS": 1
+    },
+    "SWD_DIO/BL": {
+      "TYPE": "GPIO",
+      "PINS": 1
+    },
+    "Rele ON/OFF": {
+      "TYPE": "GPIO",
+      "PINS": 2
+    },
+    "RF_RESET": {
+      "TYPE": "GPIO",
+      "PINS": 1
+    },
+    "TAMPER": {
+      "TYPE": "GPIO",
+      "PINS": 2
+    },
+    "RF-CS": {
+      "TYPE": "GPIO",
+      "PINS": 1
+    },
+    "RF-IRQ": {
+      "TYPE": "GPIO",
+      "PINS": 1
+    },
+    "DP-WAKEUP/DOWN": {
+      "TYPE": "ACMP",
+      "PINS": 2
+    },
+    "LCD": {
+      "TYPE": "I2C",
+      "PINS": [
+        "SCL",
+        "SDA"
+      ]
+    },
+    "TSA": {
+      "TYPE": "TSI",
+      "PINS": 2
+    },
+    "LED": {
+      "TYPE": "GPIO",
+      "PINS": 1
+    }
+  }
+}

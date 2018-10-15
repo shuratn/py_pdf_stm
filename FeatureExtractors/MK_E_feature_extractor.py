@@ -294,7 +294,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
                 pin_id = fucking_replace(pin_id,'—','-')
                 if pin_id != '-':
                     if have_pin_names:
-                        pin_name = root.get_cell(offset-1,row_id).clean_text
+                        pin_name = root.get_cell(offset-1,row_id+1).clean_text
                     else:
                         pin_name = 'p-{}'.format(pin_id)
                     pin_type = "I/O"

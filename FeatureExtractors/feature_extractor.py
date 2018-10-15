@@ -91,7 +91,7 @@ class FeatureListExtractor:  # This class is adapted to STM
         self.pin_data = {}  # type: Dict[str, Dict[str, Any]]
         self.config_name = 'UNKNOWN CONTROLLER'
         self.mc_family = 'UNKNOWN'
-        self.pin_manager = PinManager(self.pin_data)
+        self.pin_manager = PinManager(self.pin_data,{})
         self.post_init()
 
     def post_init(self):
