@@ -1,9 +1,10 @@
 import sys
 import traceback
 from pprint import pprint
-from typing import List, Dict
+from typing import List, Dict, Any
 
 from DataSheetParsers.DataSheet import DataSheet
+from PinManager import PinManager
 from TableExtractor import TableExtractor, Table
 from Utils import is_numeric, is_dict, remove_units, replace_i, merge
 
@@ -87,8 +88,10 @@ class FeatureListExtractor:  # This class is adapted to STM
         self.datasheet = datasheet
         self.features_tables = []  # type: List[Table]
         self.features = {}  # type: Dict[str,Dict]
+        self.pin_data = {}  # type: Dict[str, Dict[str, Any]]
         self.config_name = 'UNKNOWN CONTROLLER'
         self.mc_family = 'UNKNOWN'
+        self.pin_manager = PinManager(self.pin_data)
         self.post_init()
 
     def post_init(self):
@@ -98,6 +101,7 @@ class FeatureListExtractor:  # This class is adapted to STM
         self.extract_tables()
         self.extract_features()
         del self.features_tables
+        self.extract_pinout()
         return self.features
 
     def extract_table(self, datasheet, page):
@@ -197,6 +201,9 @@ class FeatureListExtractor:  # This class is adapted to STM
         self.features = controller_features
         return controller_features
 
+    def extract_pinout(self):
+        pass
+
     def unify_names(self):
         unknown_names = {}
         for mc, features in self.features.items():
@@ -246,6 +253,8 @@ class FeatureListExtractor:  # This class is adapted to STM
                     print('\t', unknown_feature)
                 print('=' * 20)
                 print()
+
+
 
     @staticmethod
     def merge_features(old, new):

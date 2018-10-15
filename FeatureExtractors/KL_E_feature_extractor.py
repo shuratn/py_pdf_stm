@@ -106,4 +106,5 @@ if __name__ == '__main__':
     feature_extractor = KLFeatureListExtractor('KL17P64M48SF2', datasheet, config)
     feature_extractor.process()
     feature_extractor.unify_names()
-    pprint(feature_extractor.features)
+    pprint(feature_extractor.pin_data)
+    # pprint(feature_extractor.features)

@@ -58,10 +58,17 @@ def remove_parentheses(string: str):
     return string
 
 
+def remove_all_fuckery(string: str):
+    while '(' in string and ')' in string:
+        string = remove_parentheses(string)
+    return string
+
+
 def replace_i(string: str, sub: str, new: str):
     result = re.search('{}'.format(sub.lower()), string, re.IGNORECASE)
-    string = string[:result.start()] + new + string[result.end():]
-    string = string.strip(' ')
+    if result:
+        string = string[:result.start()] + new + string[result.end():]
+        string = string.strip(' ')
     return string
 
 
@@ -158,6 +165,8 @@ def fucking_replace(string, chars, rep):
         string = string.replace(char, rep)
     return string
 
+def remove_doubles(in_list):
+    return list(set(in_list))
 
 def latin1_to_ascii(unicrap):
     """This takes a UNICODE string and replaces Latin-1 characters with

@@ -99,4 +99,7 @@ if __name__ == '__main__':
     feature_extractor = KEFeatureListExtractor('KE1xZP100M72SF0', datasheet, config)
     feature_extractor.process()
     feature_extractor.unify_names()
-    pprint(feature_extractor.features)
+    pprint(feature_extractor.extract_pinout())
+    with open('./../pins2.json', 'w') as fp:
+        json.dump(feature_extractor.pin_data, fp, indent=2)
+    # pprint(feature_extractor.features)

@@ -1,7 +1,7 @@
 import os
 import sys
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 import requests
 from tqdm import tqdm
@@ -12,6 +12,7 @@ from DataSheetParsers.KE_E_DataSheet import KE_DataSheet
 from DataSheetParsers.KV_E_DataSheet import KV_DataSheet
 from DataSheetParsers.KL_E_DataSheet import KL_DataSheet
 from DataSheetParsers.TI_DataSheet import TI_DataSheet
+
 
 
 class DataSheetManager:
@@ -35,7 +36,7 @@ class DataSheetManager:
 
     def __init__(self, datasheets: List[str]) -> None:
         self.datasheets = datasheets
-        self.datasheets_datasheets = {}
+        self.datasheets_datasheets = {} #type: Dict[str,Dict]
 
     def get_datasheet_loader(self, mc: str):
         for loader in sorted(self.DATASHEET_URLS, key=lambda l: len(l), reverse=True):

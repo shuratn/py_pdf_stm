@@ -6,14 +6,17 @@ import unicodedata
 from pprint import pprint
 from typing import Dict, Any
 
+import pdfplumber
 from PyPDF3.pdf import PageObject
+from tqdm import tqdm
 
 from DataSheetParsers.DataSheet import DataSheet
 from FeatureExtractors.feature_extractor import FeatureListExtractor
 from DataSheetParsers.MK_E_DataSheet import MK_DataSheet
 from TableExtractor import TableExtractor
 from FeatureExtractors.feature_extractor import convert_type
-from Utils import is_str, text2int, clean_line, fucking_split, fucking_replace, latin1_to_ascii
+from Utils import is_str, text2int, clean_line, fucking_split, fucking_replace, latin1_to_ascii, remove_parentheses, \
+    remove_all_fuckery, remove_doubles
 
 
 class MKFeatureListExtractor(FeatureListExtractor):
@@ -80,6 +83,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
         self.extract_fields()
         self.features = self.extract_features()
         self.parse_code_name()
+        self.extract_pinout()
         return self.features
 
     def parse_code_name(self):  # UNIQUE FUNCTION FOR EVERY MCU FAMILY
@@ -88,7 +92,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
             # print(mcus_fields)
             qa_status, m_fam, s_fam, _, key_attr, flash, si_rev, temp, package, cpu_frq, pack_type = mcus_fields
             pin_count, package = self.packages[package]
-            if not features.get('PACKAGE',False):
+            if not features.get('PACKAGE', False):
                 features['PACKAGE'] = []
             features['PACKAGE'].append(package + pin_count)
             features['pin count'] = pin_count
@@ -105,11 +109,10 @@ class MKFeatureListExtractor(FeatureListExtractor):
         fields = self.datasheet.table_of_content.get_node_by_name('Fields')
         text = ''
         if fields:
-
             text += self.datasheet.plumber.pages[self.datasheet.get_page_num(fields._page)].extract_text()
 
-            text += self.datasheet.plumber.pages[self.datasheet.get_page_num(fields._page)+1].extract_text()
-        text = fucking_replace(text,'°–…‡†', '-')
+            text += self.datasheet.plumber.pages[self.datasheet.get_page_num(fields._page) + 1].extract_text()
+        text = fucking_replace(text, '°–…‡†', '-')
         text = latin1_to_ascii(text)
         if self.package_re.findall(text):
             for package_info in self.package_re.findall(text):
@@ -138,7 +141,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
     def extract_feature(self, line):
         line = clean_line(line)
         line = text2int(line.lower())
-        line = line.replace('dual','2')
+        line = line.replace('dual', '2')
         if self.voltage_re.findall(line):
             lo, hi = self.voltage_re.findall(line)[0]
             self.create_new_or_merge('operating voltage', {'lo': float(lo), 'hi': float(hi)}, True)
@@ -232,14 +235,11 @@ class MKFeatureListExtractor(FeatureListExtractor):
             for block in text.split("•"):
                 if 'Supports the following' in block:
                     mcus = [m[0] for m in self.mcu_names.findall(block)]
-                    # print(mcus)
                     continue
                 block = block.replace('\n', ' ')
                 lines = fucking_split(block, '†‡•–')
                 for line in lines:
                     self.extract_feature(line)
-                # print(block)
-                # print('=' * 20)
 
         for mcu in mcus:
             if not controller_features.get(mcu, False):
@@ -248,6 +248,69 @@ class MKFeatureListExtractor(FeatureListExtractor):
                 controller_features[mcu][common] = value
 
         return controller_features
+
+    def extract_pinout(self):
+        pin_pages = []
+        start = self.datasheet.table_of_content.get_node_by_name('Signal Multiplexing and Pin Assignments')
+        start_page = self.datasheet.get_page_num(start._page)
+        found = False
+        dropped = False
+        for page in tqdm(self.datasheet.plumber.pages[start_page:], desc='Scaning pages',
+                         unit='pages'):  # type:pdfplumber.pdf.Page
+            page_text = page.extract_text(x_tolerance=2, y_tolerance=5)
+            if 'alt0' in page_text.lower():
+                found = True
+                pin_pages.append(page.page_number - 1)
+                continue
+            if found and not dropped:
+                dropped = True
+            if found and dropped:
+                break
+        tables = []
+        for page in pin_pages:
+            table = self.extract_table(self.datasheet, page)
+            for t in table:
+                if 'alt' in t.get_row(0)[-1].clean_text.lower():
+                    tables.append(t)
+        root = tables.pop(0)
+        for cell in root.get_row(1):
+            cell.text = self.fix_name(cell.text)
+        for table in tables:
+            for row in list(table.global_map.values())[1:]:
+                root.global_map[len(root.global_map)] = row
+        packages = []
+        have_pin_names = False
+        for cell in root.get_row(0):
+            if cell.text == 'DEFAULT' or cell.text == 'Pin Name':
+                if cell.text == 'Pin Name':
+                    have_pin_names  =True
+                break
+            packages.append(''.join(cell.text.split('\n')[::-1]))
+        offset = len(packages)+int(have_pin_names)
+        for n, package in enumerate(packages):
+            self.pin_data[package] = {'pins': {}}
+            for row_id in range(len(root.global_map) - 1):
+                pin_id = root.get_cell(n, row_id + 1).clean_text
+                pin_id = fucking_replace(pin_id,'—','-')
+                if pin_id != '-':
+                    if have_pin_names:
+                        pin_name = root.get_cell(offset-1,row_id).clean_text
+                    else:
+                        pin_name = 'p-{}'.format(pin_id)
+                    pin_type = "I/O"
+                    pin_funks = []
+                    for coll_id in range(len(root.get_row(1))-offset):
+                        pin_funk = root.get_cell(coll_id+offset, row_id + 1) \
+                            .clean_text \
+                            .replace(' \n', '') \
+                            .replace(' ', '')\
+                            .split('/')
+                        pin_funks.extend(pin_funk)
+                    pin_funks = [remove_all_fuckery(funk) for funk in pin_funks if funk != '-' and funk.lower()!='disabled']  # removing all shit
+                    pin_funks = remove_doubles([funk for funk in pin_funks if funk])  # cleaning after removing all shit
+                    self.pin_data[package]['pins'][pin_id] = {'name': pin_name, 'functions': pin_funks,
+                                                              'type': pin_type}
+        return self.pin_data
 
     def create_new_or_merge(self, key, value, override=False):
         if not override:
@@ -261,6 +324,9 @@ if __name__ == '__main__':
     with open('./../config.json') as fp:
         config = json.load(fp)
     feature_extractor = MKFeatureListExtractor('MKM', datasheet, config)
-    feature_extractor.process()
-    feature_extractor.unify_names()
+    # feature_extractor.process()
+    # feature_extractor.unify_names()
+    pprint(feature_extractor.extract_pinout())
+    with open('./../pins2.json', 'w') as fp:
+        json.dump(feature_extractor.pin_data, fp, indent=2)
     pprint(feature_extractor.features)
