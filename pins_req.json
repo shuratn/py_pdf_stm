@@ -1,5 +1,5 @@
 {
-  "PACKAGE": "LQFP144",
+  "PACKAGE": "UFBGA100",
   "PINOUT": {
     "RF-MEM": {
       "TYPE": "SPI",
@@ -80,7 +80,7 @@
     },
     "DP-WAKEUP/DOWN": {
       "TYPE": "ACMP",
-      "PINS": ["IN","OUT"]
+      "PINS": ["INM","INM"]
     },
     "LCD": {
       "TYPE": "I2C",

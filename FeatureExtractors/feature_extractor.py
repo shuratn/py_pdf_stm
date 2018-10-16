@@ -206,7 +206,10 @@ class FeatureListExtractor:  # This class is adapted to STM
         for package, pin_data in self.pin_data.items():
             for mcu,mcu_features in self.features.items():
                 if package in mcu_features.get('PACKAGE',[]):
-                    self.features[mcu]['PINOUT']=pin_data
+                    if 'PINOUT' in self.features[mcu]:
+                        self.features[mcu]['PINOUT'][package]=pin_data
+                    else:
+                        self.features[mcu]['PINOUT'] = {package:pin_data}
         return self.pin_data
 
     def unify_names(self):
