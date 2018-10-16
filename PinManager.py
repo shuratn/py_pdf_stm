@@ -27,6 +27,7 @@ class Pin(WithParent):
         'SOUT': 'MOSI',
         'SIN': 'MISO',
         'SCK': 'SCLK',
+        'INM': 'IN',
     }
 
     parent: 'PinManager'
@@ -177,7 +178,8 @@ class PinManager(WithParent):
                         suitable_pin = None
         if not failed_pins:
             print('MAPPED EVERYTHIGN WITHOUT ERRORS!')
-            return mcu_map
+        return mcu_map
+
 
 
 if __name__ == '__main__':

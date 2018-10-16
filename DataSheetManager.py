@@ -36,13 +36,21 @@ class DataSheetManager:
 
     def __init__(self, datasheets: List[str]) -> None:
         self.datasheets = datasheets
-        self.datasheets_datasheets = {} #type: Dict[str,Dict]
+        self.datasheets_datasheets = {} #type: Dict[str,DataSheet]
 
     def get_datasheet_loader(self, mc: str):
         for loader in sorted(self.DATASHEET_URLS, key=lambda l: len(l), reverse=True):
             if loader.upper() in mc.upper():
                 return loader, self.DATASHEET_URLS[loader]
         return None, (None, None)
+
+    def iterate_paths(self):
+        for controller in self.datasheets:
+            known_controller, (url, datasheet_loader) = self.get_datasheet_loader(controller)
+            if known_controller:
+                path = Path('./') / 'Datasheets' / known_controller / "{}.pdf".format(controller)
+                path = path.absolute()
+                yield path
 
     def get_or_download(self):
         with tqdm(self.datasheets,desc="Parsing datasheet",) as bar:

@@ -1,5 +1,6 @@
 import copy
 import json
+import os
 import sys
 import traceback
 from pathlib import Path
@@ -7,6 +8,7 @@ from typing import Dict, Any
 
 import xlsxwriter
 
+from DataSheetManager import DataSheetManager
 from FeaturesManager import FeatureManager
 from FeatureExtractors.feature_extractor import convert_type
 from Utils import *
@@ -54,7 +56,7 @@ class MCUHelper:
         req_name, cmp_type = self.get_cmp_type(req_name)
         if req_name != feature_name:
             if req_name != 'ANY':
-                return None
+                return False
         if is_dict(req_value) and is_dict(feature_value):
             for rk, rv in req_value.items():
                 for fk, fv in feature_value.items():
@@ -67,13 +69,16 @@ class MCUHelper:
             return self.match(req_value, feature_value, cmp_type)
         elif is_str(req_value) and is_str(feature_value):
             print('STRINGS ARE NOT SUPPORTED YET')
-            return None
+            return False
         elif is_list(feature_value) and is_list(req_value):
             feature = set(feature_value)
             req = set(req_value)
             return any(feature.intersection(req))
         elif is_list(feature_value) and (is_str(req_value) or is_int(req_value)):
             return req_value in feature_value
+        elif is_list(req_value) and (is_str(feature_value) or is_int(feature_value)):
+            return feature_value in req_value
+        raise NotImplementedError('UNEXPECTED req_value or feature_value types!')
 
     def collect_matching(self):
         self.print_user_req()
@@ -301,6 +306,7 @@ def print_usage():
     print('\tdump_cache - prints all MCUs in cache')
     print('\tre-unify - tries to re-unify everything')
     print('\tparse - re-parses all datasheets')
+    print('\tshow - opens datasheet')
     print('\tdump_unknown - dumps all unknown features to file')
     print('\tdump_known [MCU NAME or *] - dumps all known controller\'s features, unknown won\'t be dumped')
 
@@ -310,6 +316,12 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         if sys.argv[1] == 'parse':
             parse_all()
+            exit(0xDEADBEEF)
+        if sys.argv[1] == 'show':
+            print(str(sys.argv[2:]))
+            dsm = DataSheetManager(sys.argv[2:])
+            for ds in dsm.iterate_paths():
+                os.system(str(ds))
             exit(0xDEADBEEF)
         elif sys.argv[1] == 'download':
             feature_manager = FeatureManager(sys.argv[2:])

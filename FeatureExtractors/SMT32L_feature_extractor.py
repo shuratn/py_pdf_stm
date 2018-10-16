@@ -61,7 +61,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
         if 'PACKAGE' in name:
             values = re.split('(\D+\s?\d{1,3})', value)
             values = [fucking_replace(name, '\n ', '').strip() for name in values]
-            return [('PACKAGE',[value for value in values if value])]
+            return [('PACKAGE', [value for value in values if value])]
 
         if 'Operating temperature' in name:
             # -40 to 85 °C / -40 to 125 °C
@@ -157,23 +157,36 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
         start_page = self.datasheet.get_page_num(start._page)
         found = False
         dropped = False
-        for page in tqdm(self.datasheet.plumber.pages[start_page:], desc='Scaning pages',
-                         unit='pages'):  # type:pdfplumber.pdf.Page
-            page_text = page.extract_text(x_tolerance=2, y_tolerance=5)
-            if 'pin definitions' in page_text.lower():
-                found = True
-                pin_pages.append(page.page_number - 1)
-                continue
-            if found and not dropped:
-                dropped = True
-            if found and dropped:
-                break
+        with tqdm(self.datasheet.plumber.pages[start_page:], desc='Scaning pages', unit='pages') as prog:
+            for page in prog:  # type:pdfplumber.pdf.Page
+                page_text = page.extract_text(x_tolerance=2, y_tolerance=5)
+                if found and re.findall('.*pin.*definiti.*conti.*',page_text,re.IGNORECASE):
+                    pin_pages.append(page.page_number - 1)
+                    continue
+
+                elif not found and re.findall('.*pin.*definiti.*', page_text, re.IGNORECASE):
+                    prog.set_description('Found first table')
+                    found = True
+                    pin_pages.append(page.page_number - 1)
+                    continue
+
+                if found and not dropped:
+                    prog.set_description('Found last table')
+                    dropped = True
+                if found and dropped:
+                    prog.close()
+                    break
         tables = []
-        for page in pin_pages:
+        for n,page in enumerate(pin_pages):
             table = self.extract_table(self.datasheet, page)
-            for t in table:
-                if 'pin number' in t.get_cell(0,0).clean_text.lower():
-                    tables.append(t)
+            if n == 0:
+                tables.append(table[-1])
+            elif n+1 == len(pin_pages):
+                # print('LAST',table,n,len(pin_pages))
+                # print(table[0].global_map[0])
+                tables.append(table[0])
+            else:
+                tables.append(table[0])
 
         root = tables.pop(0)
         for cell in root.get_row(1):
@@ -193,31 +206,35 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
         for n, package in enumerate(packages):
             self.pin_data[package] = {'pins': {}}
             for row_id in range(len(root.global_map) - 2):
-                pin_id = root.get_cell(n, row_id + 2).clean_text
-                if pin_id != '-':
-                    pin_name = remove_parentheses(root.get_cell(pin_name_col, row_id + 2).clean_text.replace(' \n', ''))
-                    pin_type = root.get_cell(pin_name_col + 1, row_id + 2).clean_text.replace(' \n', '')
-                    pin_funks = root.get_cell(pin_name_col + 4, row_id + 2) \
-                        .clean_text \
-                        .replace(' \n', '') \
-                        .replace(' ', '') \
-                        .split(',')
-                    pin_add_funks = root.get_cell(pin_name_col + 5, row_id + 2) \
-                        .clean_text \
-                        .replace(' \n', '') \
-                        .replace(' ', '') \
-                        .split(',')
-                    pin_funks += pin_add_funks
-                    pin_funks = [remove_all_fuckery(funk) for funk in pin_funks if funk != '-']  # removing all shit
-                    pin_funks = remove_doubles([funk for funk in pin_funks if funk])  # cleaning after removing all shit
-                    if pin_name.startswith('P'):
-                        pin_funks.append('GPIO')
-                    self.pin_data[package]['pins'][pin_id] = {'name': pin_name, 'functions': pin_funks,
-                                                              'type': pin_type}
+                try:
+                    pin_id = root.get_cell(n, row_id + 2).clean_text
+                    if pin_id != '-':
+                        pin_name = remove_parentheses(root.get_cell(pin_name_col, row_id + 2).clean_text.replace(' \n', ''))
+                        pin_type = root.get_cell(pin_name_col + 1, row_id + 2).clean_text.replace(' \n', '')
+                        pin_funks = root.get_cell(pin_name_col + 4, row_id + 2) \
+                            .clean_text \
+                            .replace(' \n', '') \
+                            .replace(' ', '') \
+                            .split(',')
+                        pin_add_funks = root.get_cell(pin_name_col + 5, row_id + 2) \
+                            .clean_text \
+                            .replace(' \n', '') \
+                            .replace(' ', '') \
+                            .split(',')
+                        pin_funks += pin_add_funks
+                        pin_funks = [remove_all_fuckery(funk) for funk in pin_funks if funk != '-']  # removing all shit
+                        pin_funks = remove_doubles([funk for funk in pin_funks if funk])  # cleaning after removing all shit
+                        if pin_name.startswith('P'):
+                            pin_funks.append('GPIO')
+                        self.pin_data[package]['pins'][pin_id] = {'name': pin_name, 'functions': pin_funks,
+                                                                  'type': pin_type}
+                except:
+                    continue
         # pprint(pin_data)
         # print(packages)
         # print(pin_number_span)
-        return self.pin_data
+        del tables
+        return super().extract_pinout()
 
 
 if __name__ == '__main__':

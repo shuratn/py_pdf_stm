@@ -15,6 +15,7 @@ from FeatureExtractors.SMT32F_feature_extractor import STM32FFeatureListExtracto
 import xlsxwriter
 
 from FeatureExtractors.TI_feature_extractor import TIFeatureListExtractor
+from PinManager import PinManager
 
 
 class FeatureManager:

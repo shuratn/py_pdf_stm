@@ -1,5 +1,5 @@
 {
-  "PACKAGE": "LQFP64",
+  "PACKAGE": "LQFP144",
   "PINOUT": {
     "RF-MEM": {
       "TYPE": "SPI",
@@ -80,7 +80,7 @@
     },
     "DP-WAKEUP/DOWN": {
       "TYPE": "ACMP",
-      "PINS": 2
+      "PINS": ["IN","OUT"]
     },
     "LCD": {
       "TYPE": "I2C",

@@ -214,7 +214,8 @@ class MKFeatureListExtractor(FeatureListExtractor):
         if 'UART' in line.upper():
             if self.uart_re.findall(line):
                 count = self.uart_re.findall(line)[0]
-                self.create_new_or_merge('uart', int(count))
+                if count:
+                    self.create_new_or_merge('uart', int(count))
             else:
                 self.create_new_or_merge('uart', 1)
         if 'I2C' in line.upper():
@@ -251,7 +252,9 @@ class MKFeatureListExtractor(FeatureListExtractor):
 
     def extract_pinout(self):
         pin_pages = []
-        start = self.datasheet.table_of_content.get_node_by_name('Signal Multiplexing and Pin Assignments')
+        start = self.datasheet.table_of_content.get_node_by_name('Pinouts and Packaging')
+        if start is None:
+            start = self.datasheet.table_of_content.get_node_by_name('Pin Assignments')
         start_page = self.datasheet.get_page_num(start._page)
         found = False
         dropped = False
@@ -267,21 +270,28 @@ class MKFeatureListExtractor(FeatureListExtractor):
             if found and dropped:
                 break
         tables = []
-        for page in pin_pages:
+        for n,page in enumerate(pin_pages):
             table = self.extract_table(self.datasheet, page)
-            for t in table:
-                if 'alt' in t.get_row(0)[-1].clean_text.lower():
-                    tables.append(t)
+            if n == 0:
+                tables.append(table[-1])
+            if n+1 == len(pin_pages):
+                # print('LAST',table,n,len(pin_pages))
+                # print(table[0].global_map[0])
+                tables.append(table[0])
+            else:
+                tables.append(table[0])
         root = tables.pop(0)
         for cell in root.get_row(1):
             cell.text = self.fix_name(cell.text)
         for table in tables:
+            if len(table.get_row(1))!=len(root.get_row(1)):
+                continue
             for row in list(table.global_map.values())[1:]:
                 root.global_map[len(root.global_map)] = row
         packages = []
         have_pin_names = False
         for cell in root.get_row(0):
-            if cell.text == 'DEFAULT' or cell.text == 'Pin Name':
+            if cell.text.lower() == 'DEFAULT'.lower() or cell.text.lower() == 'Pin Name'.lower():
                 if cell.text == 'Pin Name':
                     have_pin_names  =True
                 break
@@ -310,7 +320,8 @@ class MKFeatureListExtractor(FeatureListExtractor):
                     pin_funks = remove_doubles([funk for funk in pin_funks if funk])  # cleaning after removing all shit
                     self.pin_data[package]['pins'][pin_id] = {'name': pin_name, 'functions': pin_funks,
                                                               'type': pin_type}
-        return self.pin_data
+        del tables
+        return super().extract_pinout()
 
     def create_new_or_merge(self, key, value, override=False):
         if not override:
@@ -320,12 +331,12 @@ class MKFeatureListExtractor(FeatureListExtractor):
 
 
 if __name__ == '__main__':
-    datasheet = MK_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MKMxxZxxACxx5.pdf")
+    datasheet = MK_DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\MK\MK12P48M50SF4.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
     feature_extractor = MKFeatureListExtractor('MKM', datasheet, config)
-    # feature_extractor.process()
-    # feature_extractor.unify_names()
+    feature_extractor.process()
+    feature_extractor.unify_names()
     pprint(feature_extractor.extract_pinout())
     with open('./../pins2.json', 'w') as fp:
         json.dump(feature_extractor.pin_data, fp, indent=2)

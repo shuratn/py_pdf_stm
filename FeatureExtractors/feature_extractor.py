@@ -202,7 +202,12 @@ class FeatureListExtractor:  # This class is adapted to STM
         return controller_features
 
     def extract_pinout(self):
-        pass
+
+        for package, pin_data in self.pin_data.items():
+            for mcu,mcu_features in self.features.items():
+                if package in mcu_features.get('PACKAGE',[]):
+                    self.features[mcu]['PINOUT']=pin_data
+        return self.pin_data
 
     def unify_names(self):
         unknown_names = {}

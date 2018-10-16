@@ -228,10 +228,10 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32F\STM32F030F4.pdf")
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32F\STM32F038F6.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
-    feature_extractor = STM32FFeatureListExtractor('STM32F030F4', datasheet, config)
+    feature_extractor = STM32FFeatureListExtractor('STM32F038F6', datasheet, config)
     # feature_extractor.process()
     # feature_extractor.unify_names()
     pins = feature_extractor.extract_pinout()
