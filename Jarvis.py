@@ -244,29 +244,35 @@ def reunify_cache():
         print('=' * 20)
     feature_manager.save()
 
-def fit_pins(mcu,req_path):
+
+
+def fit_pins(mcus,req_path):
     with open(req_path) as fp:
         reqs = json.load(fp)
 
-    feature_manager = FeatureManager([])
-    fam = feature_manager.get_config_name(mcu)
-    if fam in feature_manager.mcs_features:
-        mcus = feature_manager.mcs_features[fam]
-        for mcu_ in mcus:
-            if mcu in mcu_:
-                mcu_data = mcus[mcu_]
-                if 'PINOUT' in mcu_data:
-                    pin_manager = PinManager(mcu_data['PINOUT'],reqs)
-                    pin_manager.read_pins()
-                    pin_manager.fit()
-                    pin_manager.report()
-                    exit()
-                else:
-                    print(mcu,'doesn\'t have pinout parsed/stored')
+    feature_manager = FeatureManager(mcus)
+    for mcu in mcus:
+        print('Fitting',mcu)
+        fam = feature_manager.get_config_name(mcu)
+        if fam in feature_manager.mcs_features:
+            mcus = feature_manager.mcs_features[fam]
+            for mcu_ in mcus:
+                if mcu in mcu_:
+                    mcu_data = mcus[mcu_]
+                    if 'PINOUT' in mcu_data:
+                        pin_manager = PinManager(mcu_data['PINOUT'],reqs)
+                        pin_manager.read_pins()
+                        pin_manager.fit()
+                        pin_manager.report()
+                        pin_manager.serialize('./map.json')
+
+                        exit()
+                    else:
+                        print(mcu,'doesn\'t have pinout parsed/stored')
+            else:
+                print(mcu,'not found in cache')
         else:
-            print(mcu,'not found in cache')
-    else:
-        print('Unknown MCU family:',fam)
+            print('Unknown MCU family:',fam)
 def dump_unknown():
     feature_manager = FeatureManager([])
     config = feature_manager.config
@@ -368,7 +374,7 @@ if __name__ == '__main__':
         elif sys.argv[1] == 'filter':
             MCUHelper(sys.argv[2]).collect_matching().write_excel()
         elif sys.argv[1] == 'fit-pins':
-            fit_pins(sys.argv[2],sys.argv[3])
+            fit_pins(sys.argv[3:],sys.argv[2])
         elif sys.argv[1] == 'dump_unknown':
             dump_unknown()
         elif sys.argv[1] == 'dump_known':

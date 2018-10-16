@@ -1,6 +1,14 @@
 {
-  "PACKAGE": "UFBGA100",
+  "PACKAGE": "QFN48",
+  "BLACK_LIST":["BOOT0"],
   "PINOUT": {
+    "OSC": {
+      "TYPE": "OSC",
+      "PINS": [
+        "IN",
+        "OUT"
+      ]
+    },
     "RF-MEM": {
       "TYPE": "SPI",
       "PINS": [
@@ -41,10 +49,9 @@
         "SDA"
       ]
     },
-
-    "MEM-CS": {
+    "MEM/RF-CS": {
       "TYPE": "GPIO",
-      "PINS": 1
+      "PINS": 2
     },
     "MAG": {
       "TYPE": "GPIO",
@@ -70,17 +77,16 @@
       "TYPE": "GPIO",
       "PINS": 2
     },
-    "RF-CS": {
-      "TYPE": "GPIO",
-      "PINS": 1
-    },
     "RF-IRQ": {
       "TYPE": "GPIO",
       "PINS": 1
     },
     "DP-WAKEUP/DOWN": {
-      "TYPE": "ACMP",
-      "PINS": ["INM","INM"]
+      "TYPE": "CMP",
+      "PINS": [
+        "IN",
+        "IN"
+      ]
     },
     "LCD": {
       "TYPE": "I2C",
@@ -91,7 +97,11 @@
     },
     "TSA": {
       "TYPE": "TSI",
-      "PINS": 2
+      "PINS": [
+        "IN",
+        "IN",
+        "IN"
+      ]
     },
     "LED": {
       "TYPE": "GPIO",
