@@ -261,6 +261,7 @@ class PinManager(WithParent):
                 else:
                     users = list(set([self.get_pin_user(pin)[0] for pin in self.get_pins_by_func(req_type) if
                                       self.get_pin_user(pin)[0]]))
+                self.to_fit.append((conflict, req_pinout[conflict]))
                 if users:
                     # shuffle(users)
                     user_to_free = list(sorted(users,key=lambda user: 0 if req_pinout[user]['TYPE'] =='GPIO' else 10000))
@@ -287,9 +288,9 @@ class PinManager(WithParent):
                             else:
                                 raise NotImplementedError
                         del self.mcu_map[user_to_free]
-                    self.to_fit.append((conflict, req_pinout[conflict]))
 
-                    # self.fit(False)
+                        shuffle(self.to_fit)
+                        # self.fit(False)
                 shuffle(self.to_fit)
 
                 self.fit()
