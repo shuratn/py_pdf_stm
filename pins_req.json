@@ -1,12 +1,22 @@
 {
-  "PACKAGE": "QFN48",
-  "BLACK_LIST":["BOOT0"],
+  "PACKAGE": "LQFP48",
+  "BLACK_LIST": [
+    "BOOT0"
+  ],
   "PINOUT": {
     "OSC": {
-      "TYPE": "OSC",
+      "TYPE": "OSC32",
       "PINS": [
         "IN",
         "OUT"
+      ]
+    },
+    "TSA": {
+      "TYPE": "TSI",
+      "PINS": [
+        "IN",
+        "IN",
+        "IN"
       ]
     },
     "RF-MEM": {
@@ -24,13 +34,6 @@
         "TX"
       ]
     },
-    "METER": {
-      "TYPE": "UART",
-      "PINS": [
-        "RX",
-        "TX"
-      ]
-    },
     "RS485": {
       "TYPE": "UART",
       "PINS": [
@@ -38,9 +41,26 @@
         "TX"
       ]
     },
-    "RS485-DE": {
-      "TYPE": "GPIO",
-      "PINS": 1
+    "METER": {
+      "TYPE": "UART",
+      "PINS": [
+        "RX",
+        "TX"
+      ]
+    },
+    "DP-WAKEUP/DOWN": {
+      "TYPE": "CMP",
+      "PINS": [
+        "INP",
+        "INM"
+      ]
+    },
+    "LCD": {
+      "TYPE": "I2C",
+      "PINS": [
+        "SCL",
+        "SDA"
+      ]
     },
     "MEM": {
       "TYPE": "I2C",
@@ -48,6 +68,10 @@
         "SCL",
         "SDA"
       ]
+    },
+    "RS485-DE": {
+      "TYPE": "GPIO",
+      "PINS": 1
     },
     "MEM/RF-CS": {
       "TYPE": "GPIO",
@@ -80,28 +104,6 @@
     "RF-IRQ": {
       "TYPE": "GPIO",
       "PINS": 1
-    },
-    "DP-WAKEUP/DOWN": {
-      "TYPE": "CMP",
-      "PINS": [
-        "IN",
-        "IN"
-      ]
-    },
-    "LCD": {
-      "TYPE": "I2C",
-      "PINS": [
-        "SCL",
-        "SDA"
-      ]
-    },
-    "TSA": {
-      "TYPE": "TSI",
-      "PINS": [
-        "IN",
-        "IN",
-        "IN"
-      ]
     },
     "LED": {
       "TYPE": "GPIO",

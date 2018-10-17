@@ -4,6 +4,7 @@ import os
 import sys
 import traceback
 from pathlib import Path
+from random import randint
 from typing import Dict, Any
 
 import xlsxwriter
@@ -262,7 +263,7 @@ def fit_pins(mcus,req_path):
                     if 'PINOUT' in mcu_data:
                         pin_manager = PinManager(mcu_data['PINOUT'],reqs)
                         pin_manager.read_pins()
-                        pin_manager.fit()
+                        pin_manager.fit_pins()
                         pin_manager.report()
                         pin_manager.serialize('./map.json')
 
@@ -342,7 +343,10 @@ def print_usage():
 
 
 if __name__ == '__main__':
-    known_commands = ['parse', 'download', 'dump_cache']
+
+    # if randint(0,5) == 2:  # Никаких обедов ёпт!
+    #     print('Мужчина вы что не видите, у нас обед')
+    #     exit()
     if len(sys.argv) > 1:
         if sys.argv[1] == 'parse':
             parse_all()
