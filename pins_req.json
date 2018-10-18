@@ -55,6 +55,13 @@
         "INM"
       ]
     },
+    "DP-WAKEUP/DOWN2": {
+      "TYPE": "CMP",
+      "PINS": [
+        "INP",
+        "INM"
+      ]
+    },
     "LCD": {
       "TYPE": "I2C",
       "PINS": [
@@ -69,6 +76,7 @@
         "SDA"
       ]
     },
+
     "RS485-DE": {
       "TYPE": "GPIO",
       "PINS": 1
@@ -97,15 +105,7 @@
       "TYPE": "GPIO",
       "PINS": 1
     },
-    "TAMPER": {
-      "TYPE": "GPIO",
-      "PINS": 2
-    },
     "RF-IRQ": {
-      "TYPE": "GPIO",
-      "PINS": 1
-    },
-    "LED": {
       "TYPE": "GPIO",
       "PINS": 1
     }
