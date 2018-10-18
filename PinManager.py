@@ -373,6 +373,8 @@ class PinManager(WithParent):
         shuffle(self.to_fit)
         self.fit_tries += 1
         self.fit(True)
+        if any(self.to_fit):
+            raise Exception('Some pins were not fitted during first stage\nThat\'s means something went wrong!')
         self.to_fit.extend(filthy_gpios)
         self.fit(True)
 
