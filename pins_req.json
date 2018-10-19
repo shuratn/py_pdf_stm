@@ -14,6 +14,7 @@
       "PINS": [
         "IN",
         "IN",
+        "IN",
         "IN"
       ]
     },
@@ -90,6 +91,13 @@
         "INM"
       ]
     },
+    "DP-WAKEUP/DOWN2": {
+      "TYPE": "CMP",
+      "PINS": [
+        "INP",
+        "INM"
+      ]
+    },
     "LCD": {
       "TYPE": "I2C",
       "PINS": [
@@ -103,10 +111,6 @@
         "SCL",
         "SDA"
       ]
-    },
-    "LED": {
-      "TYPE": "GPIO",
-      "PINS": 1
     }
   }
 }
