@@ -6,6 +6,7 @@ from pprint import pprint
 from typing import List, Dict, Any, Set
 import re
 from random import choice, shuffle
+from multiprocessing import Pool
 
 from tqdm import tqdm
 
@@ -383,7 +384,6 @@ class PinManager(WithParent):
             self.fit(False)
             if not any(self.failed_pins):
                 break
-        print(self.to_fit)
         if any(self.to_fit):
             raise Exception('Some pins were not fitted during first stage\nThat\'s means something went wrong!')
         self.to_fit.extend(filthy_gpios)
@@ -447,21 +447,22 @@ class PinManager(WithParent):
 
     def fit(self, handle_conflicts=True):
         # for req_pin, req_pin_data in self.to_fit:
+        package = self.requirements['PACKAGE']
+        all_pins = set(self.pins[package])
         while self.to_fit:
             req_pin, req_pin_data = self.to_fit.pop(-1)
             self.mcu_map[req_pin] = []
             req_type = req_pin_data['TYPE']
             req_sub_types = req_pin_data['PINS']
             found = False
-            package = self.requirements['PACKAGE']
-            any_free_pins = list(filter(lambda pin: pin not in self.already_used_pins, self.pins[package]))
+            any_free_pins = all_pins.difference(self.already_used_pins)
             if not any(any_free_pins):
                 raise Exception('No free pins left!')
             if is_int(req_sub_types):
                 for i in range(req_sub_types):
-                    suitable_pins = list(filter(lambda pin: pin not in self.already_used_pins,
-                                                sorted(self.get_pins_by_func(req_type),
-                                                       key=lambda pin: len(pin.functions))))
+                    suitable_pins = sorted(self.get_pins_by_func(req_type),
+                                                       key=lambda pin: len(pin.functions))
+                    suitable_pins = set(suitable_pins).intersection(any_free_pins)
                     for suitable_pin in suitable_pins:
                         if self.check_module(suitable_pin, req_type):
                             mod = self.get_free_modules(suitable_pin.modules_by_type(req_type))[0]
