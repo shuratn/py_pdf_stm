@@ -1,9 +1,13 @@
 import itertools
 import json
 import math
+import multiprocessing
+import struct
+from multiprocessing.pool import ThreadPool
+from multiprocessing import Pool
 from functools import lru_cache
 from pprint import pprint
-from typing import List, Dict, Any, Set
+from typing import List, Dict, Any, Set, Tuple
 import re
 
 from tqdm import tqdm
@@ -11,14 +15,7 @@ from tqdm import tqdm
 from Utils import is_dict, is_numeric, is_list, is_int, remove_doubles
 
 
-class WithParent:
-    parent = None
-
-    def register(self, obj: 'WithParent'):
-        obj.parent = self
-
-
-class Pin(WithParent):
+class Pin:
     equality_dict = {
         # 'LPUART': 'UART',
         'USART': 'UART',
@@ -39,8 +36,6 @@ class Pin(WithParent):
         'SCK': 'SCLK',
     }
 
-    parent: 'PinManager'
-
     def __init__(self, pin_id: str, functions: List[str], pin_type: str, package: str) -> None:
         """
         :type pin_type: str IO or S
@@ -48,6 +43,7 @@ class Pin(WithParent):
         :type pin_id: str Name\Id of pin
         """
         self.pin_id = pin_id
+        self.used_module = 'GPIO'
         self.functions = set(functions)
         self.pin_type = pin_type
         self.package = package
@@ -55,6 +51,8 @@ class Pin(WithParent):
         if pin_type == 'S':
             self.functions = []
 
+    def __eq__(self, other:'Pin'):
+        return self.pin_id == other.pin_id
     def __hash__(self):
         return hash(self.pin_id)
 
@@ -155,10 +153,10 @@ class Pin(WithParent):
         return '<Pin-{} {} {}>'.format(self.pin_id, self.pin_type, ' | '.join(self.functions))
 
     def str_short(self):
-        return '<Pin-{} {}>'.format(self.pin_id, self.pin_type)
+        return '<Pin-{} {} {}>'.format(self.pin_id, self.pin_type, self.used_module)
 
 
-class PinManager(WithParent):
+class PinManager:
     mergeble_types = ['I2C']
 
     def __init__(self, pinout: Dict[str, Dict[str, Any]], requirements: Dict) -> None:
@@ -168,8 +166,8 @@ class PinManager(WithParent):
         """
         self.requirements = requirements  # type: Dict
         self.packages_pinout = pinout  # type: Dict[str, Dict[str, Any]]
-        self.pins = set() # type: Set[Pin]
-        self.packages = [] #type: List[str]
+        self.pins = set()  # type: Set[Pin]
+        self.packages = []  # type: List[str]
         self.useless_pins = {}  # type: Dict[str,List[Pin]]
         self.already_used_pins = set()  # type: Set[Pin]
         self.already_used_modules = set()  # type: Set[str]
@@ -189,13 +187,12 @@ class PinManager(WithParent):
             if package == self.package:
                 for pin_id, pin_data in pinout['pins'].items():
                     pin = Pin(pin_id, pin_data['functions'], pin_data['type'], package)
-                    self.register(pin)
-                    if pin.pin_type == 'S' or not pin.functions or set(pin.functions).intersection(set(self.black_list)):
+                    if pin.pin_type == 'S' or not pin.functions or set(pin.functions).intersection(self.black_list):
                         self.useless_pins[package].append(pin)
                     else:
                         self.pins.add(pin)
 
-    @lru_cache(200)
+    @lru_cache(500)
     def get_pins_by_func(self, func_name, sub_type=None) -> Set[Pin]:
         pins = filter(lambda pin: pin.has_func(func_name, sub_type), self.pins)
         return set(pins)
@@ -214,35 +211,33 @@ class PinManager(WithParent):
         self.to_fit = everything_else
 
         all_possible_variants = itertools.permutations(everything_else)
-        with tqdm(all_possible_variants, desc='Trying all possible variants!', unit=' variant',
-                  total=math.factorial(len(everything_else))) as pb:
-            for variant in pb:
-                self.failed_pins.clear()
-                self.already_used_modules.clear()
-                self.already_used_pins.clear()
-                self.to_fit = list(variant)
-                if self.fit():
-                    self.fit_variants += 1
-                    if not (self.fit_variants % 100):
-                        pb.set_description('Found {} working variants'.format(self.fit_variants))
-                    pass
-                    break
-                    # print('FOUND')
-                #     break
-            pb.set_description('Found {} working variants'.format(self.fit_variants))
-        print(self.to_fit)
-        self.to_fit.extend(filthy_gpios)
-        self.fit()
+        with Pool(processes=10) as pool:
+            with tqdm(all_possible_variants, desc='Trying all possible variants!', unit=' variant',
+                      total=math.factorial(len(everything_else))) as pb:
+                for result in pool.imap_unordered(self.fit,pb,chunksize=10000):
+                    new_map, fails, used_pins = result
+                    if new_map:
+                        self.already_used_pins = set(list(used_pins))
+                        self.mcu_map.update(new_map)
+                        self.fit_variants += 1
+                        if not (self.fit_variants % 100):
+                            pb.set_description('Found {} working variants'.format(self.fit_variants))
+                        # pass
+                        # break
+                        # print('FOUND')
+                    #     break
+                pb.set_description('Found {} working variants'.format(self.fit_variants))
+                pb.close()
+        # self.to_fit.extend(filthy_gpios)
+        new_map, _, gpio_used_pins = self.fit(filthy_gpios, already_used_pins=self.already_used_pins,
+                                              gpio=True)
+        self.mcu_map.update(new_map)
+        self.already_used_pins |= gpio_used_pins
 
-    def check_module(self, pin, mod_name):
-        if mod_name == 'GPIO':
-            return True
-        if not pin.modules_by_type(mod_name).difference(self.already_used_modules):
-            return False
-        return True
 
-    def get_free_modules(self, modules: Set[str]) -> Set[str]:
-        return modules.difference(self.already_used_modules)
+    @staticmethod
+    def get_free_modules(modules: Set[str], already_used_modules) -> Set[str]:
+        return modules.difference(already_used_modules)
 
     def count_modules(self):
         mcu_modules = {}
@@ -282,64 +277,71 @@ class PinManager(WithParent):
             print('Solve issues printed above and come again later')
             exit(1)
 
-    def fit(self):
+    def fit(self, to_fit, already_used_pins=None,gpio = False) -> Tuple[Dict[str,Any], Any, Any]:
+        if already_used_pins is None:
+            already_used_pins = set()
+        else:
+            already_used_pins = set(list(already_used_pins))
         mcu_map = {}
-        while self.to_fit:
-            req_pin, req_pin_data = self.to_fit.pop(-1)
+        already_used_modules = set()
+        failed_pins = []
+        to_fit = list(to_fit)
+        while to_fit:
+            req_pin, req_pin_data = to_fit.pop(-1)
             mcu_map[req_pin] = []
             req_type = req_pin_data['TYPE']
             req_sub_types = req_pin_data['PINS']
             found = False
-            any_free_pins = self.pins.difference(self.already_used_pins)
-            if not any(any_free_pins):
+            if len(already_used_pins) >= len(self.pins):
                 raise Exception('No free pins left!')
             if is_list(req_sub_types):
-                suitable_pins = self.get_pins_by_func(req_type, req_sub_types[0]).difference(self.already_used_pins)
+                suitable_pins = self.get_pins_by_func(req_type, req_sub_types[0]).difference(already_used_pins)
                 for suitable_pin in suitable_pins:
-                    mod = self.get_free_modules(suitable_pin.modules_by_type(req_type))
+                    mod = self.get_free_modules(suitable_pin.modules_by_type(req_type), already_used_pins)
                     if mod:
                         mod = mod.pop()
                         temp = [(req_sub_types[0], suitable_pin, mod)]
                         local_used_pins = [suitable_pin]
                         for sub_type in req_sub_types[1:]:
                             pairs = self.get_pins_by_func(req_type, sub_type) \
-                                .difference(self.already_used_pins) \
+                                .difference(already_used_pins) \
                                 .difference(local_used_pins)
                             for pair in pairs:
-                                pair_mod = self.get_free_modules(pair.modules_by_type(req_type))
-                                if not pair_mod:
-                                    continue
-                                pair_mod = pair_mod.pop()
-                                if mod != pair_mod:
-                                    continue
-                                local_used_pins.append(pair)
-                                temp.append((sub_type, pair, pair_mod))
-                                break
+                                pair_mod = self.get_free_modules(pair.modules_by_type(req_type), already_used_pins)
+                                if pair_mod:
+                                    pair_mod = pair_mod.pop()
+                                    if mod != pair_mod:
+                                        continue
+                                    local_used_pins.append(pair)
+                                    temp.append((sub_type, pair, pair_mod))
+                                    break
                         if len(temp) == len(req_sub_types):
                             found = True
                             for sub_name, pin, mod in temp:
-                                self.already_used_pins.add(pin)
-                                self.already_used_modules.add(mod)
+                                already_used_pins.add(pin)
+                                already_used_modules.add(mod)
                                 mcu_map[req_pin].append({sub_name: pin, 'MODULE': mod})
                             break
+                    if found:
+                        break
                 if not found:
                     if not self.silent_mode:
                         print('NO SUITABLE PINS FOR {} AVAILABLE!'.format(req_pin))
-                    self.failed_pins.append(req_pin)
-                    return False
+                    failed_pins.append(req_pin)
+                    return {}, failed_pins, None
 
             else:
                 for i in range(req_sub_types):
-                    suitable_pins = sorted(self.get_pins_by_func(req_type),
-                                           key=lambda pin: len(pin.functions))
-                    suitable_pins = set(suitable_pins).difference(self.already_used_pins)
-                    for suitable_pin in suitable_pins:
-                        if self.check_module(suitable_pin, req_type):
-                            mod = set(suitable_pin.modules_by_type(req_type)).difference(
-                                self.already_used_modules).pop()
-                            self.already_used_pins.add(suitable_pin)
+                    suitable_pins = set(sorted(self.get_pins_by_func(req_type),
+                                           key=lambda pin: len(pin.functions)))
+                    avalible_pins = suitable_pins.difference(already_used_pins)
+                    for suitable_pin in avalible_pins:
+                        mod = set(suitable_pin.modules_by_type(req_type)).difference(already_used_modules)
+                        if mod:
+                            mod = mod.pop()
+                            already_used_pins.add(suitable_pin)
                             if mod != 'GPIO':
-                                self.already_used_modules.add(mod)
+                                already_used_modules.add(mod)
                             mcu_map[req_pin].append(suitable_pin)
                             found = True
                             break
@@ -348,14 +350,13 @@ class PinManager(WithParent):
                     if not found:
                         if not self.silent_mode:
                             print('NO SUITABLE PINS FOR {}-{} AVAILABLE!'.format(req_pin, i + 1))
-                        self.failed_pins.append(req_pin)
-                        return False
+                        failed_pins.append(req_pin)
+                        return {}, failed_pins, None
 
-        if any(self.to_fit):
-            return False
+        if any(failed_pins):
+            return {}, failed_pins, None
         else:
-            self.mcu_map.update(mcu_map)
-            return True
+            return mcu_map, failed_pins, already_used_pins
 
     def report(self):
         if self.failed_pins:
@@ -370,17 +371,19 @@ class PinManager(WithParent):
             req_data = self.requirements['PINOUT'][req_name]
             req_type = req_data['TYPE']
             print('\t', req_name, ':')
-            for pins in pin_data:
+            for n, pins in enumerate(pin_data):
                 if is_list(pins):
                     for pin in pins:
                         print('\t\t', req_type, ':', pin)
                 elif is_dict(pins):
 
-                    print('\t\t', pins.pop('MODULE'), ':', list(pins.values())[0])
+                    pin = list(pins.values())[0]  # type: Pin
+                    pin.used_module = '{}-{}'.format(pins['MODULE'], req_data['PINS'][n])
+                    print('\t\t', pin.used_module, ':', pin)
                 else:
                     print('\t\t', req_type, ':', pins)
 
-        free_pins = set(self.pins).difference(self.already_used_pins)
+        free_pins = self.pins.difference(self.already_used_pins)
         if free_pins:
             print('List of free and usable pins')
             for pin in free_pins:
@@ -389,7 +392,7 @@ class PinManager(WithParent):
     @staticmethod
     def serialize_pin(obj):
         if type(obj) is Pin:
-            return "Pin-{}".format(obj.pin_id)
+            return obj.str_short()
         return obj
 
     def serialize(self, path):
@@ -405,8 +408,7 @@ if __name__ == '__main__':
     a = PinManager(pins, req)
     a.read_pins()
     pprint(a.fit())
-    with open('fit.json') as fp:
-        json.dump(a.mcu_map, fp)
+
     # pin = a.pins['LQFP100'][15]
     # pin = a.pins['LQFP64'][5]
     # print('The pairs of', pin, 'is', pin.get_pair('TSI'))
