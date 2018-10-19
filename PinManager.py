@@ -1,8 +1,14 @@
+import itertools
 import json
+import math
+from functools import lru_cache
 from pprint import pprint
 from typing import List, Dict, Any, Set
 import re
 from random import choice, shuffle
+
+from tqdm import tqdm
+
 from Utils import is_dict, is_numeric, is_list, is_int, remove_doubles
 
 
@@ -43,12 +49,15 @@ class Pin(WithParent):
         :type pin_id: str Name\Id of pin
         """
         self.pin_id = pin_id
-        self.functions = functions
+        self.functions = set(functions)
         self.pin_type = pin_type
         self.package = package
         self.pairs = []  # type: List[Pin]
         if pin_type == 'S':
             self.functions = []
+
+    def __hash__(self):
+        return hash(self.pin_id)
 
     def extract_pin_info(self, pin_func: str):
         pin_func = self.equality_dict.get(pin_func, pin_func)
@@ -115,7 +124,7 @@ class Pin(WithParent):
             return '{}{}'.format(module, mod_id)
         else:
             return '{}'.format(module)
-
+    @lru_cache(100)
     def modules_by_type(self, mod_type):
         ret = []
         for func in self.functions:
@@ -180,12 +189,12 @@ class PinManager(WithParent):
         self.packages_pinout = pinout  # type: Dict[str, Dict[str, Any]]
         self.pins = {}  # type: Dict[str,List[Pin]]
         self.useless_pins = {}  # type: Dict[str,List[Pin]]
-        self.already_used_pins = []  # type: List[str]
-        self.already_used_modules = set()  # type: Set[str]
+        self.already_used_pins = set()  # type: Set[Pin]
+        self.already_used_modules = set()  # type: Set[Pin]
         self.mcu_map = {}  # type: Dict[str, Any]
         self.failed_pins = []  # type: List[str]
         self.to_fit = []  # type: List
-        self.black_list = self.requirements.get('BLACK_LIST', [])
+        self.black_list = set(self.requirements.get('BLACK_LIST', []))
         self.full_auto_mode = True
         self.fit_tries = 0
         self.silent_mode = True
@@ -201,19 +210,11 @@ class PinManager(WithParent):
                     self.useless_pins[package].append(pin)
                 else:
                     self.pins[package].append(pin)
-
+    @lru_cache(50)
     def get_pins_by_func(self, func_name, sub_type=None):
         package = self.requirements['PACKAGE']
-        pins = []  # type: List[Pin]
-        for pin in self.pins[package]:
-            invalid = False
-            for black_name in self.black_list:
-                if pin.has_func(black_name) or pin.pin_type == 'S':
-                    invalid = True
-                    continue
-            if pin.has_func(func_name, sub_type) and not invalid:
-                pins.append(pin)
-        return pins
+        pins = filter(lambda pin: pin.has_func(func_name, sub_type), self.pins[package])
+        return list(pins)
 
     def flatten(self, values):
         out = []
@@ -370,9 +371,19 @@ class PinManager(WithParent):
         filthy_gpios = [pin for pin in all_pins if pin[1]['TYPE'] == 'GPIO']
         everything_else = [pin for pin in all_pins if pin[1]['TYPE'] != 'GPIO']
         self.to_fit = everything_else
-        shuffle(self.to_fit)
+        # shuffle(self.to_fit)
         self.fit_tries += 1
-        self.fit(True)
+        all_possible_variants = itertools.permutations(everything_else)
+        for variant in tqdm(all_possible_variants, desc='Trying all possible variants!', unit='variant',
+                            total=math.factorial(len(everything_else))):
+            self.failed_pins.clear()
+            self.already_used_modules.clear()
+            self.already_used_pins.clear()
+            self.to_fit = list(variant)
+            self.fit(False)
+            if not any(self.failed_pins):
+                break
+        print(self.to_fit)
         if any(self.to_fit):
             raise Exception('Some pins were not fitted during first stage\nThat\'s means something went wrong!')
         self.to_fit.extend(filthy_gpios)
@@ -388,7 +399,6 @@ class PinManager(WithParent):
                 # self.already_used_modules.append(mod)
                 break
         return valid
-
     def get_free_modules(self, modules):
         ret = []
         for mod in modules:
@@ -436,13 +446,8 @@ class PinManager(WithParent):
             exit(1)
 
     def fit(self, handle_conflicts=True):
-
+        # for req_pin, req_pin_data in self.to_fit:
         while self.to_fit:
-            if self.fit_tries > 100:
-                print('Failed to fit in 100 tries, exiting')
-                self.to_fit = []
-                self.failed_pins = []
-                return
             req_pin, req_pin_data = self.to_fit.pop(-1)
             self.mcu_map[req_pin] = []
             req_type = req_pin_data['TYPE']
@@ -460,7 +465,7 @@ class PinManager(WithParent):
                     for suitable_pin in suitable_pins:
                         if self.check_module(suitable_pin, req_type):
                             mod = self.get_free_modules(suitable_pin.modules_by_type(req_type))[0]
-                            self.already_used_pins.append(suitable_pin)
+                            self.already_used_pins.add(suitable_pin)
                             self.already_used_modules.add(mod)
                             self.mcu_map[req_pin].append(suitable_pin)
                             found = True
@@ -470,25 +475,23 @@ class PinManager(WithParent):
                     if not found:
                         if not self.silent_mode:
                             print('NO SUITABLE PINS FOR {}-{} AVAILABLE!'.format(req_pin, i + 1))
-                        # self.resolve_conflict(req_pin, req_pin_data, suitable_pins)
                         self.failed_pins.append(req_pin)
+                        return
 
             else:
-                self.mcu_map[req_pin] = []
                 if req_type in ['SPI', 'I2C', 'UART', 'TSC', 'TSI', 'OSC', 'CMP', 'OSC32']:
-                    suitable_pins = list(filter(lambda pin: pin not in self.already_used_pins,
-                                                self.get_pins_by_func(req_type, req_sub_types[0])))
+                    suitable_pins = filter(lambda pin: pin not in self.already_used_pins,
+                                           self.get_pins_by_func(req_type, req_sub_types[0]))
                     for suitable_pin in suitable_pins:
                         if self.check_module(suitable_pin, req_type):
                             mod = self.get_free_modules(suitable_pin.modules_by_type(req_type))[0]
-                            temp = []
-                            temp.append((req_sub_types[0], suitable_pin, mod))
+                            temp = [(req_sub_types[0], suitable_pin, mod)]
                             local_used_pins = [suitable_pin]
                             for sub_type in req_sub_types[1:]:
-                                pairs = list(filter(lambda pin: pin not in self.already_used_pins,
-                                                    self.get_pins_by_func(req_type, sub_type)))
+                                pairs = filter(lambda pin: pin not in self.already_used_pins,
+                                               self.get_pins_by_func(req_type, sub_type))
                                 for pair in pairs:
-                                    if pair in self.already_used_pins or pair in local_used_pins:
+                                    if pair in local_used_pins:
                                         continue
                                     pair_mod = self.get_free_modules(pair.modules_by_type(req_type))
                                     if not pair_mod:
@@ -498,12 +501,11 @@ class PinManager(WithParent):
                                         continue
                                     local_used_pins.append(pair)
                                     temp.append((sub_type, pair, pair_mod))
-                                    # local_found = True
                                     break
-                            if all(temp) and len(temp) == len(req_sub_types):
+                            if len(temp) == len(req_sub_types):
                                 found = True
                                 for sub_name, pin, mod in temp:
-                                    self.already_used_pins.append(pin)
+                                    self.already_used_pins.add(pin)
                                     self.already_used_modules.add(mod)
                                     self.mcu_map[req_pin].append({sub_name: pin, 'MODULE': mod})
                                 break
@@ -511,14 +513,17 @@ class PinManager(WithParent):
                         if not self.silent_mode:
                             print('NO SUITABLE PINS FOR {} AVAILABLE!'.format(req_pin))
                         self.failed_pins.append(req_pin)
+                        return
 
                 else:
                     raise NotImplementedError()
-            self.failed_pins = remove_doubles(self.failed_pins)
-            if any(self.failed_pins) and handle_conflicts:
-                self.fit_tries += 1
-                pass
-                self.resolve_conflicts()
+            # self.failed_pins = remove_doubles(self.failed_pins)
+            if any(self.failed_pins):
+                return
+            # if any(self.failed_pins) and handle_conflicts:
+            #     # self.fit_tries += 1
+            #     pass
+            #     self.resolve_conflicts()
 
     def report(self):
         if self.failed_pins:
