@@ -26,7 +26,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
     temperature_re = re.compile('Temp.*:\s*(?P<lo>[-–+]?\s?[\d]+).?C?\sto\s(?P<hi>[-+]?\s?[\d]+).?C?',
                                 re.IGNORECASE)
 
-    ram_re = re.compile('(?P<ram>\d+)\s(?P<unit>\w+)\s.*\sRAM', re.IGNORECASE)
+    ram_re = re.compile('(?P<ram>\d+)\s(?P<unit>\w+)\s.*RAM', re.IGNORECASE)
 
     adc_count_re = re.compile('^(?P<count>\d+)x?\s', re.IGNORECASE)
 
@@ -144,7 +144,7 @@ class MKFeatureListExtractor(FeatureListExtractor):
         line = line.replace('dual', '2')
         if self.voltage_re.findall(line):
             lo, hi = self.voltage_re.findall(line)[0]
-            self.create_new_or_merge('operating voltage', {'lo': float(lo), 'hi': float(hi)}, True)
+            self.create_new_or_merge('operating voltage', {'min': float(lo), 'max': float(hi)}, True)
         elif self.dma_re.findall(line) and 'channel' in line:
             channels = self.dma_re.findall(line)[0]
             self.create_new_or_merge('DMA', {'channels': int(channels), 'count': 1}, True)

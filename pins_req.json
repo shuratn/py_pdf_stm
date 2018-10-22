@@ -33,20 +33,6 @@
         "TX"
       ]
     },
-    "RS485": {
-      "TYPE": "UART",
-      "PINS": [
-        "RX",
-        "TX"
-      ]
-    },
-    "METER": {
-      "TYPE": "UART",
-      "PINS": [
-        "RX",
-        "TX"
-      ]
-    },
     "RS485-DE": {
       "TYPE": "GPIO",
       "PINS": 1
@@ -55,55 +41,6 @@
     "MEM/RF-CS": {
       "TYPE": "GPIO",
       "PINS": 2
-    },
-    "MAG": {
-      "TYPE": "GPIO",
-      "PINS": 1
-    },
-    "D_ELMAG": {
-      "TYPE": "GPIO",
-      "PINS": 1
-    },
-    "SWD_DIO/BL": {
-      "TYPE": "GPIO",
-      "PINS": 1
-    },
-    "Rele ON/OFF": {
-      "TYPE": "GPIO",
-      "PINS": 2
-    },
-    "RF_RESET": {
-      "TYPE": "GPIO",
-      "PINS": 1
-    },
-    "TAMPER": {
-      "TYPE": "GPIO",
-      "PINS": 2
-    },
-    "RF-IRQ": {
-      "TYPE": "GPIO",
-      "PINS": 1
-    },
-    "DP-WAKEUP/DOWN": {
-      "TYPE": "CMP",
-      "PINS": [
-        "INP",
-        "INM"
-      ]
-    },
-    "DP-WAKEUP/DOWN2": {
-      "TYPE": "CMP",
-      "PINS": [
-        "INP",
-        "INM"
-      ]
-    },
-    "LCD": {
-      "TYPE": "I2C",
-      "PINS": [
-        "SCL",
-        "SDA"
-      ]
     },
     "MEM": {
       "TYPE": "I2C",

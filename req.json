@@ -1,3 +1,7 @@
 {
-  "package":["LQFP100","LQFP48"]
+  "package":["LQFP100","LQFP48"],
+  "UART<":5,
+  "RAM>":48,
+  "FLASH MEMORY=":128,
+  "OPERATING VOLTAGE":{"min":1.0}
 }

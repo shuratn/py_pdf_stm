@@ -1,10 +1,11 @@
 import copy
+import itertools
 import json
 import os
 import sys
 import traceback
 from pathlib import Path
-from random import randint
+from random import randint,choice
 from typing import Dict, Any
 
 import xlsxwriter
@@ -61,13 +62,16 @@ class MCUHelper:
                 return False
         if is_dict(req_value) and is_dict(feature_value):
             for rk, rv in req_value.items():
+                rk_name, _ = self.get_cmp_type(rk)
                 for fk, fv in feature_value.items():
+                    if rk_name !=fk:
+                        continue
                     ret = self.compare(rk, rv, fk, fv)
                     if ret is not None:
                         if ret:
                             match = True
             return match
-        elif is_int(req_value) and is_int(feature_value):
+        elif is_float_or_int(req_value) and is_float_or_int(feature_value):
             return self.match(req_value, feature_value, cmp_type)
         elif is_str(req_value) and is_str(feature_value):
             print('STRINGS ARE NOT SUPPORTED YET')
@@ -80,7 +84,9 @@ class MCUHelper:
             return req_value in feature_value
         elif is_list(req_value) and (is_str(feature_value) or is_int(feature_value)):
             return feature_value in req_value
-        raise NotImplementedError('UNEXPECTED req_value or feature_value types!')
+        print('WARNING: UNEXPECTED req_value or feature_value types!')
+        print(req_value,feature_value)
+        # raise NotImplementedError('UNEXPECTED req_value or feature_value types!')
 
     def collect_matching(self):
         self.print_user_req()
@@ -89,11 +95,13 @@ class MCUHelper:
             for mcu_name, mcu_features in mcus.items():
                 matched = True
                 for req_name, req_value in self.required_feature.items():
+                    if not matched:
+                        break
                     req_feature, cmp_type = self.get_cmp_type(req_name)
                     feature_value = mcu_features.get(req_feature.upper(), None)
                     if feature_value:
                         try:
-                            matched &= self.compare(req_name, req_value, req_name, feature_value)
+                            matched &= self.compare(req_name, req_value, req_feature, feature_value)
                             # else:
                             #     matched &= self.match(req_value, feature_value, cmp_type)
 
@@ -105,6 +113,7 @@ class MCUHelper:
                             traceback.print_exc()
                     else:
                         matched = False
+                        break
                 if matched:
                     self.matching[mcu_name] = mcu_features
 
@@ -299,30 +308,38 @@ def dump_unknown():
                 fp.write('\t' + diff + '\n')
 
 
+def chunkify(l,n):
+    return [l[i:i + n] for i in range(0, len(l), n)]
+
 def find():
     feature_manager = FeatureManager([])
     closest = []
     to_find = sys.argv[2]
     for _, mcus in feature_manager.mcs_features.items():
         for mcu in mcus.keys():
-            fail = False
             match = 0
             for m_char, u_char in zip(mcu.upper(), to_find.upper()):
                 if m_char == u_char:
                     match += 1
-                elif m_char == 'X':
-                    match += 1
+                elif m_char == 'X' or u_char == 'X':
+                    match += 0.5
                 elif u_char == '*':
                     match += 999
                 else:
                     break
 
-            if match > len(mcu) // 2:
+            if match > 2:
                 closest.append((mcu,match))
-    closest = sorted(closest,key = lambda val:val[1],reverse=True)
-    print('10 closest MCUs to {}'.format(to_find))
-    for close,_ in closest[:10]:
-        print('\t',close)
+    closest = list(sorted(closest,key = lambda val:val[1],reverse=True))
+    print('40 closest MCUs to {}'.format(to_find))
+    offset = 0
+    while offset<len(closest):
+        for line in chunkify(closest[offset:offset+40],5):
+            for close,_ in line:
+                print('\t',close,end='')
+            print('\n')
+        input('More?')
+        offset+=40
 
 
 def list_known():
@@ -341,7 +358,7 @@ def list_known():
     to_dump = []
     for mcus in all_mcus:
         for mcu, features in mcus.items():
-            unifier = set(map(lambda s: s.upper(), unify[feature_manager.get_config_name(mcu)].values()))
+            unifier = set(map(lambda s: s.upper(), unify.get(feature_manager.get_config_name(mcu),{}).values()))
             if dump_mcu_name in mcu.upper() or dump_all:
 
                 feature_names = set(features.keys())
@@ -350,11 +367,49 @@ def list_known():
                     features.pop(unk)
                 to_dump.append({mcu: features})
 
-    with open('mcu_list.json', 'w') as fp:
+    with open('known_features.json', 'w') as fp:
         json.dump(to_dump, fp, indent=2)
 
     #
 
+def func_help():
+    func = sys.argv[2]
+    to_parse = []
+    if datasheets_path.exists():
+        for folder in datasheets_path.iterdir():
+            if folder.is_dir():
+                for ds in folder.iterdir():
+                    if ds.is_file():
+                        to_parse.append(ds.stem)
+    to_parse.append('STM32F217ZE')
+    all_mcus = []
+    feature_manager = FeatureManager([])
+    for mcus in feature_manager.mcs_features.values():
+        all_mcus.extend(mcus.keys())
+    all_mcus.append('STM32F217Ix')
+    random_datasheet = choice(to_parse)
+    random_mcu = choice(all_mcus)
+    if func == 'download':
+        print('Example usage {} download {}'.format(sys.argv[0],random_datasheet))
+        print('This will download and parse {}'.format(random_datasheet))
+        print('It also can re-parse already existing datasheet or parse manually added one')
+
+    elif func == 'filter':
+        print('Example usage {} filter requirements.json'.format(sys.argv[0]))
+        print('This will compare each of mcu in database to your requirements')
+        print('Basic structure of "requirements.json" is:\n')
+
+    elif func == 'fit-pins':
+        print('Example usage {} fit-pins {} pin_config.json'.format(sys.argv[0],random_mcu))
+        print('pin_config.json should have:')
+        print('\tPACKAGE:string, key with package that you want you fit everything on')
+        print('\tBLACK_LIST:array [OPTIONAL], black list of functions, if pin has this function, we won\'t use it')
+        print('\tPINOUT:dictionary, is dictionary of modules, example:')
+        print('\t  "OPTO":{ -- string, name of module')
+        print('\t    "TYPE": "UART" -- string, module type')
+        print('\t    "PINS": ["RX","TX"] -- array, pin sub-types')
+        print('\t     OR')
+        print('\t    "PINS": 5 -- int, number of pin used by this module, usefull for GPIO')
 
 def print_usage():
     print('USAGE: {} [COMMAND]'.format(sys.argv[0]))
@@ -365,6 +420,7 @@ def print_usage():
     print('\tre-unify - tries to re-unify everything')
     print('\tparse - re-parses all datasheets')
     print('\tshow - opens datasheet')
+    print('\thelp [FUNCTION] - more information about function')
     print('\tfind [MCU NAME HERE] - finds closest name in database')
     print('\tdump_unknown - dumps all unknown features to file')
     print('\tdump_known [MCU NAME or *] - dumps all known controller\'s features, unknown won\'t be dumped')
@@ -414,6 +470,8 @@ if __name__ == '__main__':
             list_known()
         elif sys.argv[1] == 'find':
             find()
+        elif sys.argv[1] == 'help':
+            func_help()
         else:
             print_usage()
     else:

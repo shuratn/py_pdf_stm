@@ -44,6 +44,7 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
         self.mc_family = self.controller[:6].upper()  # STM32L451
 
     def handle_feature(self, name, value):
+        name = name.upper()
         value = remove_parentheses(value)
         if name in self.config['corrections']:
             name = self.config['corrections'][name]
@@ -55,7 +56,7 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
             else:
                 return [(None, None)]
             return [('UART', values)]
-        if 'GPIOs' in name and 'Wakeup' in name:
+        if 'GPIOs'.upper() in name and 'Wakeup'.upper() in name:
             values = value.split('\n')
             if 'or' in values[0]:
                 values[0] = values[0].split('or')[0]
@@ -63,11 +64,13 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                 values[0] = values[0][:values[0].index('(')]
             return [('GPIOs', int(values[0])), ('Wakeup pins', int(values[1]))]
         if 'ADC' in name:
-            adc_type = re.findall('(\d+)-bit\s?\w*\sADC\s?\w*', name)[0]
+            adc_type = re.search('(\d+)-bit\s?\w*\sADC\s?\w*', name,re.IGNORECASE)[0]
             if not self.adc_count_found:
                 self.adc_count_found = True
                 return [('ADC', {'{}-bit'.format(adc_type): {'count': int(value)}})]
             else:
+                if 'in' in value:
+                    value = value.split('in')[0]
                 return [('ADC', {'{}-bit'.format(adc_type): {'channels': int(value)}})]
 
         if 'DAC' in name and 'channels' in name:
@@ -89,9 +92,9 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                     else:
                         count = 0
             return [('DAC', {'{}-bit'.format(dac_type): {'count': int(count), 'channels': int(channels)}})]
-        if 'Operating voltage' in name:
-            if re.match('.*\s([\d.]+)\s.*\s([\d.]+)\s', value):
-                lo, hi = re.findall('.*\s([\d.]+)\s.*\s([\d.]+)\s', value)[0]
+        if 'Operating voltage'.upper() in name:
+            if re.findall('\s?([\d.]+)\s.*\s([\d.]+)\s?', value):
+                lo, hi = re.findall('\s?([\d.]+)\s.*\s([\d.]+)\s?', value)[0]
                 return [('Operating voltage', {'min': float(lo), 'max': float(hi)})]
             if 'v' in value.lower():
                 value = remove_units(value, 'v')
@@ -127,7 +130,7 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
                     value = 0
             return [('SPI', int(value))]
 
-        if 'Operating temperature' in name:
+        if 'Operating temperature'.upper() in name:
             # -40 to 85 °C / -40 to 125 °C
             if 'Ambient temperatures' in value:
                 lo, hi = re.findall(r'([+-–]?\s?\d+)\sto\s([-+–]?\s?\d+)\s', value, re.IGNORECASE)[0]
@@ -228,12 +231,12 @@ class STM32FFeatureListExtractor(STM32LFeatureListExtractor):
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32F\STM32F038F6.pdf")
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32F\stm32f217vg.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
-    feature_extractor = STM32FFeatureListExtractor('STM32F038F6', datasheet, config)
-    # feature_extractor.process()
-    # feature_extractor.unify_names()
+    feature_extractor = STM32FFeatureListExtractor('stm32f217vg', datasheet, config)
+    feature_extractor.process()
+    feature_extractor.unify_names()
     pins = feature_extractor.extract_pinout()
     with open('./../pins.json', 'w') as fp:
         json.dump(pins, fp, indent=2)

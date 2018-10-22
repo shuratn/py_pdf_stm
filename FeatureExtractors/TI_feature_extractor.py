@@ -57,7 +57,7 @@ class TIFeatureListExtractor(MKFeatureListExtractor):
         line = line.replace('dual', '2')
         if self.voltage_re.findall(line):
             lo, hi = self.voltage_re.findall(line)[0]
-            self.create_new_or_merge('operating voltage', {'lo': float(lo), 'hi': float(hi)}, True)
+            self.create_new_or_merge('operating voltage', {'min': float(lo), 'max': float(hi)}, True)
         elif self.dma_re.findall(line) and 'channel' in line:
             channels = self.dma_re.findall(line)[0]
             self.create_new_or_merge('DMA', {'channels': int(channels), 'count': 1}, True)

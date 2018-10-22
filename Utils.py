@@ -20,6 +20,8 @@ def is_str(val):
 def is_float(val):
     return isinstance(val, float)
 
+def is_float_or_int(val):
+    return is_float(val) or is_int(val)
 
 def clean_line(line: str):
     line = line.replace('–', '-')

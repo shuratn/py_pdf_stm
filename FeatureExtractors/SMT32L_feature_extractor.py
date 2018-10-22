@@ -41,7 +41,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
         if 'USART' in name or 'LPUART' in name or 'LPUART' in name:
             values = sum(map(int, value.split('\n')))
             return [('UART', values)]
-        if 'GPIOs' in name and 'Wakeup' in name:
+        if 'GPIOs'.upper() in name and 'Wakeup'.upper() in name:
             values = value.split('\n')
             if 'or' in values[0]:
                 values[0] = values[0].split('or')[0]
@@ -52,7 +52,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
             adc_type = re.findall('(\d+)-bit\s?\w*\sADC\s?\w*', name)[0]
             values = value.split('\n')
             return [('ADC', {'{}-bit'.format(adc_type): {'count': int(values[0]), 'channels': int(values[1])}})]
-        if 'Operating voltage' in name:
+        if 'operating voltage'.upper() in name.upper():
             value = remove_units(value, 'v')
             values = value.split('to')
             values = list(map(float, values))
@@ -63,7 +63,7 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
             values = [fucking_replace(name, '\n ', '').strip() for name in values]
             return [('PACKAGE', [value for value in values if value])]
 
-        if 'Operating temperature' in name:
+        if 'operating temperature'.upper() in name:
             # -40 to 85 °C / -40 to 125 °C
             value = value.split('\n')[1]
             lo, hi = re.findall(r'(-?\d+)\sto\s(-?\d+)\s', value, re.IGNORECASE)[0]
@@ -238,11 +238,11 @@ class STM32LFeatureListExtractor(FeatureListExtractor):
 
 
 if __name__ == '__main__':
-    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32L\STM32L431CB.pdf")
+    datasheet = DataSheet(r"D:\PYTHON\py_pdf_stm\datasheets\stm32L\STM32L452.pdf")
     with open('./../config.json') as fp:
         config = json.load(fp)
-    feature_extractor = STM32LFeatureListExtractor('STM32L431CB', datasheet, config)
-    # feature_extractor.process()
+    feature_extractor = STM32LFeatureListExtractor('STM32L452', datasheet, config)
+    feature_extractor.process()
     feature_extractor.extract_pinout()
     pprint(feature_extractor.features)
     with open('./../pins.json', 'w') as fp:
