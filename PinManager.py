@@ -223,7 +223,7 @@ class PinManager:
                         if not (self.fit_variants % 100):
                             pb.set_description('Found {} working variants'.format(self.fit_variants))
                         # pass
-                        # break
+                        break
                         # print('FOUND')
                     #     break
                 pb.set_description('Found {} working variants'.format(self.fit_variants))

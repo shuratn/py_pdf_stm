@@ -246,14 +246,13 @@ def reunify_cache():
     feature_manager.save()
 
 
-
-def fit_pins(mcus,req_path):
+def fit_pins(mcus, req_path):
     with open(req_path) as fp:
         reqs = json.load(fp)
 
     feature_manager = FeatureManager(mcus)
     for mcu in mcus:
-        print('Fitting',mcu)
+        print('Fitting', mcu)
         fam = feature_manager.get_config_name(mcu)
         if fam in feature_manager.mcs_features:
             mcus = feature_manager.mcs_features[fam]
@@ -261,7 +260,7 @@ def fit_pins(mcus,req_path):
                 if mcu in mcu_:
                     mcu_data = mcus[mcu_]
                     if 'PINOUT' in mcu_data:
-                        pin_manager = PinManager(mcu_data['PINOUT'],reqs)
+                        pin_manager = PinManager(mcu_data['PINOUT'], reqs)
                         pin_manager.read_pins()
                         pin_manager.fit_pins()
                         pin_manager.report()
@@ -269,11 +268,13 @@ def fit_pins(mcus,req_path):
 
                         exit()
                     else:
-                        print(mcu,'doesn\'t have pinout parsed/stored')
+                        print(mcu, 'doesn\'t have pinout parsed/stored')
             else:
-                print(mcu,'not found in cache')
+                print(mcu, 'not found in cache')
         else:
-            print('Unknown MCU family:',fam)
+            print('Unknown MCU family:', fam)
+
+
 def dump_unknown():
     feature_manager = FeatureManager([])
     config = feature_manager.config
@@ -296,6 +297,32 @@ def dump_unknown():
             diffs = features.difference(known)
             for diff in diffs:
                 fp.write('\t' + diff + '\n')
+
+
+def find():
+    feature_manager = FeatureManager([])
+    closest = []
+    to_find = sys.argv[2]
+    for _, mcus in feature_manager.mcs_features.items():
+        for mcu in mcus.keys():
+            fail = False
+            match = 0
+            for m_char, u_char in zip(mcu.upper(), to_find.upper()):
+                if m_char == u_char:
+                    match += 1
+                elif m_char == 'X':
+                    match += 1
+                elif u_char == '*':
+                    match += 999
+                else:
+                    break
+
+            if match > len(mcu) // 2:
+                closest.append((mcu,match))
+    closest = sorted(closest,key = lambda val:val[1],reverse=True)
+    print('10 closest MCUs to {}'.format(to_find))
+    for close,_ in closest[:10]:
+        print('\t',close)
 
 
 def list_known():
@@ -338,6 +365,7 @@ def print_usage():
     print('\tre-unify - tries to re-unify everything')
     print('\tparse - re-parses all datasheets')
     print('\tshow - opens datasheet')
+    print('\tfind [MCU NAME HERE] - finds closest name in database')
     print('\tdump_unknown - dumps all unknown features to file')
     print('\tdump_known [MCU NAME or *] - dumps all known controller\'s features, unknown won\'t be dumped')
 
@@ -347,6 +375,7 @@ if __name__ == '__main__':
     # if randint(0,5) == 2:  # Никаких обедов ёпт!
     #     print('Мужчина вы что не видите, у нас обед')
     #     exit()
+
     if len(sys.argv) > 1:
         if sys.argv[1] == 'parse':
             parse_all()
@@ -378,11 +407,13 @@ if __name__ == '__main__':
         elif sys.argv[1] == 'filter':
             MCUHelper(sys.argv[2]).collect_matching().write_excel()
         elif sys.argv[1] == 'fit-pins':
-            fit_pins(sys.argv[3:],sys.argv[2])
+            fit_pins(sys.argv[3:], sys.argv[2])
         elif sys.argv[1] == 'dump_unknown':
             dump_unknown()
         elif sys.argv[1] == 'dump_known':
             list_known()
+        elif sys.argv[1] == 'find':
+            find()
         else:
             print_usage()
     else:
