@@ -1,0 +1,14 @@
+.idea/
+.mypy*/
+*.pyc
+.ipynb*/
+datasheets/
+venv/
+features.json
+known_features.json
+map.json
+pins.json
+Results.xlsx
+test.xls
+FeatureList.xlsx
+DataSheetParsers/DataSheet_TRASH.py
