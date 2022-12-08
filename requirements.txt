@@ -3,7 +3,7 @@ pdfplumber
 pdfminer.six
 pyparsing
 Pillow
-certifi==2018.8.13
+certifi==2022.12.7
 chardet==3.0.4
 idna==2.7
 PyPDF3==0.0.4
